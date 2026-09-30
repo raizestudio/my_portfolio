@@ -1,117 +1,160 @@
 <!-- components/apps/ContactApp.vue -->
 <template>
-  <div class="h-full flex flex-col font-sans text-slate-200">
-    <!-- Header / Mail Toolbar -->
-    <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-xs">
-      <div class="flex items-center space-x-2 bg-slate-950/60 px-3 py-1.5 rounded-md border border-white/5 font-mono text-slate-400">
-        <Icon name="lucide:mail" class="w-4 h-4 text-purple-400" />
-        <span class="text-slate-200 font-semibold">New_Message.eml</span>
+  <div class="h-full flex flex-col bg-slate-900 text-slate-200 font-sans select-none overflow-hidden">
+
+    <!-- macOS Mail Toolbar -->
+    <div class="h-11 px-3 bg-slate-800/80 border-b border-white/10 flex items-center justify-between gap-2 shrink-0 text-xs">
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2">
+        <!-- Send Button -->
+        <button
+          @click="sendMessage"
+          :disabled="status === 'sending'"
+          class="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-medium px-3 py-1 rounded-md transition-all shadow-md active:scale-95"
+        >
+          <Icon v-if="status === 'sending'" name="lucide:loader-2" class="w-3.5 h-3.5 animate-spin" />
+          <Icon v-else name="lucide:send" class="w-3.5 h-3.5" />
+          <span>Send</span>
+        </button>
+
+        <!-- Quick Template Selector -->
+        <div class="relative hidden sm:block">
+          <select
+            @change="applyTemplate($event)"
+            class="bg-slate-950/60 border border-white/10 text-slate-300 text-[11px] rounded-md px-2 py-1 focus:outline-none focus:border-blue-500 cursor-pointer"
+          >
+            <option value="" disabled selected>Quick Templates...</option>
+            <option value="project">💼 Project Inquiry</option>
+            <option value="job">🚀 Job Opportunity</option>
+            <option value="coffee">☕ Quick Coffee / Catch-up</option>
+          </select>
+        </div>
       </div>
 
-      <div class="flex items-center space-x-2 text-slate-400 text-[11px] font-mono">
-        <span class="inline-block w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-        <span>SMTP Ready</span>
+      <!-- Right Tools: Copy Email & Socials -->
+      <div class="flex items-center gap-2 text-slate-400">
+        <button
+          @click="copyEmail"
+          class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-slate-200 rounded-md border border-white/10 transition-colors text-[11px]"
+          title="Copy email to clipboard"
+        >
+          <Icon :name="copied ? 'lucide:check' : 'lucide:copy'" class="w-3.5 h-3.5 text-blue-400" />
+          <span>{{ copied ? 'Copied!' : 'Copy Email' }}</span>
+        </button>
+
+        <a
+          href="mailto:you@yourdomain.dev"
+          class="p-1.5 hover:bg-white/10 rounded-md text-slate-300 transition-colors hidden sm:block"
+          title="Open in Default Mail Client"
+        >
+          <Icon name="lucide:external-link" class="w-4 h-4" />
+        </a>
       </div>
+
     </div>
 
-    <!-- Main Message Form -->
-    <div class="flex-1 overflow-y-auto pr-1">
-      <form @submit.prevent="sendMessage" class="space-y-3">
-        <!-- Recipient Header Readonly -->
-        <div class="flex items-center space-x-3 bg-slate-950/40 p-2.5 rounded-lg border border-white/5 text-xs">
-          <span class="font-mono text-slate-500 w-12 text-right">To:</span>
-          <span class="font-mono text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
-            you@yourdomain.dev
+    <!-- Email Header Input Rows (Apple Mail Style) -->
+    <div class="bg-slate-950/40 border-b border-white/10 text-xs font-mono">
+
+      <!-- To Field -->
+      <div class="flex items-center px-4 py-2 border-b border-white/5 gap-3">
+        <span class="text-slate-500 w-16 text-right font-semibold select-none">To:</span>
+        <div class="flex items-center gap-2">
+          <span class="bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded border border-blue-500/30 text-[11px] font-sans font-medium flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            Your Name &lt;you@yourdomain.dev&gt;
           </span>
         </div>
+      </div>
 
-        <!-- Sender Name & Email -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="block text-[10px] uppercase font-mono text-slate-400 tracking-wider">Your Name</label>
-            <input
-              v-model="form.name"
-              type="text"
-              required
-              placeholder="Alex Smith"
-              class="w-full bg-slate-950/60 border border-white/10 focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 rounded px-3 py-1.5 text-xs text-white placeholder-slate-600 outline-none transition-colors font-mono"
-            />
-          </div>
-
-          <div class="space-y-1">
-            <label class="block text-[10px] uppercase font-mono text-slate-400 tracking-wider">Your Email</label>
-            <input
-              v-model="form.email"
-              type="email"
-              required
-              placeholder="alex@example.com"
-              class="w-full bg-slate-950/60 border border-white/10 focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 rounded px-3 py-1.5 text-xs text-white placeholder-slate-600 outline-none transition-colors font-mono"
-            />
-          </div>
-        </div>
-
-        <!-- Subject Line -->
-        <div class="space-y-1">
-          <label class="block text-[10px] uppercase font-mono text-slate-400 tracking-wider">Subject</label>
+      <!-- Sender Name & Email Rows -->
+      <div class="flex items-center px-4 py-2 border-b border-white/5 gap-3">
+        <label for="sender-email" class="text-slate-500 w-16 text-right font-semibold select-none">From:</label>
+        <div class="flex-1 flex flex-col sm:flex-row gap-2">
           <input
-            v-model="form.subject"
-            type="text"
+            id="sender-email"
+            v-model="form.email"
+            type="email"
             required
-            placeholder="Project Inquiry / Job Opportunity"
-            class="w-full bg-slate-950/60 border border-white/10 focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 rounded px-3 py-1.5 text-xs text-white placeholder-slate-600 outline-none transition-colors font-mono"
+            placeholder="your.email@example.com"
+            class="flex-1 bg-transparent text-slate-100 placeholder-slate-600 focus:outline-none font-sans"
+          />
+          <input
+            v-model="form.name"
+            type="text"
+            placeholder="Your Name (Optional)"
+            class="w-full sm:w-48 bg-transparent text-slate-300 placeholder-slate-600 focus:outline-none font-sans text-[11px]"
           />
         </div>
+      </div>
 
-        <!-- Message Body -->
-        <div class="space-y-1">
-          <label class="block text-[10px] uppercase font-mono text-slate-400 tracking-wider">Message</label>
-          <textarea
-            v-model="form.message"
-            required
-            rows="5"
-            placeholder="Hey, I loved your desktop portfolio! Let's talk about..."
-            class="w-full bg-slate-950/60 border border-white/10 focus:border-purple-400 focus:ring-1 focus:ring-purple-400/50 rounded p-3 text-xs text-white placeholder-slate-600 outline-none transition-colors font-mono resize-none"
-          ></textarea>
-        </div>
+      <!-- Subject Row -->
+      <div class="flex items-center px-4 py-2 gap-3">
+        <label for="subject" class="text-slate-500 w-16 text-right font-semibold select-none">Subject:</label>
+        <input
+          id="subject"
+          v-model="form.subject"
+          type="text"
+          required
+          placeholder="New message subject..."
+          class="flex-1 bg-transparent text-slate-100 font-medium placeholder-slate-600 focus:outline-none font-sans"
+        />
+      </div>
 
-        <!-- Submit & Status Banner -->
-        <div class="pt-2 flex items-center justify-between">
-          <div class="text-xs">
-            <span v-if="status === 'sending'" class="text-purple-400 font-mono flex items-center gap-1.5">
-              <Icon name="lucide:loader-2" class="w-3.5 h-3.5 animate-spin" /> Transmitting...
-            </span>
-            <span v-else-if="status === 'success'" class="text-emerald-400 font-mono flex items-center gap-1.5">
-              <Icon name="lucide:check-circle-2" class="w-3.5 h-3.5" /> Message Sent!
-            </span>
-            <span v-else-if="status === 'error'" class="text-red-400 font-mono flex items-center gap-1.5">
-              <Icon name="lucide:alert-triangle" class="w-3.5 h-3.5" /> Failed to send message.
-            </span>
-          </div>
-
-          <button
-            type="submit"
-            :disabled="status === 'sending'"
-            class="flex items-center space-x-2 bg-purple-500 hover:bg-purple-400 disabled:opacity-50 text-slate-950 font-medium text-xs py-2 px-4 rounded transition-colors"
-          >
-            <span>Send Message</span>
-            <Icon name="lucide:send" class="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </form>
     </div>
 
-    <!-- Social Links Bar -->
-    <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-      <span>Connect directly:</span>
-      <div class="flex items-center space-x-3">
-        <a href="https://github.com" target="_blank" class="hover:text-purple-300 transition-colors flex items-center gap-1">
-          <Icon name="lucide:github" class="w-3.5 h-3.5" /> GitHub
+    <!-- Message Body Area -->
+    <div class="flex-1 p-4 bg-slate-900 flex flex-col overflow-hidden relative">
+
+      <!-- Sent Banner Overlay -->
+      <div
+        v-if="status === 'success'"
+        class="absolute inset-0 bg-slate-900/95 backdrop-blur-md z-20 flex flex-col items-center justify-center space-y-3 text-center p-6"
+      >
+        <div class="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-lg">
+          <Icon name="lucide:check-circle" class="w-6 h-6" />
+        </div>
+        <h3 class="text-base font-bold text-white">Message Delivered</h3>
+        <p class="text-xs text-slate-400 max-w-sm">
+          Thanks for reaching out! Your message was sent successfully.
+        </p>
+        <button
+          @click="resetForm"
+          class="mt-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 px-4 py-1.5 rounded-md text-xs font-medium transition-colors"
+        >
+          Compose Another Message
+        </button>
+      </div>
+
+      <!-- Textarea Editor -->
+      <textarea
+        v-model="form.message"
+        required
+        placeholder="Type your message here..."
+        class="w-full flex-1 bg-transparent text-slate-200 placeholder-slate-600 focus:outline-none resize-none font-sans text-xs sm:text-sm leading-relaxed"
+      ></textarea>
+
+    </div>
+
+    <!-- Footer Status Bar -->
+    <div class="h-7 px-3 bg-slate-950 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400 shrink-0 font-mono">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>Outbox: Ready</span>
+      </div>
+
+      <!-- Quick Social Links -->
+      <div class="flex items-center gap-3">
+        <a href="https://github.com" target="_blank" class="hover:text-blue-300 transition-colors flex items-center gap-1">
+          <Icon name="lucide:github" class="w-3.5 h-3.5" />
         </a>
-        <a href="https://linkedin.com" target="_blank" class="hover:text-purple-300 transition-colors flex items-center gap-1">
-          <Icon name="lucide:linkedin" class="w-3.5 h-3.5" /> LinkedIn
+        <a href="https://linkedin.com" target="_blank" class="hover:text-blue-300 transition-colors flex items-center gap-1">
+          <Icon name="lucide:linkedin" class="w-3.5 h-3.5" />
         </a>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -119,6 +162,7 @@
 import { reactive, ref } from 'vue'
 
 const status = ref<'idle' | 'sending' | 'success' | 'error'>('idle')
+const copied = ref(false)
 
 const form = reactive({
   name: '',
@@ -127,24 +171,61 @@ const form = reactive({
   message: ''
 })
 
+const templates = {
+  project: {
+    subject: 'Project Inquiry — Web Application Development',
+    message: 'Hi,\n\nI came across your portfolio and I am interested in collaborating on a web application project.\n\nHere are some details:\n- Timeline:\n- Tech Stack Preferences:\n\nLet\'s schedule a call to discuss!'
+  },
+  job: {
+    subject: 'Opportunity — Engineering Role',
+    message: 'Hi,\n\nWe are currently looking for a developer with your skillset for a role at our company.\n\nWould you be open to discussing potential opportunities?'
+  },
+  coffee: {
+    subject: 'Quick Coffee / Virtual Catch-up',
+    message: 'Hey!\n\nLoved checking out your macOS portfolio desktop. Would love to connect and chat about tech!'
+  }
+}
+
+const applyTemplate = (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  const selectedKey = target.value as keyof typeof templates
+
+  if (templates[selectedKey]) {
+    form.subject = templates[selectedKey].subject
+    form.message = templates[selectedKey].message
+  }
+}
+
+const copyEmail = () => {
+  if (import.meta.client) {
+    navigator.clipboard.writeText('you@yourdomain.dev')
+    copied.value = true
+    setTimeout(() => {
+      copied.value = false
+    }, 2000)
+  }
+}
+
 const sendMessage = async () => {
+  if (!form.email || !form.message) return
+
   status.value = 'sending'
 
   try {
-    // Connect your mail backend API endpoint here (e.g. /api/contact or Formspree/Resend)
+    // Connect your backend API endpoint here (e.g., Nuxt server route `/api/contact` or Resend/Formspree)
     await new Promise(resolve => setTimeout(resolve, 1200)) // Simulated delay
 
     status.value = 'success'
-    form.name = ''
-    form.email = ''
-    form.subject = ''
-    form.message = ''
-
-    setTimeout(() => {
-      status.value = 'idle'
-    }, 4000)
   } catch (err) {
     status.value = 'error'
   }
+}
+
+const resetForm = () => {
+  status.value = 'idle'
+  form.name = ''
+  form.email = ''
+  form.subject = ''
+  form.message = ''
 }
 </script>
