@@ -1,0 +1,14 @@
+{
+  "title": "Joel PINHO | Portfolio",
+  "description": "Portfolio de Joel PINHO, développeur Full-stack.",
+  "menuBar": {
+    "aboutPortfolio": "CV",
+    "githubProfile": "Profil GitHub",
+    "restartDesktop": "Redémarrer le bureau",
+    "options": {
+      "file": "Fichier",
+      "edit": "Edition",
+      "view": "Présentation"
+    }
+  }
+}

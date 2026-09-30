@@ -72,7 +72,13 @@ import ContactApp from "~/components/apps/ContactApp.vue";
 import Spotlight from "~/components/desktop/Spotlight.vue";
 
 const { windows, openWindow } = useWindowManager();
+const { t } = useI18n();
+
 const selectedIconId = ref(null);
+
+const titleText = t('title');
+const descriptionText = t('description');
+
 
 const componentsMap = {
     ProjectsApp,
@@ -111,11 +117,11 @@ onUnmounted(() => {
 })
 
 useHead({
-    title: "Joel PINHO | Portfolio",
+    title: titleText,
     meta: [
         {
             name: "description",
-            content: "Portfolio de Joel PINHO, développeur Full-stack.",
+            content: descriptionText,
         },
     ],
 });

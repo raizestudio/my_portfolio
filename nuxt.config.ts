@@ -4,16 +4,30 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ["@nuxt/icon", "@nuxtjs/i18n"],
+  modules: ["@nuxt/icon", "@nuxtjs/i18n", "@vueuse/nuxt"],
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
   },
   i18n: {
     locales: [
-      { code: "en", language: "en-US" },
-      { code: "fr", language: "fr-FR" },
+      { code: "en", language: "en-US", file: "en.json" },
+      { code: "fr", language: "fr-FR", file: "fr.json" },
     ],
-    defaultLocale: "fr",
+    defaultLocale: 'fr',
+    langDir: 'locales/',
+    strategy: 'prefix_except_default',
+  },
+  app: {
+    head: {
+      title: "Joel PINHO | Portfolio",
+      meta: [
+        {
+          name: "description",
+          content: "Portfolio de Joel PINHO, développeur Full-stack.",
+        },
+      ],
+      link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+    },
   },
 });
