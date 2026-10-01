@@ -10,5 +10,11 @@
       "edit": "Edit",
       "view": "View"
     }
+  },
+  "apps": {
+    "about": "cv.pdf",
+    "projects": "Projects",
+    "terminal": "Terminal",
+    "contact": "Contact"
   }
 }

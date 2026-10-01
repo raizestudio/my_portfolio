@@ -1,9 +1,12 @@
 // composables/useWindowManager.ts
 export const useWindowManager = () => {
-  const windows = useState("windows", () => [
+  const { t } = useI18n();
+
+  // Raw state stores the title keys rather than static translated strings
+  const rawWindows = useState("windows", () => [
     {
       id: "about",
-      title: "About_Me.pdf",
+      titleKey: "apps.about",
       icon: "lucide:file-text",
       component: "AboutApp",
       isOpen: false,
@@ -12,11 +15,11 @@ export const useWindowManager = () => {
       zIndex: 10,
       position: { x: 80, y: 80 },
       size: { width: 750, height: 550 },
-      iconPosition: { x: 24, y: 48 }, // Desktop Icon X/Y Position
+      iconPosition: { x: 24, y: 48 },
     },
     {
       id: "projects",
-      title: "Projects",
+      titleKey: "apps.projects",
       icon: "lucide:folder",
       component: "ProjectsApp",
       isOpen: false,
@@ -29,7 +32,7 @@ export const useWindowManager = () => {
     },
     {
       id: "terminal",
-      title: "Terminal",
+      titleKey: "apps.terminal",
       icon: "lucide:terminal",
       component: "TerminalApp",
       isOpen: false,
@@ -42,7 +45,7 @@ export const useWindowManager = () => {
     },
     {
       id: "contact",
-      title: "Contact Mail",
+      titleKey: "apps.contact",
       icon: "lucide:mail",
       component: "ContactApp",
       isOpen: false,
@@ -55,6 +58,14 @@ export const useWindowManager = () => {
     },
   ]);
 
+  // Dynamically resolve `title` using `t()` whenever `locale` changes
+  const windows = computed(() =>
+    rawWindows.value.map((win) => ({
+      ...win,
+      title: t(win.titleKey),
+    })),
+  );
+
   const topZIndex = useState("topZIndex", () => 10);
   const activeWindowId = useState<string | null>("activeWindowId", () => null);
 
@@ -63,7 +74,7 @@ export const useWindowManager = () => {
   );
 
   const focusWindow = (id: string) => {
-    const win = windows.value.find((w) => w.id === id);
+    const win = rawWindows.value.find((w) => w.id === id);
     if (win && !win.isMinimized) {
       topZIndex.value++;
       win.zIndex = topZIndex.value;
@@ -72,7 +83,7 @@ export const useWindowManager = () => {
   };
 
   const openWindow = (id: string) => {
-    const win = windows.value.find((w) => w.id === id);
+    const win = rawWindows.value.find((w) => w.id === id);
     if (win) {
       win.isOpen = true;
       win.isMinimized = false;
@@ -81,11 +92,11 @@ export const useWindowManager = () => {
   };
 
   const closeWindow = (id: string) => {
-    const win = windows.value.find((w) => w.id === id);
+    const win = rawWindows.value.find((w) => w.id === id);
     if (win) {
       win.isOpen = false;
       if (activeWindowId.value === id) {
-        const remaining = windows.value
+        const remaining = rawWindows.value
           .filter((w) => w.isOpen && !w.isMinimized && w.id !== id)
           .sort((a, b) => b.zIndex - a.zIndex);
 
@@ -95,7 +106,7 @@ export const useWindowManager = () => {
   };
 
   const toggleMinimize = (id: string) => {
-    const win = windows.value.find((w) => w.id === id);
+    const win = rawWindows.value.find((w) => w.id === id);
     if (win) {
       win.isMinimized = !win.isMinimized;
       if (win.isMinimized && activeWindowId.value === id) {
@@ -107,11 +118,11 @@ export const useWindowManager = () => {
   };
 
   const toggleMaximize = (id: string) => {
-    const win = windows.value.find((w) => w.id === id);
+    const win = rawWindows.value.find((w) => w.id === id);
     if (win) win.isMaximized = !win.isMaximized;
   };
 
-  const isSpotlightOpen = useState("isSpotlightOpen", () => false); // NEW Spotlight State
+  const isSpotlightOpen = useState("isSpotlightOpen", () => false);
 
   const openSpotlight = () => {
     isSpotlightOpen.value = true;
