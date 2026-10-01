@@ -2,7 +2,7 @@
 <template>
   <div
     v-show="win.isOpen && !win.isMinimized"
-    class="absolute flex flex-col bg-slate-900/95 backdrop-blur-md border rounded-xl shadow-2xl overflow-hidden transition-shadow duration-200"
+    class="absolute flex flex-col bg-gray-50/50 dark:bg-slate-900/95 backdrop-blur-2xl border rounded-xl shadow-2xl overflow-hidden transition-shadow duration-200"
     :class="[
       win.isMaximized ? 'rounded-none border-none shadow-none' : 'border-slate-700/50',
       isActive ? 'shadow-black/60 ring-1 ring-white/10' : 'shadow-black/30 opacity-95',
@@ -21,7 +21,7 @@
     <!-- macOS Title Bar (Drag Handle) -->
     <div
       class="h-10 flex items-center px-4 cursor-move relative border-b border-white/5 transition-colors duration-200 select-none shrink-0"
-      :class="isActive ? 'bg-slate-800/60' : 'bg-slate-900/80'"
+      :class="isActive ? 'bg-gray-50/60 dark:bg-slate-900/60' : 'bg-slate-900/80'"
       @pointerdown="startDrag"
       @dblclick="toggleMaximize(win.id)"
     >
@@ -55,14 +55,14 @@
       <!-- Window Title -->
       <div
         class="w-full text-center text-[13px] font-medium pointer-events-none transition-colors duration-200"
-        :class="isActive ? 'text-slate-200' : 'text-slate-500'"
+        :class="isActive ? 'text-slate-800 dark:text-slate-200' : 'text-slate-500'"
       >
         {{ win.title }}
       </div>
     </div>
 
     <!-- Window Content -->
-    <div class="flex-1 bg-slate-900 text-white overflow-auto relative">
+    <div class="flex-1 bg-gray-50 dark:bg-slate-900 text-white overflow-auto relative">
       <!-- Overlay block during drag/resize to prevent mouse events from getting trapped inside child elements -->
       <div v-if="isDragging || isResizing" class="absolute inset-0 z-50 pointer-events-auto" />
       <slot />

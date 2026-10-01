@@ -115,6 +115,14 @@
               <span>{{ appsProjectsWebText }} (.html)</span>
             </button>
             <button
+              @click="activeFilter = 'vue'"
+              class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
+              :class="activeFilter === 'vue' ? 'bg-green-600/30 text-green-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+            >
+              <Icon name="simple-icons:vuedotjs" class="w-4 h-4 text-green-400" />
+              <span>{{ appsProjectsVueText }} (.vue)</span>
+            </button>
+            <button
               @click="activeFilter = 'python'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
               :class="activeFilter === 'python' ? 'bg-sky-600/30 text-sky-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
@@ -129,6 +137,14 @@
             >
               <Icon name="simple-icons:gnubash" class="w-4 h-4 text-emerald-400" />
               <span>{{ appsProjectsScriptsText }} (.sh)</span>
+            </button>
+            <button
+              @click="activeFilter = 'markdown'"
+              class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
+              :class="activeFilter === 'markdown' ? 'bg-gray-600/30 text-gray-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+            >
+              <Icon name="simple-icons:markdown" class="w-4 h-4 text-gray-400" />
+              <span>{{ appsProjectsMarkdownText }} (.md)</span>
             </button>
           </div>
         </div>
@@ -358,8 +374,10 @@ const appsProjectsFavoritesText = computed(() => t('apps.projects.favorites'))
 const appsProjectsAllProjectsText = computed(() => t('apps.projects.allProjects'))
 const appsProjectsFoldersText = computed(() => t('apps.projects.folders'))
 const appsProjectsWebText = computed(() => t('apps.projects.web'))
+const appsProjectsVueText = computed(() => t('apps.projects.vue'))
 const appsProjectsPythonText = computed(() => t('apps.projects.python'))
 const appsProjectsScriptsText = computed(() => t('apps.projects.scripts'))
+const appsProjectsMarkdownText = computed(() => t('apps.projects.markdown'))
 const appsProjectsNoSearchMatchText = computed(() => t('apps.projects.noSearchMatch'))
 const appsProjectsDescriptionText = computed(() => t('apps.projects.description'))
 const appsProjectsStackText = computed(() => t('apps.projects.stack'))
@@ -379,6 +397,24 @@ const fileSystem = ref([
     description: 'Solutions logiciels à destination des loueurs de voiture.',
     updatedAt: 'Sep 24, 2026'
   },
+  {
+    id: 'apodis',
+    parentId: 'root',
+    name: 'Apodis',
+    type: 'folder',
+    title: 'Apodis',
+    description: 'Solutions logiciels à destination des patients et professionnels de la santé en pharmacie.',
+    updatedAt: 'Sep 24, 2026'
+  },
+  {
+    id: 'cgti_camusat',
+    parentId: 'root',
+    name: 'CGTI by Camusat',
+    type: 'folder',
+    title: 'CGTI by Camusat',
+    description: 'Solutions logiciels facilitant le déploiement de la fibre optique pour le compte de TDF',
+    updatedAt: 'Sep 24, 2026'
+  },
   // {
   //   id: 'folder-nexus-store',
   //   parentId: 'root',
@@ -390,31 +426,31 @@ const fileSystem = ref([
   // },
 
   // Root Files
-  {
-    id: 'file-portfolio-os',
-    parentId: 'root',
-    name: 'portfolio-os.html',
-    type: 'file',
-    ext: 'html',
-    title: 'macOS Web Desktop',
-    description: 'Interactive web operating system portfolio built with Nuxt 3, Vue 3, and Tailwind CSS.',
-    techStack: ['Nuxt 3', 'Vue 3', 'TailwindCSS'],
-    size: '88 KB',
-    updatedAt: 'Sep 29, 2026',
-    demoUrl: '#'
-  },
-  {
-    id: 'file-deploy-script',
-    parentId: 'root',
-    name: 'deploy_cluster.sh',
-    type: 'file',
-    ext: 'sh',
-    title: 'K8s Cluster Deployer',
-    description: 'Shell script utility for initializing microservice environments on Kubernetes.',
-    techStack: ['Bash', 'Docker', 'Kubernetes'],
-    size: '4 KB',
-    updatedAt: 'Jul 10, 2026'
-  },
+  // {
+  //   id: 'file-portfolio-os',
+  //   parentId: 'root',
+  //   name: 'portfolio-os.html',
+  //   type: 'file',
+  //   ext: 'html',
+  //   title: 'macOS Web Desktop',
+  //   description: 'Interactive web operating system portfolio built with Nuxt 3, Vue 3, and Tailwind CSS.',
+  //   techStack: ['Nuxt 3', 'Vue 3', 'TailwindCSS'],
+  //   size: '88 KB',
+  //   updatedAt: 'Sep 29, 2026',
+  //   demoUrl: '#'
+  // },
+  // {
+  //   id: 'file-deploy-script',
+  //   parentId: 'root',
+  //   name: 'deploy_cluster.sh',
+  //   type: 'file',
+  //   ext: 'sh',
+  //   title: 'K8s Cluster Deployer',
+  //   description: 'Shell script utility for initializing microservice environments on Kubernetes.',
+  //   techStack: ['Bash', 'Docker', 'Kubernetes'],
+  //   size: '4 KB',
+  //   updatedAt: 'Jul 10, 2026'
+  // },
 
   // Items Inside WeDev Folder
   {
@@ -468,6 +504,18 @@ const fileSystem = ref([
     size: '28 KB',
     updatedAt: 'Sep 24, 2026',
     demoUrl: 'https://helios.we-dev.io'
+  },
+  {
+    id: 'readme',
+    parentId: 'wedev',
+    name: 'README.md',
+    type: 'file',
+    ext: 'md',
+    title: 'README',
+    description: 'Fichier README de l\'écosystème Helios.',
+    techStack: ['Markdown'],
+    size: '11 KB',
+    updatedAt: 'Sep 24, 2026',
   },
   // {
   //   id: 'loc-file-demo',
@@ -591,8 +639,10 @@ const visibleItems = computed(() => {
     // Sidebar Category Filters
     if (activeFilter.value === 'folders' && item.type !== 'folder') return false
     if (activeFilter.value === 'html' && item.ext !== 'html') return false
+    if (activeFilter.value === 'vue' && item.ext !== 'vue') return false
     if (activeFilter.value === 'python' && item.ext !== 'py') return false
     if (activeFilter.value === 'scripts' && item.ext !== 'sh') return false
+    if (activeFilter.value === 'markdown' && item.ext !== 'md') return false
 
     return true
   })
@@ -612,7 +662,8 @@ const getItemIcon = (item) => {
     case 'py': return 'simple-icons:python'
     case 'sh': return 'simple-icons:gnubash'
     case 'vue': return 'simple-icons:vuedotjs'
-    case 'yml': return 'lucide:file-cog'
+    case 'yml': return 'simple-icons:yaml'
+    case 'md': return 'simple-icons:markdown'
     default: return 'lucide:file-code-2'
   }
 }

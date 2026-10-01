@@ -1,35 +1,41 @@
 <!-- components/desktop/Taskbar.vue -->
 <template>
-  <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50">
+  <div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-[100] max-w-full px-2">
+    <!-- macOS Translucent Dock Container -->
     <div
       ref="dockRef"
-      class="flex items-end gap-1 px-3 pb-2 pt-2.5 bg-slate-900/40 backdrop-blur-2xl border border-white/15 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+      class="flex items-end gap-1 px-3 pb-2 pt-2.5 bg-slate-900/50 backdrop-blur-3xl backdrop-saturate-180 border border-white/20 ring-1 ring-white/10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.6)] transform-gpu"
+      style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
       @mousemove="handleMouseMove"
       @mouseleave="handleMouseLeave"
     >
+      <!-- Application Windows Dock Buttons -->
       <button
         v-for="(win, index) in windows"
         :key="win.id"
         :ref="(el) => (iconRefs[index] = el)"
         @click="handleDockClick(win)"
-        class="group relative flex flex-col items-center justify-end focus:outline-none origin-bottom transition-all duration-75 ease-out"
+        @contextmenu.prevent="handleContextMenu($event, win)"
+        class="group relative flex flex-col items-center justify-end focus:outline-none origin-bottom transition-all duration-75 ease-out select-none cursor-pointer"
         :class="{ 'animate-bounce-dock': bouncingId === win.id }"
         :style="getIconStyle(index)"
       >
         <!-- Dynamic Tooltip -->
-        <div class="absolute -top-11 px-3 py-1 bg-slate-900/90 border border-white/15 text-white text-[12px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none shadow-xl backdrop-blur-md whitespace-nowrap z-50">
+        <div
+          class="absolute -top-11 px-3 py-1 bg-slate-900/90 border border-white/20 text-white text-[11px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none shadow-2xl backdrop-blur-xl whitespace-nowrap z-50"
+        >
           {{ win.title }}
         </div>
 
-        <!-- Dock Icon Tile -->
+        <!-- Icon Glass Tile -->
         <div
-          class="w-12 h-12 rounded-2xl bg-gradient-to-b from-white/15 to-white/5 border border-white/20 flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-200 group-hover:border-white/40 group-active:scale-95"
-          :class="activeWindowId === win.id ? 'ring-2 ring-white/30 shadow-sky-500/20' : ''"
+          class="w-12 h-12 rounded-2xl bg-gradient-to-b from-white/20 via-white/10 to-white/5 border border-white/20 flex items-center justify-center shadow-xl backdrop-blur-md transition-all duration-200 group-hover:border-white/40 group-active:scale-95"
+          :class="activeWindowId === win.id ? 'ring-2 ring-white/40 shadow-sky-500/30' : ''"
         >
           <Icon :name="win.icon" class="w-7 h-7 text-white drop-shadow-md" />
         </div>
 
-        <!-- Active / Running Indicator -->
+        <!-- Active / Running Dot Indicator -->
         <div class="h-1.5 flex items-center justify-center mt-1">
           <span
             v-if="win.isOpen"
@@ -42,22 +48,115 @@
           />
         </div>
       </button>
+
+      <!-- Dock Divider Line -->
+      <div class="w-px h-9 bg-white/20 my-auto mx-1 shrink-0" />
+
+      <!-- System Items (Downloads, Trash) — Unified with identical magnification curve -->
+      <button
+        v-for="(sys, sIdx) in systemItems"
+        :key="sys.id"
+        :ref="(el) => (iconRefs[windows.length + sIdx] = el)"
+        @click="sys.action()"
+        class="group relative flex flex-col items-center justify-end focus:outline-none origin-bottom transition-all duration-75 ease-out select-none cursor-pointer"
+        :style="getIconStyle(windows.length + sIdx)"
+      >
+        <!-- Dynamic Tooltip -->
+        <div
+          class="absolute -top-11 px-3 py-1 bg-slate-900/90 border border-white/20 text-white text-[11px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none shadow-2xl backdrop-blur-xl whitespace-nowrap z-50"
+        >
+          {{ sys.title }}
+        </div>
+
+        <!-- System Icon Tile -->
+        <div
+          class="w-12 h-12 rounded-2xl bg-gradient-to-b border flex items-center justify-center shadow-xl backdrop-blur-md transition-all duration-200 group-hover:border-white/40 group-active:scale-95"
+          :class="sys.bgClass"
+        >
+          <Icon :name="sys.icon" :class="sys.iconColor" class="w-6 h-6" />
+        </div>
+
+        <!-- Spacing matching active dot row -->
+        <div class="h-1.5 mt-1" />
+      </button>
+    </div>
+
+    <!-- macOS Right-Click Context Menu -->
+    <div
+      v-if="contextMenu.visible"
+      class="fixed z-[200] w-44 p-1.5 bg-slate-900/90 backdrop-blur-2xl border border-white/20 ring-1 ring-white/10 rounded-xl shadow-2xl text-slate-100 text-[12px] space-y-0.5 transform-gpu"
+      :style="{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }"
+    >
+      <button
+        @click="handleContextAction('open')"
+        class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-sky-600 hover:text-white transition-colors flex items-center justify-between"
+      >
+        <span>{{ contextMenu.win?.isOpen ? 'Show Window' : 'Open' }}</span>
+      </button>
+      <button
+        v-if="contextMenu.win?.isOpen"
+        @click="handleContextAction('minimize')"
+        class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-sky-600 hover:text-white transition-colors"
+      >
+        <span>{{ contextMenu.win?.isMinimized ? 'Unminimize' : 'Minimize' }}</span>
+      </button>
+      <div v-if="contextMenu.win?.isOpen" class="my-1 border-t border-white/10 mx-1" />
+      <button
+        v-if="contextMenu.win?.isOpen"
+        @click="handleContextAction('quit')"
+        class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-rose-600 hover:text-white text-rose-300 transition-colors"
+      >
+        <span>Quit</span>
+      </button>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useWindowManager } from '~/composables/useWindowManager'
 
-const { windows, activeWindowId, openWindow, toggleMinimize, focusWindow } = useWindowManager()
+const { windows, activeWindowId, openWindow, closeWindow, toggleMinimize, focusWindow } = useWindowManager()
 
-const dockRef = ref(null)
-const iconRefs = ref([])
-const mouseX = ref(null)
-const bouncingId = ref(null)
+const dockRef = ref<HTMLElement | null>(null)
+const iconRefs = ref<any[]>([])
+const mouseX = ref<number | null>(null)
+const bouncingId = ref<string | null>(null)
 
-const handleMouseMove = (e) => {
+// System Items definition integrated into dock indexing
+const systemItems = [
+  {
+    id: 'downloads',
+    title: 'Downloads',
+    icon: 'lucide:download',
+    iconColor: 'text-emerald-300',
+    bgClass: 'from-emerald-500/20 to-emerald-700/10 border-emerald-400/30',
+    action: () => openWindow('projects')
+  },
+  {
+    id: 'trash',
+    title: 'Trash',
+    icon: 'lucide:trash-2',
+    iconColor: 'text-slate-300',
+    bgClass: 'from-white/15 to-white/5 border-white/20',
+    action: () => openWindow('projects')
+  }
+]
+
+// Right-Click Context Menu State
+const contextMenu = ref<{
+  visible: boolean
+  x: number
+  y: number
+  win: any | null
+}>({
+  visible: false,
+  x: 0,
+  y: 0,
+  win: null,
+})
+
+const handleMouseMove = (e: MouseEvent) => {
   mouseX.value = e.clientX
 }
 
@@ -65,11 +164,11 @@ const handleMouseLeave = () => {
   mouseX.value = null
 }
 
-const getIconStyle = (index) => {
+const getIconStyle = (index: number) => {
   const defaultStyle = {
     transform: 'scale(1) translateY(0px)',
-    margin: '0 4px',
-    zIndex: 1
+    margin: '0 3px',
+    zIndex: 1,
   }
 
   if (mouseX.value === null || !iconRefs.value[index]) {
@@ -77,31 +176,32 @@ const getIconStyle = (index) => {
   }
 
   const el = iconRefs.value[index]
+  if (!el || typeof el.getBoundingClientRect !== 'function') return defaultStyle
+
   const rect = el.getBoundingClientRect()
   const iconCenterX = rect.left + rect.width / 2
 
   const distance = Math.abs(mouseX.value - iconCenterX)
-  const maxDistance = 160 // Mouse distance sensitivity radius
+  const maxDistance = 150 // Distance influence radius
 
   if (distance > maxDistance) {
     return defaultStyle
   }
 
-  // Scale factor (1.0 to 1.45)
+  // Cosine curve scale interpolation (1.0 to 1.45) across all items
   const scale = 1 + 0.45 * Math.cos((distance / maxDistance) * (Math.PI / 2))
-  const translateY = -12 * ((scale - 1) / 0.45)
-
-  // Dynamic horizontal margin pushes adjacent items away dynamically as scale increases
-  const dynamicMargin = 4 + (scale - 1) * 14
+  const translateY = -14 * ((scale - 1) / 0.45)
+  const dynamicMargin = 3 + (scale - 1) * 12
 
   return {
     transform: `scale(${scale}) translateY(${translateY}px)`,
     margin: `0 ${dynamicMargin}px`,
-    zIndex: Math.round(scale * 10) // Higher scale gets higher z-index stacking
+    zIndex: Math.round(scale * 10),
   }
 }
 
-const handleDockClick = (win) => {
+const handleDockClick = (win: any) => {
+  closeContextMenu()
   if (!win.isOpen) {
     triggerBounce(win.id)
     openWindow(win.id)
@@ -114,12 +214,61 @@ const handleDockClick = (win) => {
   }
 }
 
-const triggerBounce = (id) => {
+const triggerBounce = (id: string) => {
   bouncingId.value = id
   setTimeout(() => {
     bouncingId.value = null
   }, 800)
 }
+
+const handleContextMenu = (e: MouseEvent, win: any) => {
+  const x = Math.min(e.clientX, window.innerWidth - 180)
+  const y = e.clientY - 110
+
+  contextMenu.value = {
+    visible: true,
+    x,
+    y,
+    win,
+  }
+}
+
+const handleContextAction = (action: 'open' | 'minimize' | 'quit') => {
+  if (!contextMenu.value.win) return
+
+  const win = contextMenu.value.win
+  if (action === 'open') {
+    openWindow(win.id)
+  } else if (action === 'minimize') {
+    toggleMinimize(win.id)
+  } else if (action === 'quit') {
+    closeWindow(win.id)
+  }
+
+  closeContextMenu()
+}
+
+const closeContextMenu = () => {
+  contextMenu.value.visible = false
+}
+
+const handleOutsideClick = (e: MouseEvent) => {
+  if (contextMenu.value.visible) {
+    closeContextMenu()
+  }
+}
+
+onMounted(() => {
+  if (import.meta.client) {
+    window.addEventListener('click', handleOutsideClick)
+  }
+})
+
+onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('click', handleOutsideClick)
+  }
+})
 </script>
 
 <style scoped>
@@ -128,13 +277,13 @@ const triggerBounce = (id) => {
     transform: translateY(0) scale(1);
   }
   30% {
-    transform: translateY(-18px) scale(1.08);
+    transform: translateY(-20px) scale(1.08);
   }
   50% {
     transform: translateY(0) scale(0.95);
   }
   75% {
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-8px) scale(1.02);
   }
 }
 
