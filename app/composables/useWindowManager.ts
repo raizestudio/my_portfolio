@@ -19,7 +19,7 @@ export const useWindowManager = () => {
     },
     {
       id: "projects",
-      titleKey: "apps.projects",
+      titleKey: "apps.projects.title",
       icon: "lucide:folder",
       component: "ProjectsApp",
       isOpen: false,

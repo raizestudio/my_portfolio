@@ -13,7 +13,24 @@
   },
   "apps": {
     "about": "cv.pdf",
-    "projects": "Projects",
+    "projects": {
+      "title": "Projects",
+      "gridView": "Grid View",
+      "listView": "List View",
+      "search": "Search",
+      "favorites": "Favorites",
+      "allProjects": "All Projects",
+      "folders": "Folders",
+      "web": "Web",
+      "python": "Python",
+      "scripts": "Scripts",
+      "noSearchMatch": "No results found for your search in",
+      "description": "Description",
+      "stack": "Stack",
+      "openWebsite": "Open Website",
+      "quickView": "Quick View",
+      "items": "items"
+    },
     "terminal": "Terminal",
     "contact": "Contact"
   }
