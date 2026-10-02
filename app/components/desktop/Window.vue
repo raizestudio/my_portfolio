@@ -4,15 +4,15 @@
     v-show="win.isOpen && !win.isMinimized"
     class="absolute flex flex-col bg-gray-50/50 dark:bg-slate-900/95 backdrop-blur-2xl border rounded-xl shadow-2xl overflow-hidden transition-shadow duration-200"
     :class="[
-      win.isMaximized ? 'rounded-none border-none shadow-none' : 'border-slate-700/50',
+      isFullScreen ? 'rounded-none border-none shadow-none' : 'border-slate-700/50',
       isActive ? 'shadow-black/60 ring-1 ring-white/10' : 'shadow-black/30 opacity-95',
       isDragging || isResizing ? 'select-none' : 'transition-[top,left,width,height] duration-200 ease-out'
     ]"
     :style="{
-      top: win.isMaximized ? '28px' : `${win.position.y}px`,
-      left: win.isMaximized ? '0px' : `${win.position.x}px`,
-      width: win.isMaximized ? '100vw' : `${win.size.width}px`,
-      height: win.isMaximized ? 'calc(100vh - 28px)' : `${win.size.height}px`,
+      top: isFullScreen ? '28px' : `${win.position.y}px`,
+      left: isFullScreen ? '0px' : `${win.position.x}px`,
+      width: isFullScreen ? '100vw' : `${win.size.width}px`,
+      height: isFullScreen ? 'calc(100dvh - 28px)' : `${win.size.height}px`,
       zIndex: win.zIndex,
       willChange: isDragging || isResizing ? 'top, left, width, height' : 'auto'
     }"
@@ -20,8 +20,11 @@
   >
     <!-- macOS Title Bar (Drag Handle) -->
     <div
-      class="h-10 flex items-center px-4 cursor-move relative border-b border-white/5 transition-colors duration-200 select-none shrink-0"
-      :class="isActive ? 'bg-gray-50/60 dark:bg-slate-900/60' : 'bg-slate-900/80'"
+      class="h-10 flex items-center px-4 relative border-b border-white/5 transition-colors duration-200 select-none shrink-0"
+      :class="[
+        isActive ? 'bg-gray-50/60 dark:bg-slate-900/60' : 'bg-slate-900/80',
+        isFullScreen ? 'cursor-default' : 'cursor-move'
+      ]"
       @pointerdown="startDrag"
       @dblclick="toggleMaximize(win.id)"
     >
@@ -68,8 +71,8 @@
       <slot />
     </div>
 
-    <!-- Resize Handles -->
-    <template v-if="!win.isMaximized">
+    <!-- Resize Handles (Disabled when Maximized or on Mobile) -->
+    <template v-if="!isFullScreen">
       <div class="absolute top-0 left-0 right-0 h-1.5 cursor-ns-resize" @pointerdown.stop="startResize($event, 'n')" />
       <div class="absolute bottom-0 left-0 right-0 h-1.5 cursor-ns-resize" @pointerdown.stop="startResize($event, 's')" />
       <div class="absolute top-0 bottom-0 left-0 w-1.5 cursor-ew-resize" @pointerdown.stop="startResize($event, 'w')" />
@@ -83,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useWindowManager } from '~/composables/useWindowManager'
 
 const props = defineProps({
@@ -97,8 +100,17 @@ const { activeWindowId, focusWindow, closeWindow, toggleMinimize, toggleMaximize
 
 const isActive = computed(() => activeWindowId.value === props.win.id)
 
+const isMobile = ref(false)
 const isDragging = ref(false)
 const isResizing = ref(false)
+
+const isFullScreen = computed(() => isMobile.value || props.win.isMaximized)
+
+const checkMobile = () => {
+  if (import.meta.client) {
+    isMobile.value = window.innerWidth < 640
+  }
+}
 
 const MIN_WIDTH = 320
 const MIN_HEIGHT = 200
@@ -107,8 +119,8 @@ let activeAnimationFrame = null
 
 // Window Dragging Logic
 const startDrag = (event) => {
-  // Ignore right clicks, maximized windows, or clicks on traffic light buttons
-  if (props.win.isMaximized || event.button !== 0 || event.target.closest('button')) return
+  // Ignore on mobile, maximized windows, right clicks, or clicks on traffic light buttons
+  if (isFullScreen.value || event.button !== 0 || event.target.closest('button')) return
 
   focusWindow(props.win.id)
   isDragging.value = true
@@ -150,7 +162,7 @@ const startDrag = (event) => {
 
 // Window Resizing Logic
 const startResize = (event, direction) => {
-  if (event.button !== 0) return
+  if (isFullScreen.value || event.button !== 0) return
 
   focusWindow(props.win.id)
   isResizing.value = true
@@ -214,7 +226,17 @@ const startResize = (event, direction) => {
   window.addEventListener('pointerup', onPointerUp)
 }
 
+onMounted(() => {
+  if (import.meta.client) {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  }
+})
+
 onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('resize', checkMobile)
+  }
   if (activeAnimationFrame) cancelAnimationFrame(activeAnimationFrame)
 })
 </script>

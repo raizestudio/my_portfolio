@@ -20,6 +20,9 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'fr',
+      },
       title: "Joel PINHO | Portfolio",
       meta: [
         {

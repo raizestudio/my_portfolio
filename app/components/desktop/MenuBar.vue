@@ -1,7 +1,7 @@
 <!-- components/desktop/MenuBar.vue -->
 <template>
   <div
-    class="menu-bar-container isolate fixed top-0 left-0 right-0 h-7 flex items-center justify-between px-2 z-100 text-white text-[13px] font-medium select-none"
+    class="menu-bar-container fixed top-0 left-0 right-0 h-7 flex items-center justify-between px-2 z-[100]   text-slate-800 dark:text-white text-[13px] font-medium select-none transition-colors duration-200 transform-gpu"
   >
     <!-- Left: Apple Menu & Dynamic Active App Menus -->
     <div class="flex items-center space-x-1 min-w-0 shrink">
@@ -9,8 +9,8 @@
       <div class="relative shrink-0">
         <button
           @click.stop="toggleMenu('apple')"
-          class="px-2 py-1 rounded-full transition-colors flex items-center justify-center focus:outline-none"
-          :class="activeMenu === 'apple' ? 'bg-gray-700' : ''"
+          class="px-2 py-1 rounded-full transition-colors flex items-center justify-center focus:outline-none cursor-pointer"
+          :class="activeMenu === 'apple' ? 'bg-black/10 dark:bg-white/15' : 'hover:bg-black/5 dark:hover:bg-white/10'"
         >
           <Icon name="simple-icons:apple" class="w-3.5 h-3.5 fill-current" />
         </button>
@@ -18,32 +18,33 @@
         <!-- Apple Dropdown -->
         <div
           v-if="activeMenu === 'apple'"
-          class="absolute left-0 top-8 w-56 p-1.5  bg-slate-900/50 backdrop-blur-xs backdrop-saturate-180 border border-white/20 ring-1 ring-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-slate-100 z-[110] text-[12px] space-y-0.5 transform-gpu"
+          class="absolute left-0 top-8 w-56 p-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl backdrop-saturate-180 border border-black/10 dark:border-white/20 ring-1 ring-black/5 dark:ring-white/10 rounded-xl shadow-2xl text-slate-800 dark:text-slate-100 z-[110] text-[12px] space-y-0.5 transform-gpu transition-colors duration-200"
+          style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
         >
           <button
             @click="openWindow('about')"
-            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors flex items-center justify-between group/item"
+            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors flex items-center justify-between group/item cursor-pointer"
           >
             <span>{{ aboutPortfolioText }}</span>
             <span class="text-[10px] opacity-50 group-hover/item:opacity-80 font-mono">⌘I</span>
           </button>
 
-          <div class="my-1 border-t border-white/10 mx-1" />
+          <div class="my-1 border-t border-gray-200 dark:border-white/10 mx-1" />
 
           <a
             href="https://github.com/raizestudio"
             target="_blank"
-            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors flex items-center justify-between group/item"
+            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors flex items-center justify-between group/item cursor-pointer"
           >
             <span>{{ githubProfileText }}</span>
             <Icon name="lucide:external-link" class="w-3 h-3 opacity-50 group-hover/item:opacity-80" />
           </a>
 
-          <div class="my-1 border-t border-white/10 mx-1" />
+          <div class="my-1 border-t border-gray-200 dark:border-white/10 mx-1" />
 
           <button
             @click="reloadPage"
-            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors"
+            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors cursor-pointer"
           >
             {{ restartDesktopText }}
           </button>
@@ -54,8 +55,8 @@
       <div class="relative min-w-0">
         <button
           @click.stop="toggleMenu('app')"
-          class="px-2 py-0.5 rounded font-bold transition-colors focus:outline-none truncate max-w-[120px] sm:max-w-none"
-          :class="activeMenu === 'app' ? 'bg-white/20' : 'hover:bg-white/10'"
+          class="px-2 py-0.5 rounded font-bold transition-colors focus:outline-none truncate max-w-[120px] sm:max-w-none cursor-pointer"
+          :class="activeMenu === 'app' ? 'bg-black/10 dark:bg-white/20' : 'hover:bg-black/5 dark:hover:bg-white/10'"
         >
           {{ activeAppName }}
         </button>
@@ -63,20 +64,21 @@
         <!-- Active App Dropdown -->
         <div
           v-if="activeMenu === 'app' && activeWindow"
-          class="absolute left-0 top-7 w-48 bg-slate-900/90 backdrop-blur-2xl border border-white/15 rounded-lg shadow-2xl py-1 text-slate-200 z-50 text-[12px]"
+          class="absolute left-0 top-7 w-48 p-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl backdrop-saturate-180 border border-black/10 dark:border-white/15 rounded-xl shadow-2xl text-slate-800 dark:text-slate-200 z-50 text-[12px] space-y-0.5 transform-gpu transition-colors duration-200"
+          style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
         >
           <div
-            class="px-3 py-1 text-slate-400 font-semibold text-[11px] uppercase tracking-wider"
+            class="px-2.5 py-1 text-slate-500 dark:text-slate-400 font-semibold text-[11px] uppercase tracking-wider"
           >
             {{ activeWindow.title }}
           </div>
-          <div class="my-1 border-t border-white/10" />
+          <div class="my-1 border-t border-gray-200 dark:border-white/10 mx-1" />
           <button
             @click="closeWindow(activeWindow.id)"
-            class="w-full text-left px-3 py-1 hover:bg-rose-600 hover:text-white flex items-center justify-between text-rose-300"
+            class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-rose-600 hover:text-white flex items-center justify-between text-rose-600 dark:text-rose-300 transition-colors cursor-pointer"
           >
             <span>Quit {{ activeWindow.title }}</span>
-            <span class="text-[10px] opacity-60">⌘Q</span>
+            <span class="text-[10px] opacity-60 font-mono">⌘Q</span>
           </button>
         </div>
       </div>
@@ -85,7 +87,7 @@
       <button
         v-for="option in optionsText"
         :key="option.key"
-        class="hidden sm:inline-block px-2 py-0.5 rounded hover:bg-white/10 transition-colors focus:outline-none"
+        class="hidden sm:inline-block px-2 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors focus:outline-none cursor-pointer"
       >
         {{ option.text }}
       </button>
@@ -93,10 +95,10 @@
 
     <!-- Right: Status Icons, Control Center & Clock -->
     <div class="flex items-center space-x-1 shrink-0 ml-auto">
-      <div class="flex items-center space-x-1 text-white/90">
+      <div class="flex items-center space-x-1 text-slate-800/90 dark:text-white/90">
         <!-- Battery Capsule -->
         <div
-          class="px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer flex items-center gap-1 text-[11px]"
+          class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center gap-1 text-[11px]"
           :title="`${batteryLevel}% ${isCharging ? '(Charging)' : ''}`"
         >
           <span class="font-mono text-[11px] opacity-90 hidden sm:inline">{{ batteryLevel }}%</span>
@@ -132,30 +134,30 @@
                 rx="1.2"
                 :class="[
                   isCharging
-                    ? 'fill-emerald-400'
+                    ? 'fill-emerald-500 dark:fill-emerald-400'
                     : batteryLevel <= 20
                       ? 'fill-rose-500'
-                      : 'fill-white',
+                      : 'fill-slate-800 dark:fill-white',
                 ]"
               />
             </svg>
             <Icon
               v-if="isCharging"
               name="lucide:zap"
-              class="w-2.5 h-2.5 text-slate-950 fill-slate-950 absolute left-[7px] top-[1px]"
+              class="w-2.5 h-2.5 text-white dark:text-slate-950 fill-white dark:fill-slate-950 absolute left-[7px] top-[1px]"
             />
           </div>
         </div>
 
         <div
           @click.stop="toggleSpotlight"
-          class="px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer"
+          class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
           title="Spotlight Search (⌘ + Space)"
         >
           <Icon name="lucide:search" class="w-3.5 h-3.5" />
         </div>
 
-        <div class="px-1.5 py-0.5 rounded hover:bg-white/10 cursor-pointer hidden sm:block">
+        <div class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer hidden sm:block">
           <Icon name="lucide:wifi" class="w-4 h-4" />
         </div>
       </div>
@@ -164,8 +166,8 @@
       <div class="relative">
         <button
           @click.stop="toggleMenu('controlCenter')"
-          class="px-1.5 py-0.5 rounded transition-colors focus:outline-none flex items-center"
-          :class="activeMenu === 'controlCenter' ? 'bg-white/20' : 'hover:bg-white/10'"
+          class="px-1.5 py-0.5 rounded transition-colors focus:outline-none flex items-center cursor-pointer"
+          :class="activeMenu === 'controlCenter' ? 'bg-black/10 dark:bg-white/20' : 'hover:bg-black/5 dark:hover:bg-white/10'"
         >
           <Icon name="lucide:sliders-horizontal" class="w-3.5 h-3.5" />
         </button>
@@ -173,26 +175,27 @@
         <!-- Control Center Popover -->
         <div
           v-if="activeMenu === 'controlCenter'"
-          class="absolute right-0 top-7 w-64 bg-slate-900/90 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl p-3 text-slate-200 z-50 space-y-3"
+          class="absolute right-0 top-7 w-64 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl backdrop-saturate-180 border border-black/10 dark:border-white/15 ring-1 ring-black/5 dark:ring-white/10 rounded-2xl shadow-xl dark:shadow-2xl p-3 text-slate-800 dark:text-slate-200 z-50 space-y-3 transform-gpu transition-colors duration-200"
+          style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
         >
           <div class="grid grid-cols-2 gap-2">
-            <div class="bg-white/10 p-2 rounded-xl flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white">
+            <div class="bg-black/5 dark:bg-white/10 p-2 rounded-xl flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white shrink-0">
                 <Icon name="lucide:wifi" class="w-4 h-4" />
               </div>
-              <div class="text-[11px] leading-tight">
-                <div class="font-semibold text-white">Wi-Fi</div>
-                <div class="text-slate-400">Connected</div>
+              <div class="text-[11px] leading-tight min-w-0">
+                <div class="font-semibold text-slate-900 dark:text-white truncate">Wi-Fi</div>
+                <div class="text-slate-500 dark:text-slate-400 truncate">Connected</div>
               </div>
             </div>
 
-            <div class="bg-white/10 p-2 rounded-xl flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white">
+            <div class="bg-black/5 dark:bg-white/10 p-2 rounded-xl flex items-center space-x-2">
+              <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white shrink-0">
                 <Icon name="lucide:bluetooth" class="w-4 h-4" />
               </div>
-              <div class="text-[11px] leading-tight">
-                <div class="font-semibold text-white">Bluetooth</div>
-                <div class="text-slate-400">On</div>
+              <div class="text-[11px] leading-tight min-w-0">
+                <div class="font-semibold text-slate-900 dark:text-white truncate">Bluetooth</div>
+                <div class="text-slate-500 dark:text-slate-400 truncate">On</div>
               </div>
             </div>
           </div>
@@ -203,8 +206,8 @@
             <LocaleToggle />
           </div>
 
-          <div class="bg-white/10 p-2.5 rounded-xl space-y-1">
-            <div class="text-[11px] text-slate-300 font-medium flex justify-between">
+          <div class="bg-black/5 dark:bg-white/10 p-2.5 rounded-xl space-y-1">
+            <div class="text-[11px] text-slate-700 dark:text-slate-300 font-medium flex justify-between">
               <span>Display</span>
               <Icon name="lucide:sun" class="w-3.5 h-3.5" />
             </div>
@@ -213,12 +216,12 @@
               min="20"
               max="100"
               value="90"
-              class="w-full accent-sky-400 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer"
+              class="w-full accent-sky-500 dark:accent-sky-400 h-1 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer"
             />
           </div>
 
-          <div class="bg-white/10 p-2.5 rounded-xl space-y-1">
-            <div class="text-[11px] text-slate-300 font-medium flex justify-between">
+          <div class="bg-black/5 dark:bg-white/10 p-2.5 rounded-xl space-y-1">
+            <div class="text-[11px] text-slate-700 dark:text-slate-300 font-medium flex justify-between">
               <span>Sound</span>
               <Icon name="lucide:volume-2" class="w-3.5 h-3.5" />
             </div>
@@ -227,7 +230,7 @@
               min="0"
               max="100"
               value="70"
-              class="w-full accent-sky-400 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer"
+              class="w-full accent-sky-500 dark:accent-sky-400 h-1 bg-black/10 dark:bg-white/20 rounded-lg appearance-none cursor-pointer"
             />
           </div>
         </div>
@@ -235,7 +238,7 @@
 
       <!-- Clock Display -->
       <div
-        class="px-1.5 py-0.5 rounded hover:bg-white/10 cursor-default text-[12px] tabular-nums font-medium whitespace-nowrap flex items-center gap-1.5"
+        class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-default text-[12px] tabular-nums font-medium whitespace-nowrap flex items-center gap-1.5"
       >
         <span class="hidden sm:inline">{{ formattedDate }}</span>
         <span>{{ formattedTime }}</span>

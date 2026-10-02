@@ -87,6 +87,12 @@ export const useWindowManager = () => {
     if (win) {
       win.isOpen = true;
       win.isMinimized = false;
+
+      // Automatically maximize on small screens (<640px)
+      if (import.meta.client && window.innerWidth < 640) {
+        win.isMaximized = true;
+      }
+
       focusWindow(id);
     }
   };
