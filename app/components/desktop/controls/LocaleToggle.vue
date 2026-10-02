@@ -2,14 +2,14 @@
 <template>
   <button
     @click="toggleLocale"
-    class="bg-white/10 p-2 rounded-xl flex items-center space-x-2 text-left hover:bg-white/20 transition-colors focus:outline-none cursor-pointer w-full select-none"
+    class="bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 p-2 rounded-xl flex items-center space-x-2 text-left transition-colors focus:outline-none cursor-pointer w-full select-none"
   >
-    <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white">
+    <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white shrink-0">
       <Icon name="lucide:languages" class="w-4 h-4" />
     </div>
-    <div class="text-[11px] leading-tight">
-      <div class="font-semibold text-white">Language</div>
-      <div class="text-slate-400 font-mono">{{ currentLocale.toUpperCase() }}</div>
+    <div class="text-[11px] leading-tight min-w-0">
+      <div class="font-semibold text-slate-900 dark:text-white truncate">Language</div>
+      <div class="text-slate-500 dark:text-slate-400 font-mono truncate">{{ currentLocale.toUpperCase() }}</div>
     </div>
   </button>
 </template>

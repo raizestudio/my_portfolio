@@ -3,28 +3,28 @@
   <Transition name="spotlight-fade">
     <div
       v-if="isSpotlightOpen"
-      class="fixed inset-0 z-[200] flex justify-center pt-[15vh] px-4 bg-black/30 backdrop-blur-sm select-none"
+      class="fixed inset-0 z-[200] flex justify-center pt-[15vh] px-4 bg-black/20 dark:bg-black/40 backdrop-blur-xs select-none transition-colors duration-200"
       @pointerdown.self="closeSpotlight"
     >
       <div
-        class="w-full max-w-xl bg-slate-900/85 backdrop-blur-3xl border border-white/20 rounded-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col h-fit max-h-[480px] transition-all"
+        class="w-full max-w-xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-3xl border border-black/10 dark:border-white/20 rounded-2xl shadow-2xl dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col h-fit max-h-[480px] transition-all duration-200 transform-gpu"
         @pointerdown.stop
       >
         <!-- Search Bar Input Header -->
-        <div class="flex items-center px-4 py-3.5 border-b border-white/10 gap-3">
-          <Icon name="lucide:search" class="w-5 h-5 text-sky-400 shrink-0" />
+        <div class="flex items-center px-4 py-3.5 border-b border-gray-200 dark:border-white/10 gap-3">
+          <Icon name="lucide:search" class="w-5 h-5 text-sky-500 dark:text-sky-400 shrink-0" />
           <input
             ref="searchInputRef"
             v-model="query"
             type="text"
             placeholder="Spotlight Search (Apps, Projects, Actions...)"
-            class="w-full bg-transparent text-white placeholder-slate-400 text-base font-normal focus:outline-none"
+            class="w-full bg-transparent text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base font-normal focus:outline-none"
             @keydown.down.prevent="navigateDown"
             @keydown.up.prevent="navigateUp"
             @keydown.enter.prevent="executeSelection"
             @keydown.esc.prevent="closeSpotlight"
           />
-          <kbd class="text-[10px] font-mono text-slate-400 bg-white/10 px-1.5 py-0.5 rounded border border-white/10">ESC</kbd>
+          <kbd class="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-gray-200/80 dark:bg-white/10 px-1.5 py-0.5 rounded border border-gray-300 dark:border-white/10">ESC</kbd>
         </div>
 
         <!-- Search Results List -->
@@ -36,14 +36,16 @@
             @mouseenter="selectedIndex = index"
             class="flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-colors text-xs"
             :class="[
-              selectedIndex === index ? 'bg-sky-600/80 text-white shadow-md' : 'text-slate-200 hover:bg-white/5'
+              selectedIndex === index
+                ? 'bg-sky-600 text-white shadow-md dark:bg-sky-600/80'
+                : 'text-slate-700 dark:text-slate-200 hover:bg-gray-100 dark:hover:bg-white/5'
             ]"
           >
             <!-- Left Info -->
             <div class="flex items-center gap-3 min-w-0">
               <div
                 class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                :class="selectedIndex === index ? 'bg-white/20' : 'bg-slate-800 border border-white/10'"
+                :class="selectedIndex === index ? 'bg-white/20' : 'bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-white/10 text-slate-700 dark:text-slate-200'"
               >
                 <Icon :name="item.icon" class="w-4 h-4" />
               </div>
@@ -57,7 +59,9 @@
             <span
               class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded border shrink-0"
               :class="[
-                selectedIndex === index ? 'bg-white/20 border-white/30 text-white' : 'bg-slate-950/60 border-white/10 text-slate-400'
+                selectedIndex === index
+                  ? 'bg-white/20 border-white/30 text-white'
+                  : 'bg-gray-200/80 dark:bg-slate-950/60 border-gray-300 dark:border-white/10 text-slate-600 dark:text-slate-400'
               ]"
             >
               {{ item.category }}
@@ -66,16 +70,16 @@
         </div>
 
         <!-- Empty Results State -->
-        <div v-else-if="query.trim() !== ''" class="p-8 text-center text-slate-400 text-xs">
+        <div v-else-if="query.trim() !== ''" class="p-8 text-center text-slate-500 dark:text-slate-400 text-xs">
           <Icon name="lucide:search-x" class="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p>No results found for "<span class="text-white">{{ query }}</span>"</p>
+          <p>No results found for "<span class="text-slate-900 dark:text-white font-medium">{{ query }}</span>"</p>
         </div>
 
         <!-- Footer Shortcuts -->
-        <div class="px-4 py-2 bg-slate-950/60 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+        <div class="px-4 py-2 bg-gray-100/80 dark:bg-slate-950/60 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
           <div class="flex items-center gap-3">
-            <span><kbd class="text-[9px] bg-white/10 px-1 rounded">↑</kbd> <kbd class="text-[9px] bg-white/10 px-1 rounded">↓</kbd> Navigate</span>
-            <span><kbd class="text-[9px] bg-white/10 px-1 rounded">↵</kbd> Open</span>
+            <span><kbd class="text-[9px] bg-gray-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 px-1 rounded">↑</kbd> <kbd class="text-[9px] bg-gray-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 px-1 rounded">↓</kbd> Navigate</span>
+            <span><kbd class="text-[9px] bg-gray-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 px-1 rounded">↵</kbd> Open</span>
           </div>
           <span>Spotlight Search</span>
         </div>

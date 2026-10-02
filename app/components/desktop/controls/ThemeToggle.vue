@@ -2,10 +2,10 @@
 <template>
   <button
     @click="toggleTheme"
-    class="bg-white/10 p-2 rounded-xl flex items-center space-x-2 text-left hover:bg-white/20 transition-colors focus:outline-none cursor-pointer w-full select-none"
+    class="bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15 p-2 rounded-xl flex items-center space-x-2 text-left transition-colors focus:outline-none cursor-pointer w-full select-none"
   >
     <div
-      class="w-7 h-7 rounded-full flex items-center justify-center text-white transition-colors"
+      class="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 transition-colors"
       :class="theme === 'dark' ? 'bg-indigo-600' : 'bg-amber-500'"
     >
       <Icon
@@ -13,9 +13,9 @@
         class="w-4 h-4"
       />
     </div>
-    <div class="text-[11px] leading-tight">
-      <div class="font-semibold text-white">Theme</div>
-      <div class="text-slate-400 capitalize">{{ theme }}</div>
+    <div class="text-[11px] leading-tight min-w-0">
+      <div class="font-semibold text-slate-900 dark:text-white truncate">Theme</div>
+      <div class="text-slate-500 dark:text-slate-400 capitalize truncate">{{ theme }}</div>
     </div>
   </button>
 </template>

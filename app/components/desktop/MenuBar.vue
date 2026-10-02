@@ -1,7 +1,7 @@
 <!-- components/desktop/MenuBar.vue -->
 <template>
   <div
-    class="menu-bar-container fixed top-0 left-0 right-0 h-7 flex items-center justify-between px-2 z-[100]   text-slate-800 dark:text-white text-[13px] font-medium select-none transition-colors duration-200 transform-gpu"
+    class="menu-bar-container fixed top-0 left-0 right-0 h-7 flex items-center justify-between px-2 z-[100] text-slate-800 dark:text-white text-[13px] font-medium select-none transition-colors duration-200 transform-gpu bg-transparent border-none"
   >
     <!-- Left: Apple Menu & Dynamic Active App Menus -->
     <div class="flex items-center space-x-1 min-w-0 shrink">
@@ -67,9 +67,7 @@
           class="absolute left-0 top-7 w-48 p-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl backdrop-saturate-180 border border-black/10 dark:border-white/15 rounded-xl shadow-2xl text-slate-800 dark:text-slate-200 z-50 text-[12px] space-y-0.5 transform-gpu transition-colors duration-200"
           style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
         >
-          <div
-            class="px-2.5 py-1 text-slate-500 dark:text-slate-400 font-semibold text-[11px] uppercase tracking-wider"
-          >
+          <div class="px-2.5 py-1 text-slate-500 dark:text-slate-400 font-semibold text-[11px] uppercase tracking-wider">
             {{ activeWindow.title }}
           </div>
           <div class="my-1 border-t border-gray-200 dark:border-white/10 mx-1" />
@@ -98,18 +96,21 @@
       <div class="flex items-center space-x-1 text-slate-800/90 dark:text-white/90">
         <!-- Battery Capsule -->
         <div
+          @click="toggleBatteryCharging"
           class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer flex items-center gap-1 text-[11px]"
-          :title="`${batteryLevel}% ${isCharging ? '(Charging)' : ''}`"
+          :title="`${batteryLevel}% ${isCharging ? '(Charging)' : '(Discharging)'}`"
         >
           <span class="font-mono text-[11px] opacity-90 hidden sm:inline">{{ batteryLevel }}%</span>
 
-          <div class="relative flex items-center">
+          <!-- Battery Icon with Centered Zap Overlay -->
+          <div class="relative w-[22px] h-[11px] flex items-center justify-center">
             <svg
               width="22"
               height="11"
               viewBox="0 0 22 11"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              class="absolute inset-0"
             >
               <rect
                 x="0.75"
@@ -141,14 +142,21 @@
                 ]"
               />
             </svg>
-            <Icon
+
+            <!-- Centered Lightning Bolt Overlay -->
+            <div
               v-if="isCharging"
-              name="lucide:zap"
-              class="w-2.5 h-2.5 text-white dark:text-slate-950 fill-white dark:fill-slate-950 absolute left-[7px] top-[1px]"
-            />
+              class="absolute inset-0 flex items-center justify-center -translate-x-[1px] pointer-events-none"
+            >
+              <Icon
+                name="lucide:zap"
+                class="w-2.5 h-2.5 text-slate-900 dark:text-slate-950 fill-slate-900 dark:fill-slate-950 drop-shadow-[0_0_2px_rgba(255,255,255,0.8)]"
+              />
+            </div>
           </div>
         </div>
 
+        <!-- Spotlight Trigger -->
         <div
           @click.stop="toggleSpotlight"
           class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer"
@@ -157,8 +165,16 @@
           <Icon name="lucide:search" class="w-3.5 h-3.5" />
         </div>
 
-        <div class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer hidden sm:block">
-          <Icon name="lucide:wifi" class="w-4 h-4" />
+        <!-- Network Wi-Fi Status Icon -->
+        <div
+          class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer hidden sm:flex items-center"
+          :title="isOnline ? 'Wi-Fi: Connected' : 'Wi-Fi: Disconnected'"
+        >
+          <Icon
+            :name="isOnline ? 'lucide:wifi' : 'lucide:wifi-off'"
+            class="w-4 h-4"
+            :class="{ 'text-rose-500 dark:text-rose-400': !isOnline }"
+          />
         </div>
       </div>
 
@@ -179,16 +195,23 @@
           style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
         >
           <div class="grid grid-cols-2 gap-2">
+            <!-- Dynamic Wi-Fi Card -->
             <div class="bg-black/5 dark:bg-white/10 p-2 rounded-xl flex items-center space-x-2">
-              <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white shrink-0">
-                <Icon name="lucide:wifi" class="w-4 h-4" />
+              <div
+                class="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 transition-colors"
+                :class="isOnline ? 'bg-sky-500' : 'bg-slate-400 dark:bg-slate-600'"
+              >
+                <Icon :name="isOnline ? 'lucide:wifi' : 'lucide:wifi-off'" class="w-4 h-4" />
               </div>
               <div class="text-[11px] leading-tight min-w-0">
                 <div class="font-semibold text-slate-900 dark:text-white truncate">Wi-Fi</div>
-                <div class="text-slate-500 dark:text-slate-400 truncate">Connected</div>
+                <div class="text-slate-500 dark:text-slate-400 truncate">
+                  {{ isOnline ? 'Connected' : 'Disconnected' }}
+                </div>
               </div>
             </div>
 
+            <!-- Bluetooth Card -->
             <div class="bg-black/5 dark:bg-white/10 p-2 rounded-xl flex items-center space-x-2">
               <div class="w-7 h-7 rounded-full bg-sky-500 flex items-center justify-center text-white shrink-0">
                 <Icon name="lucide:bluetooth" class="w-4 h-4" />
@@ -200,7 +223,7 @@
             </div>
           </div>
 
-          <!-- Isolated Controls -->
+          <!-- Isolated Theme & Locale Controls -->
           <div class="grid grid-cols-2 gap-2">
             <ThemeToggle />
             <LocaleToggle />
@@ -236,134 +259,178 @@
         </div>
       </div>
 
-      <!-- Clock Display -->
-      <div
-        class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-default text-[12px] tabular-nums font-medium whitespace-nowrap flex items-center gap-1.5"
-      >
-        <span class="hidden sm:inline">{{ formattedDate }}</span>
-        <span>{{ formattedTime }}</span>
+      <!-- Clock Display & Notification Center Toggle -->
+      <div class="relative">
+        <button
+          @click.stop="toggleMenu('notificationCenter')"
+          class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer text-[12px] tabular-nums font-medium whitespace-nowrap flex items-center gap-1.5 focus:outline-none"
+          :class="activeMenu === 'notificationCenter' ? 'bg-black/10 dark:bg-white/20' : ''"
+        >
+          <span class="hidden sm:inline">{{ formattedDate }}</span>
+          <span>{{ formattedTime }}</span>
+        </button>
+
+        <!-- Separate NotificationCenter Component -->
+        <NotificationCenter
+          :is-open="activeMenu === 'notificationCenter'"
+          @close="closeMenus"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue"
-import { useWindowManager } from "~/composables/useWindowManager"
-import ThemeToggle from "~/components/desktop/controls/ThemeToggle.vue"
-import LocaleToggle from "~/components/desktop/controls/LocaleToggle.vue"
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useWindowManager } from "~/composables/useWindowManager";
+import ThemeToggle from "~/components/desktop/controls/ThemeToggle.vue";
+import LocaleToggle from "~/components/desktop/controls/LocaleToggle.vue";
+import NotificationCenter from "~/components/desktop/NotificationCenter.vue";
 
-const { activeWindow, openWindow, closeWindow, toggleSpotlight } = useWindowManager()
-const { locale, t } = useI18n()
+const { activeWindow, openWindow, closeWindow, toggleSpotlight } = useWindowManager();
+const { locale, t } = useI18n();
 
 // Reactive computed i18n strings
-const aboutPortfolioText = computed(() => t("menuBar.aboutPortfolio"))
-const githubProfileText = computed(() => t("menuBar.githubProfile"))
-const restartDesktopText = computed(() => t("menuBar.restartDesktop"))
+const aboutPortfolioText = computed(() => t("menuBar.aboutPortfolio"));
+const githubProfileText = computed(() => t("menuBar.githubProfile"));
+const restartDesktopText = computed(() => t("menuBar.restartDesktop"));
 const optionsText = computed(() => [
   { text: t("menuBar.options.file"), key: "file" },
   { text: t("menuBar.options.edit"), key: "edit" },
   { text: t("menuBar.options.view"), key: "view" },
-])
+]);
 
-const activeMenu = ref<string | null>(null)
+const activeMenu = ref<string | null>(null);
 
 const activeAppName = computed(() => {
-  return activeWindow.value ? activeWindow.value.title : "Finder"
-})
+  return activeWindow.value ? activeWindow.value.title : "Finder";
+});
 
 const toggleMenu = (menuName: string) => {
-  activeMenu.value = activeMenu.value === menuName ? null : menuName
-}
+  activeMenu.value = activeMenu.value === menuName ? null : menuName;
+};
 
 const closeMenus = () => {
-  activeMenu.value = null
-}
+  activeMenu.value = null;
+};
 
 const handleOutsideClick = (e: MouseEvent) => {
-  const target = e.target as HTMLElement
+  const target = e.target as HTMLElement;
   if (activeMenu.value && !target.closest(".menu-bar-container")) {
-    closeMenus()
+    closeMenus();
   }
-}
+};
 
 const reloadPage = () => {
   if (import.meta.client) {
-    window.location.reload()
+    window.location.reload();
   }
-}
+};
+
+// Network Online/Offline State
+const isOnline = ref(true);
+
+const handleOnline = () => { isOnline.value = true; };
+const handleOffline = () => { isOnline.value = false; };
 
 // macOS Clock & Battery Logic
-const formattedDate = ref("")
-const formattedTime = ref("")
-let timer: ReturnType<typeof setInterval>
+const formattedDate = ref("");
+const formattedTime = ref("");
+let timer: ReturnType<typeof setInterval>;
 
-const batteryLevel = ref(100)
-const isCharging = ref(false)
-let batteryObj: any = null
+const batteryLevel = ref(88);
+const isCharging = ref(false);
+let batteryObj: any = null;
 
 const updateBatteryStatus = (battery: any) => {
   if (battery && typeof battery.level === "number" && !isNaN(battery.level)) {
-    batteryLevel.value = Math.round(battery.level * 100)
-    isCharging.value = Boolean(battery.charging)
+    const realLevel = Math.round(battery.level * 100);
+    if (realLevel < 100 || battery.charging === false) {
+      batteryLevel.value = realLevel;
+      isCharging.value = Boolean(battery.charging);
+      return;
+    }
   }
-}
+  batteryLevel.value = 88;
+  isCharging.value = false;
+};
 
 const handleBatteryChange = () => {
   if (batteryObj) {
-    updateBatteryStatus(batteryObj)
+    updateBatteryStatus(batteryObj);
   }
-}
+};
+
+const toggleBatteryCharging = () => {
+  isCharging.value = !isCharging.value;
+  if (isCharging.value) {
+    batteryLevel.value = Math.min(100, batteryLevel.value + 5);
+  } else {
+    batteryLevel.value = Math.max(15, batteryLevel.value - 3);
+  }
+};
 
 const updateTime = () => {
-  const now = new Date()
+  const now = new Date();
   formattedDate.value = now.toLocaleDateString(locale.value, {
     weekday: "short",
     month: "short",
     day: "numeric",
-  })
+  });
   formattedTime.value = now.toLocaleTimeString(locale.value, {
     hour: "numeric",
     minute: "2-digit",
     second: "2-digit",
-  })
-}
+  });
+};
 
 onMounted(async () => {
-  updateTime()
-  timer = setInterval(updateTime, 1000)
+  updateTime();
+  timer = setInterval(updateTime, 1000);
 
   if (import.meta.client) {
-    window.addEventListener("click", handleOutsideClick)
+    window.addEventListener("click", handleOutsideClick);
 
-    if ("getBattery" in navigator && typeof (navigator as any).getBattery === "function") {
+    isOnline.value = navigator.onLine;
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    if (
+      "getBattery" in navigator &&
+      typeof (navigator as any).getBattery === "function"
+    ) {
       try {
-        batteryObj = await (navigator as any).getBattery()
+        batteryObj = await (navigator as any).getBattery();
         if (batteryObj) {
-          updateBatteryStatus(batteryObj)
+          updateBatteryStatus(batteryObj);
 
           if (typeof batteryObj.addEventListener === "function") {
-            batteryObj.addEventListener("levelchange", handleBatteryChange)
-            batteryObj.addEventListener("chargingchange", handleBatteryChange)
+            batteryObj.addEventListener("levelchange", handleBatteryChange);
+            batteryObj.addEventListener("chargingchange", handleBatteryChange);
           }
         }
       } catch (e) {
-        console.warn("Battery status API restricted or unavailable.")
+        console.warn("Battery status API restricted or unavailable.");
       }
     }
   }
-})
+});
 
 onUnmounted(() => {
-  if (timer) clearInterval(timer)
+  if (timer) clearInterval(timer);
 
   if (import.meta.client) {
-    window.removeEventListener("click", handleOutsideClick)
+    window.removeEventListener("click", handleOutsideClick);
+    window.removeEventListener("online", handleOnline);
+    window.removeEventListener("offline", handleOffline);
 
-    if (batteryObj && typeof batteryObj.removeEventListener === "function") {
-      batteryObj.removeEventListener("levelchange", handleBatteryChange)
-      batteryObj.removeEventListener("chargingchange", handleBatteryChange)
+    if (
+      batteryObj &&
+      typeof batteryObj.removeEventListener === "function"
+    ) {
+      batteryObj.removeEventListener("levelchange", handleBatteryChange);
+      batteryObj.removeEventListener("chargingchange", handleBatteryChange);
     }
   }
-})
+});
 </script>
