@@ -1,7 +1,7 @@
 <!-- pages/index.vue -->
 <template>
   <div
-    class="fixed inset-0 overflow-hidden font-sans select-none bg-slate-100 dark:bg-slate-950 transition-colors duration-500"
+    class="fixed inset-0 overflow-hidden font-sans select-none bg-slate-100 dark:bg-slate-950 transition-colors duration-500 touch-manipulation"
     @pointerdown="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
@@ -19,15 +19,17 @@
     <!-- Top Menu Bar -->
     <MenuBar />
 
-    <!-- Desktop Icons -->
-    <DesktopIcon
-      v-for="win in windows"
-      :key="win.id"
-      :win="win"
-      :is-selected="selectedIconId === win.id"
-      @select="selectedIconId = $event"
-      @open="openWindow"
-    />
+    <!-- Desktop Icons (Hidden on mobile < 640px to prevent clutter and double-tap zoom) -->
+    <div class="hidden sm:block">
+      <DesktopIcon
+        v-for="win in windows"
+        :key="win.id"
+        :win="win"
+        :is-selected="selectedIconId === win.id"
+        @select="selectedIconId = $event"
+        @open="openWindow"
+      />
+    </div>
 
     <!-- Windows Layer -->
     <template v-for="win in windows" :key="win.id">
@@ -45,7 +47,6 @@
 </template>
 
 <script setup lang="ts">
-// import { ref, onMounted, onUnmounted } from "vue"
 import { useWindowManager } from "~/composables/useWindowManager"
 
 import DesktopIcon from "~/components/desktop/DesktopIcon.vue"
@@ -84,7 +85,6 @@ let gl: WebGLRenderingContext | null = null
 let animationFrameId: number
 let program: WebGLProgram | null = null
 
-// Shader Uniform Locations
 let uResLoc: WebGLUniformLocation | null = null
 let uMouseLoc: WebGLUniformLocation | null = null
 let uVelLoc: WebGLUniformLocation | null = null
@@ -96,7 +96,6 @@ let uRippleTimeLoc: WebGLUniformLocation | null = null
 let uPressPosLoc: WebGLUniformLocation | null = null
 let uPressIntensityLoc: WebGLUniformLocation | null = null
 
-// Interaction & Physics State
 const mouse = {
   x: 0, y: 0,
   targetX: 0, targetY: 0,
@@ -115,7 +114,6 @@ const ripple = { x: 0, y: 0, time: -10 }
 let isDarkMode = false
 let currentDarkVal = 1.0
 
-// Vertex Shader
 const vsSource = `
   attribute vec2 position;
   void main() {
@@ -123,7 +121,6 @@ const vsSource = `
   }
 `
 
-// Fragment Shader with Tighter, Smoother Hydrodynamic Twirl
 const fsSource = `
   precision highp float;
   uniform vec2 u_resolution;
@@ -163,7 +160,6 @@ const fsSource = `
     return 130.0 * dot(m, g);
   }
 
-  // 2D Hydrodynamic Rotation Matrix
   mat2 rotate2d(float _angle) {
     return mat2(cos(_angle), -sin(_angle),
                 sin(_angle),  cos(_angle));
@@ -179,16 +175,13 @@ const fsSource = `
     vec2 pressNorm = u_press_pos / u_resolution.xy;
     pressNorm.x *= u_resolution.x / u_resolution.y;
 
-    // --- 1. Directional Wake ---
     float distToMouse = distance(st, mouseNorm);
     float mouseForce = smoothstep(0.35, 0.0, distToMouse);
     vec2 directionalWake = u_velocity * mouseForce * 0.05;
 
-    // --- 2. Tighter & Smoother Direction-Aware Hydrodynamic Twirl ---
     float twirlAngle = u_spin * exp(-distToMouse * 8.5);
     vec2 twirledST = rotate2d(twirlAngle) * (st - mouseNorm) + mouseNorm;
 
-    // --- 3. Expanding Liquid Ring Shockwave ---
     vec2 rPos = u_ripple_pos / u_resolution.xy;
     rPos.x *= u_resolution.x / u_resolution.y;
     float rDist = distance(twirledST, rPos);
@@ -208,7 +201,6 @@ const fsSource = `
       rippleDisp = dir * waveOscillation * ringMask * decay * 0.18;
     }
 
-    // --- 4. Continuous Press Vortex & Pulsing Waves ---
     float distToPress = distance(twirledST, pressNorm);
     vec2 pressDelta = twirledST - pressNorm;
     vec2 pressSwirlDir = vec2(-pressDelta.y, pressDelta.x);
@@ -216,7 +208,6 @@ const fsSource = `
     float pressWave = sin(distToPress * 36.0 - u_time * 12.0) * smoothstep(0.45, 0.0, distToPress) * u_press_intensity * 0.18;
     float pressSwirl = smoothstep(0.38, 0.0, distToPress) * u_press_intensity * 0.22;
 
-    // --- 5. Domain Warping Composite ---
     vec2 warp = vec2(
       snoise(twirledST * 1.5 + vec2(u_time * 0.07, u_time * 0.03)),
       snoise(twirledST * 1.5 + vec2(-u_time * 0.05, u_time * 0.09))
@@ -233,14 +224,11 @@ const fsSource = `
     float n2 = snoise(finalUV * 2.8 - u_time * 0.07);
     float n3 = snoise(finalUV * 0.9 + vec2(n1, n2));
 
-    // Color Palettes
-    // Sequoia Dark: Deep Indigo, Violet, Electric Cyan, Pink
     vec3 darkBg = vec3(0.04, 0.06, 0.12);
     vec3 darkC1 = vec3(0.48, 0.22, 0.92);
     vec3 darkC2 = vec3(0.02, 0.71, 0.83);
     vec3 darkC3 = vec3(0.92, 0.28, 0.60);
 
-    // Sonoma Light: Soft Sky, Rose Gold, Golden Amber, Cyan
     vec3 lightBg = vec3(0.92, 0.94, 0.98);
     vec3 lightC1 = vec3(0.96, 0.38, 0.48);
     vec3 lightC2 = vec3(0.25, 0.68, 0.95);
@@ -256,12 +244,10 @@ const fsSource = `
     color = mix(color, c2, smoothstep(-0.3, 0.7, n2) * 0.55);
     color = mix(color, c3, smoothstep(-0.2, 0.8, n3) * 0.45);
 
-    // Luminescent Energy Accent on Press
     float pressGlow = smoothstep(0.35, 0.0, distToPress) * u_press_intensity * 0.25;
     vec3 glowColor = mix(vec3(0.3, 0.75, 1.0), vec3(0.75, 0.35, 1.0), u_dark);
     color += glowColor * pressGlow;
 
-    // Subtle Apple Glass Grain
     float grain = (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.022;
     color += grain;
 
@@ -299,7 +285,6 @@ const initWebGL = () => {
   gl.linkProgram(program)
   gl.useProgram(program)
 
-  // Geometry
   const buffer = gl.createBuffer()
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW)
@@ -308,7 +293,6 @@ const initWebGL = () => {
   gl.enableVertexAttribArray(posLoc)
   gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0)
 
-  // Uniforms
   uResLoc = gl.getUniformLocation(program, "u_resolution")
   uMouseLoc = gl.getUniformLocation(program, "u_mouse")
   uVelLoc = gl.getUniformLocation(program, "u_velocity")
@@ -339,27 +323,22 @@ const render = (time: number) => {
 
   const seconds = time * 0.001
 
-  // 1. Smooth position catch-up
   const prevX = mouse.x
   const prevY = mouse.y
 
   mouse.x += (mouse.targetX - mouse.x) * 0.08
   mouse.y += (mouse.targetY - mouse.y) * 0.08
 
-  // 2. Velocity derived from continuous position derivative
   const dx = mouse.x - prevX
   const dy = mouse.y - prevY
 
-  // 3. Smooth exponential moving averages for velocity
   mouse.vx += (dx - mouse.vx) * 0.1
   mouse.vy += (dy - mouse.vy) * 0.1
 
-  // 4. Directional Spin (2D Cross Product of velocity vs step displacement)
   const rawSpin = (mouse.vx * dy - mouse.vy * dx) * 0.015
   mouse.spin += (rawSpin - mouse.spin) * 0.05
   mouse.spin = Math.max(-0.6, Math.min(0.6, mouse.spin))
 
-  // 5. Smooth press tracking
   press.x += (press.targetX - press.x) * 0.15
   press.y += (press.targetY - press.y) * 0.15
 
@@ -384,7 +363,6 @@ const render = (time: number) => {
   animationFrameId = requestAnimationFrame(render)
 }
 
-// Pointer Events
 const handlePointerMove = (e: PointerEvent) => {
   mouse.targetX = e.clientX
   mouse.targetY = e.clientY
@@ -413,14 +391,12 @@ const handlePointerUp = () => {
   press.isDown = false
 }
 
-// Theme Observer
 let themeObserver: MutationObserver | null = null
 
 const checkTheme = () => {
   isDarkMode = document.documentElement.classList.contains("dark")
 }
 
-// Keydown Listener
 const handleGlobalKeydown = (e: KeyboardEvent) => {
   if ((e.metaKey || e.ctrlKey) && e.code === "Space") {
     e.preventDefault()
@@ -457,9 +433,11 @@ onUnmounted(() => {
   }
 })
 
-// Head SEO
 useHead({
   title: () => t("title"),
-  meta: [{ name: "description", content: () => t("description") }],
+  meta: [
+    { name: "description", content: () => t("description") },
+    { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" }
+  ],
 })
 </script>

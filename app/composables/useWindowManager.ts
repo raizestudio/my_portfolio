@@ -2,7 +2,6 @@
 export const useWindowManager = () => {
   const { t } = useI18n();
 
-  // Raw state stores the title keys rather than static translated strings
   const rawWindows = useState("windows", () => [
     {
       id: "about",
@@ -84,7 +83,6 @@ export const useWindowManager = () => {
     },
   ]);
 
-  // Dynamically resolve `title` using `t()` whenever `locale` changes
   const windows = computed(() =>
     rawWindows.value.map((win) => ({
       ...win,
@@ -98,6 +96,13 @@ export const useWindowManager = () => {
   const activeWindow = computed(
     () => windows.value.find((w) => w.id === activeWindowId.value) ?? null,
   );
+
+  const isMobile = computed(() => {
+    if (import.meta.client) {
+      return window.innerWidth < 640;
+    }
+    return false;
+  });
 
   const focusWindow = (id: string) => {
     const win = rawWindows.value.find((w) => w.id === id);
@@ -114,7 +119,7 @@ export const useWindowManager = () => {
       win.isOpen = true;
       win.isMinimized = false;
 
-      // Automatically maximize on small screens (<640px)
+      // Automatically force maximize on mobile screens
       if (import.meta.client && window.innerWidth < 640) {
         win.isMaximized = true;
       }
@@ -172,6 +177,7 @@ export const useWindowManager = () => {
     windows,
     activeWindow,
     activeWindowId,
+    isMobile,
     openWindow,
     closeWindow,
     toggleMinimize,
