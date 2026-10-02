@@ -34,8 +34,35 @@ export default defineNuxtConfig({
           name: "description",
           content: "Portfolio de Joel PINHO, développeur Full-stack.",
         },
+        {
+          name: 'og:title',
+          content: 'Joel PINHO | Portfolio',
+        },
+        {
+          name: 'og:description',
+          content: 'Portfolio de Joel PINHO, développeur Full-stack.',
+        },
+        { property: 'og:image', content: 'https://joelpinho.fr/assets/images/profile.webp' },
+        { property: 'og:url', content: 'https://joelpinho.fr' },
+        {
+          name: 'twitter:title',
+          content: 'Joel PINHO | Portfolio',
+        },
+        {
+          name: 'twitter:description',
+          content: 'Portfolio de Joel PINHO, développeur Full-stack.',
+        },
+        {
+          name: 'twitter:image',
+          content: 'https://joelpinho.fr/assets/images/profile.webp',
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        },
       ],
       link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+
     },
   },
 });
