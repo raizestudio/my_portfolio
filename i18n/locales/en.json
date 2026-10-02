@@ -16,6 +16,7 @@
       "title": "cv.pdf",
       "pageCounter": "Page {currentPage} sur {totalPages}",
       "export": "Export as PDF",
+      "exporting": "Generating PDF...",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "pages": "Pages",
@@ -28,12 +29,14 @@
       "footerRight": "Confidentiel - CV Professionnel",
       "endOfDocument": "End of Document",
       "proTimeline": "Professional Timeline",
-      "education": "Education and Tools",
+      "education": "Education",
       "fullTime": "Full Time",
       "present": "Present",
       "roles": {
         "fullStack": "Full Stack Developer",
-        "engineer": "Developer Engineer"
+        "engineer": "Developer Engineer",
+        "techLead": "Tech Lead",
+        "freelance": "Freelance"
       },
       "experiences": {
         "junior": "Junior",
@@ -42,7 +45,24 @@
       },
       "professionalExperiences": {
         "wedev": {
+          "title": "WeDev",
           "description": "Conception and development of web sites and web applications for car rental agencies."
+        },
+        "q1c1": {
+          "title": "Q1C1",
+          "description": "Conception and development of web sites and web applications for the Arche real estate group."
+        },
+        "apodisSante": {
+          "title": "Apodis Santé",
+          "description": "Maintenance and development of the website, design and development of the mobile application for patients and healthcare professionals, as well as the desktop application for managing appointments and consultations."
+        },
+        "raizeStudio": {
+          "title": "Raize Studio",
+          "description": "Freelance activity, conception and development of web sites and web applications for specific clients."
+        },
+        "cgti": {
+          "title": "CGTI",
+          "description": "Design and development of websites and web applications to simplify and optimize the deployment of fiber optics as part of a public initiative project."
         }
       }
     },

@@ -16,6 +16,7 @@
       "title": "cv.pdf",
       "pageCounter": "Page {currentPage} sur {totalPages}",
       "export": "Exporter en PDF",
+      "exporting": "Je génère le PDF...",
       "zoomIn": "Zoomer",
       "zoomOut": "Dézoomer",
       "pages": "Pages",
@@ -28,12 +29,14 @@
       "footerRight": "Confidentiel - CV Professionnel",
       "endOfDocument": "Fin du document",
       "proTimeline": "Timeline Professionnel",
-      "education": "Éducation et Outils",
+      "education": "Éducation",
       "fullTime": "Temps plein",
       "present": "Présent",
       "roles": {
         "fullStack": "Développeur Full-stack",
-        "engineer": "Ingénieur Développeur"
+        "engineer": "Ingénieur Développeur",
+        "techLead": "Tech Lead",
+        "freelance": "Freelance"
       },
       "experiences": {
         "junior": "Junior",
@@ -42,7 +45,24 @@
       },
       "professionalExperiences": {
         "wedev": {
+          "title": "WeDev",
           "description": "Conception et développement de sites web et applications web à destination des loueurs de voiture."
+        },
+        "q1c1": {
+          "title": "Q1C1",
+          "description": "Conception et développement de sites web et applications web pour le groupe immobilier Arche."
+        },
+        "apodisSante": {
+          "title": "Apodis Santé",
+          "description": "Maintenance et développement du site web, conception et développement de l'application mobile à destinantion des patients et professionnels de santé ainsi que de l'application desktop pour la gestion du contenu en officine."
+        },
+        "raizeStudio": {
+          "title": "Raize Studio",
+          "description": "Activité en freelance, conception et développement de sites web et applications web pour des clients spécifiques."
+        },
+        "cgti": {
+          "title": "CGTI",
+          "description": "Conception et développement de sites web et applications web afin de simplifier et optimiser le déploiement de la fibre optique dans le cadre d'un projet d'initiative publique."
         }
       }
     },

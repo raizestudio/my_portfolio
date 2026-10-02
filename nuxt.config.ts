@@ -9,6 +9,11 @@ export default defineNuxtConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  routeRules: {
+      '/api/export-pdf': {
+        isr: false,
+      },
+    },
   i18n: {
     locales: [
       { code: "en", language: "en-US", file: "en.json" },
