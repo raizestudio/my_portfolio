@@ -44,7 +44,7 @@
         <!-- Weather Widget -->
         <div class="bg-slate-300/80 dark:bg-slate-700/60 backdrop-blur-md border border-white/10 rounded-[22px] p-3.5 flex flex-col justify-between aspect-square text-slate-900 dark:text-slate-100">
           <div>
-            <div class="text-xs font-medium opacity-80">Orvault</div>
+            <div class="text-xs font-medium opacity-80">Nantes</div>
             <div class="text-3xl font-extrabold leading-none mt-0.5">18°</div>
           </div>
           <div>

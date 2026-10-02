@@ -324,7 +324,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useWindowManager } from '~/composables/useWindowManager'
 
 const { openWindow } = useWindowManager()
@@ -332,7 +332,7 @@ const { openWindow } = useWindowManager()
 const viewMode = ref<'grid' | 'list'>('grid')
 const searchQuery = ref('')
 const activeTag = ref<string | null>(null)
-const currentFolderId = ref('projects')
+const currentFolderId = ref<string | undefined>('projects')
 const selectedItemId = ref<string | null>(null)
 
 // History Stack
@@ -359,7 +359,7 @@ const fileSystem = ref([
   {
     id: 'desktop-about',
     parentId: 'desktop',
-    name: 'About_Me.pdf',
+    name: 'cv.pdf',
     type: 'file',
     ext: 'pdf',
     targetAppId: 'about',
@@ -420,13 +420,64 @@ const fileSystem = ref([
     name: 'gaia.vue',
     type: 'file',
     ext: 'vue',
-    tag: 'featured',
-    title: 'Gaia Nuxt Base Template',
-    description: 'Scalable automated deployment base layer for rental websites.',
-    techStack: ['Nuxt', 'Tailwind', 'DaisyUI', 'Leaflet.js'],
+    title: 'Gaia',
+    description: 'Site web utilisant Nuxt layers afin de permettre un déploiement automatisé et évolutif. Celui est la base de tout les sites web de WeDev à destination des loueurs.',
+    techStack: ['Nuxt', 'Tailwind', 'DaisyUI', 'Leaflet.js', 'Phosphor Icons', 'Motion'],
     size: '12.8 MB',
     updatedAt: 'Sep 24, 2026',
     demoUrl: 'https://gaia.we-dev.io'
+  },
+  {
+    id: 'europcar_mb',
+    parentId: 'wedev',
+    name: 'europcar_mb.vue',
+    type: 'file',
+    ext: 'vue',
+    title: 'Europcar Mont-Blanc',
+    description: 'Site web pour la gestion des réservations de voitures en montagne, franchisé d\'Europcar France.',
+    techStack: ['Nuxt', 'Tailwind', 'DaisyUI', 'Leaflet.js', 'Phosphor Icons', 'Motion'],
+    size: '28 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://europcarmontblanc.fr'
+  },
+  {
+    id: 'dayz',
+    parentId: 'wedev',
+    name: 'dayz.vue',
+    type: 'file',
+    ext: 'vue',
+    title: 'Dayz',
+    description: 'Site web pour la gestion des réservations de voitures en Réunion.',
+    techStack: ['Nuxt', 'Tailwind', 'DaisyUI', 'Leaflet.js', 'Phosphor Icons', 'Motion'],
+    size: '28 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://dayz.rent'
+  },
+  {
+    id: 'cargocorse',
+    parentId: 'wedev',
+    name: 'cargocorse.vue',
+    type: 'file',
+    ext: 'vue',
+    title: 'Cargo Corse',
+    description: 'Site web pour la gestion des réservations de voitures en Corse.',
+    techStack: ['Nuxt', 'Tailwind', 'DaisyUI', 'Leaflet.js', 'Phosphor Icons', 'Motion'],
+    size: '28 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://dayz.rent'
+  },
+  {
+    id: 'helios_admin',
+    parentId: 'wedev',
+    name: 'helios_admin.vue',
+    type: 'file',
+    ext: 'vue',
+    title: 'Helios Admin',
+    description: 'Back-office pour la gestion de tout le contenu des diffents clients.',
+    techStack: ['Nuxt', 'Tailwind', 'NaiveUI', 'Leaflet.js', 'Phosphor Icons'],
+    size: '28 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://helios-admin.we-dev.io'
   },
   {
     id: 'helios',
@@ -434,12 +485,76 @@ const fileSystem = ref([
     name: 'helios.py',
     type: 'file',
     ext: 'py',
-    tag: 'work',
-    title: 'Helios Backend API',
-    description: 'FastAPI core rental booking service engine.',
-    techStack: ['FastAPI', 'Python', 'Docker', 'PostgreSQL', 'RabbitMQ'],
+    title: 'Helios',
+    description: 'Backend de l\'application Helios. Le moteur dérrière tout le système de gestion de locations. Interconnecté avec differentes APIs externes.',
+    techStack: ['FastAPI', 'Python', 'Docker', 'PostgreSQL', 'Valkey', 'RabbitMQ'],
     size: '28 KB',
-    updatedAt: 'Sep 24, 2026'
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://helios.we-dev.io'
+  },
+  {
+    id: 'readme',
+    parentId: 'wedev',
+    name: 'README.md',
+    type: 'file',
+    ext: 'md',
+    title: 'README',
+    description: 'Fichier README de l\'écosystème Helios.',
+    techStack: ['Markdown'],
+    size: '11 KB',
+    updatedAt: 'Sep 24, 2026',
+  },
+  // Inside ~/Projects/Apodis
+  {
+    id: 'apodis_front',
+    parentId: 'apodis',
+    name: 'apodis_front',
+    type: 'file',
+    ext: 'vue',
+    title: 'Apodis Frontend',
+    description: 'Frontend de l\'application Apodis.',
+    techStack: ['Vue', 'TypeScript', 'Tailwind CSS'],
+    size: '15 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://www.apodis-sante.com',
+  },
+  {
+    id: 'apodis_app',
+    parentId: 'apodis',
+    name: 'apodis_app',
+    type: 'file',
+    ext: 'react',
+    title: 'Apodis App',
+    description: 'Application Apodis développée en React Native à destination des utilisateurs et disponible sur Play Store et App Store.',
+    techStack: ['React Native'],
+    size: '15 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://www.apodis-sante.com/apodis/#telechargement',
+  },
+  {
+    id: 'apodis_pro',
+    parentId: 'apodis',
+    name: 'apodis_pro',
+    type: 'file',
+    ext: 'vue',
+    title: 'Apodis Backoffice',
+    description: 'Backoffice de l\'application Apodis à destination des professionnels.',
+    techStack: ['Vue', 'TypeScript', 'Tailwind CSS'],
+    size: '15 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://pro.apodis-sante.com/login',
+  },
+  {
+    id: 'apodis_readme',
+    parentId: 'apodis',
+    name: 'README.md',
+    type: 'file',
+    ext: 'md',
+    title: 'README',
+    description: 'README du projet Apodis.',
+    techStack: ['Markdown'],
+    size: '15 KB',
+    updatedAt: 'Sep 24, 2026',
   }
 ])
 
@@ -473,7 +588,7 @@ const goForward = () => {
 
 const pathCrumbs = computed(() => {
   const crumbs = []
-  let currId: string | null = currentFolderId.value
+  let currId: string | null | undefined = currentFolderId.value
 
   while (currId) {
     const folder = fileSystem.value.find(i => i.id === currId && i.type === 'folder')
@@ -520,6 +635,7 @@ const getItemIcon = (item: any) => {
     case 'py': return 'simple-icons:python'
     case 'sh': return 'simple-icons:gnubash'
     case 'vue': return 'simple-icons:vuedotjs'
+    case 'react': return 'simple-icons:react'
     default: return 'lucide:file-code-2'
   }
 }
@@ -532,6 +648,7 @@ const getItemIconColor = (item: any) => {
     case 'py': return 'text-sky-500 dark:text-sky-400'
     case 'sh': return 'text-emerald-500 dark:text-emerald-400'
     case 'vue': return 'text-emerald-600 dark:text-emerald-500'
+    case 'react': return 'text-blue-600 dark:text-blue-500'
     default: return 'text-slate-400'
   }
 }
