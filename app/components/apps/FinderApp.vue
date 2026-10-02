@@ -1,14 +1,14 @@
 <!-- components/apps/FinderApp.vue -->
 <template>
-  <div class="h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 select-none overflow-hidden font-sans transition-colors duration-200">
+  <div class="h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 select-none overflow-hidden font-sans transition-colors duration-200 touch-manipulation">
 
     <!-- Finder Toolbar -->
-    <div class="h-11 px-3 bg-gray-100/90 dark:bg-slate-800/80 border-b border-gray-200 dark:border-white/10 flex items-center justify-between gap-3 text-xs shrink-0 transition-colors duration-200">
+    <div class="h-11 px-2.5 sm:px-3 bg-gray-100/90 dark:bg-slate-800/80 border-b border-gray-200 dark:border-white/10 flex items-center justify-between gap-2 sm:gap-3 text-xs shrink-0 transition-colors duration-200">
 
       <!-- Navigation & Path Breadcrumbs -->
-      <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
         <!-- Back / Forward Buttons -->
-        <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 shrink-0">
+        <div class="flex items-center gap-0.5 sm:gap-1 text-slate-500 dark:text-slate-400 shrink-0">
           <button
             @click="goBack"
             :disabled="historyIndex <= 0"
@@ -28,22 +28,22 @@
         </div>
 
         <!-- Breadcrumbs Path Bar -->
-        <div class="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium text-xs truncate">
+        <div class="flex items-center gap-1 text-slate-700 dark:text-slate-300 font-medium text-xs overflow-x-auto custom-scrollbar-none py-0.5">
           <button
             v-for="(crumb, idx) in pathCrumbs"
             :key="crumb.id"
             @click="navigateTo(crumb.id)"
-            class="flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition-colors py-0.5 px-1 rounded hover:bg-gray-200/70 dark:hover:bg-white/10 truncate cursor-pointer"
+            class="flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition-colors py-0.5 px-1 rounded hover:bg-gray-200/70 dark:hover:bg-white/10 shrink-0 cursor-pointer"
           >
             <Icon :name="crumb.icon || 'lucide:folder'" class="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
-            <span class="truncate">{{ crumb.name }}</span>
+            <span class="whitespace-nowrap">{{ crumb.name }}</span>
             <span v-if="idx < pathCrumbs.length - 1" class="text-slate-400 dark:text-slate-500 ml-1">/</span>
           </button>
         </div>
       </div>
 
       <!-- View Switcher & Search -->
-      <div class="flex items-center gap-3 shrink-0">
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
         <div class="flex items-center bg-white dark:bg-slate-950/50 p-0.5 rounded-lg border border-gray-300 dark:border-white/10 shadow-sm dark:shadow-none">
           <button
             @click="viewMode = 'grid'"
@@ -69,18 +69,34 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search Finder..."
-            class="w-32 sm:w-44 pl-7 pr-2 py-1 bg-white dark:bg-slate-950/60 border border-gray-300 dark:border-white/10 rounded-md text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-all shadow-sm dark:shadow-none"
+            placeholder="Search..."
+            class="w-24 sm:w-44 pl-7 pr-2 py-1 bg-white dark:bg-slate-950/60 border border-gray-300 dark:border-white/10 rounded-md text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-all shadow-sm dark:shadow-none"
           />
         </div>
       </div>
 
     </div>
 
-    <!-- Main Finder Layout -->
-    <div class="flex-1 flex overflow-hidden">
+    <!-- Mobile Favorites Quick Navigation Bar (< 640px) -->
+    <div class="flex sm:hidden items-center gap-1.5 px-3 py-1.5 bg-gray-100/60 dark:bg-slate-950/30 border-b border-gray-200 dark:border-white/5 overflow-x-auto custom-scrollbar-none shrink-0 text-[11px]">
+      <button
+        v-for="fav in sidebarFavorites"
+        :key="fav.id"
+        @click="navigateTo(fav.id)"
+        class="flex items-center gap-1.5 px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer"
+        :class="currentFolderId === fav.id
+          ? 'bg-sky-500/20 border-sky-500/40 text-sky-600 dark:text-sky-300 font-semibold'
+          : 'bg-white/60 dark:bg-white/5 border-gray-200 dark:border-white/10 text-slate-600 dark:text-slate-400'"
+      >
+        <Icon :name="fav.icon" :class="fav.iconColor || 'text-sky-500'" class="w-3.5 h-3.5" />
+        <span>{{ fav.name }}</span>
+      </button>
+    </div>
 
-      <!-- macOS Finder Sidebar -->
+    <!-- Main Finder Layout -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+      <!-- macOS Finder Desktop Sidebar (Hidden on mobile < 640px) -->
       <div class="w-48 bg-gray-50/80 dark:bg-slate-950/40 border-r border-gray-200 dark:border-white/10 p-3 space-y-4 shrink-0 hidden sm:block text-[12px] transition-colors duration-200">
 
         <!-- Favorites Section -->
@@ -102,7 +118,7 @@
           </div>
         </div>
 
-        <!-- Tags / Color Filters Section -->
+        <!-- Tags Section -->
         <div>
           <div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-2 mb-1.5">
             Tags
@@ -132,19 +148,19 @@
       <!-- Main Directory Content -->
       <div class="flex-1 flex overflow-hidden bg-white/60 dark:bg-slate-900/60 transition-colors duration-200">
 
-        <div class="flex-1 p-4 overflow-y-auto">
+        <div class="flex-1 p-3 sm:p-4 overflow-y-auto">
 
           <!-- GRID VIEW -->
           <div
             v-if="viewMode === 'grid'"
-            class="grid grid-cols-[repeat(auto-fill,minmax(105px,1fr))] gap-3 auto-rows-max"
+            class="grid grid-cols-[repeat(auto-fill,minmax(85px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(105px,1fr))] gap-2 sm:gap-3 auto-rows-max"
           >
             <div
               v-for="item in visibleItems"
               :key="item.id"
-              @click="selectedItemId = item.id"
+              @click="handleItemClick(item)"
               @dblclick="handleItemDblClick(item)"
-              class="group flex flex-col items-center p-2.5 rounded-xl cursor-pointer border transition-all"
+              class="group flex flex-col items-center p-2 sm:p-2.5 rounded-xl cursor-pointer border transition-all active:scale-95"
               :class="[
                 selectedItemId === item.id
                   ? 'bg-sky-500/15 dark:bg-sky-600/25 border-sky-500/50 ring-1 ring-sky-400/50'
@@ -154,25 +170,25 @@
               <!-- Folder Tile -->
               <div
                 v-if="item.type === 'folder'"
-                class="relative w-14 h-14 bg-amber-500/10 border border-amber-500/30 rounded-2xl shadow-md dark:shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform shrink-0"
+                class="relative w-12 h-12 sm:w-14 sm:h-14 bg-amber-500/10 border border-amber-500/30 rounded-2xl shadow-md dark:shadow-lg flex items-center justify-center sm:group-hover:scale-105 transition-transform shrink-0"
               >
-                <Icon name="lucide:folder-closed" class="w-8 h-8 text-amber-500 dark:text-amber-400 group-hover:hidden" />
-                <Icon name="lucide:folder-open" class="w-8 h-8 text-amber-600 dark:text-amber-300 hidden group-hover:block" />
+                <Icon name="lucide:folder-closed" class="w-7 h-7 sm:w-8 sm:h-8 text-amber-500 dark:text-amber-400 sm:group-hover:hidden" />
+                <Icon name="lucide:folder-open" class="w-7 h-7 sm:w-8 sm:h-8 text-amber-600 dark:text-amber-300 hidden sm:group-hover:block" />
               </div>
 
               <!-- File Tile -->
               <div
                 v-else
-                class="relative w-12 h-14 bg-gray-100 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-white/10 shadow-md dark:shadow-lg flex flex-col items-center justify-center group-hover:scale-105 transition-transform shrink-0"
+                class="relative w-10 h-12 sm:w-12 sm:h-14 bg-gray-100 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-white/10 shadow-md dark:shadow-lg flex flex-col items-center justify-center sm:group-hover:scale-105 transition-transform shrink-0"
               >
-                <Icon :name="getItemIcon(item)" :class="getItemIconColor(item)" class="w-6 h-6 mb-0.5" />
-                <span class="text-[8px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400 bg-gray-200/80 dark:bg-slate-950/80 px-1 py-0.2 rounded">
+                <Icon :name="getItemIcon(item)" :class="getItemIconColor(item)" class="w-5 h-5 sm:w-6 sm:h-6 mb-0.5" />
+                <span class="text-[7px] sm:text-[8px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400 bg-gray-200/80 dark:bg-slate-950/80 px-1 py-0.2 rounded">
                   .{{ item.ext }}
                 </span>
               </div>
 
               <!-- Item Title -->
-              <span class="mt-2 text-[11px] font-medium text-center text-slate-800 dark:text-slate-200 line-clamp-2 leading-tight w-full break-words">
+              <span class="mt-1.5 sm:mt-2 text-[10px] sm:text-[11px] font-medium text-center text-slate-800 dark:text-slate-200 line-clamp-2 leading-tight w-full break-words">
                 {{ item.name }}
               </span>
             </div>
@@ -183,32 +199,32 @@
             <div
               v-for="item in visibleItems"
               :key="item.id"
-              @click="selectedItemId = item.id"
+              @click="handleItemClick(item)"
               @dblclick="handleItemDblClick(item)"
-              class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer border text-xs transition-colors"
+              class="flex items-center justify-between px-2.5 sm:px-3 py-2 rounded-lg cursor-pointer border text-xs transition-colors active:scale-[0.99]"
               :class="[
                 selectedItemId === item.id
                   ? 'bg-sky-500/15 dark:bg-sky-600/30 border-sky-500/50'
                   : 'bg-transparent border-transparent hover:bg-gray-200/50 dark:hover:bg-white/5'
               ]"
             >
-              <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <Icon
                   v-if="item.type === 'folder'"
                   name="lucide:folder"
-                  class="w-4 h-4 text-amber-500 dark:text-amber-400"
+                  class="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0"
                 />
                 <Icon
                   v-else
                   :name="getItemIcon(item)"
                   :class="getItemIconColor(item)"
-                  class="w-4 h-4"
+                  class="w-4 h-4 shrink-0"
                 />
-                <span class="font-medium text-slate-800 dark:text-slate-200">{{ item.name }}</span>
+                <span class="font-medium text-slate-800 dark:text-slate-200 truncate">{{ item.name }}</span>
               </div>
-              <div class="flex items-center gap-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+              <div class="flex items-center gap-3 sm:gap-4 text-slate-500 dark:text-slate-400 font-mono text-[10px] sm:text-[11px] shrink-0">
                 <span>{{ item.type === 'folder' ? `${getChildCount(item.id)} items` : item.size }}</span>
-                <span>{{ item.updatedAt }}</span>
+                <span class="hidden sm:inline">{{ item.updatedAt }}</span>
               </div>
             </div>
           </div>
@@ -221,14 +237,13 @@
 
         </div>
 
-        <!-- Right Quick Look / Inspector Pane -->
+        <!-- Desktop Quick Look / Inspector Pane (Hidden on Mobile) -->
         <div
           v-if="selectedItem"
           class="w-64 bg-gray-50/90 dark:bg-slate-950/50 border-l border-gray-200 dark:border-white/10 p-4 flex flex-col justify-between shrink-0 hidden md:flex text-xs transition-colors duration-200"
         >
           <div class="space-y-4">
             <div class="flex flex-col items-center pt-2">
-              <!-- Folder Selected -->
               <template v-if="selectedItem.type === 'folder'">
                 <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center shadow-lg mb-3">
                   <Icon name="lucide:folder-open" class="w-9 h-9 text-amber-500 dark:text-amber-400" />
@@ -239,7 +254,6 @@
                 <p class="text-[11px] font-mono text-amber-600 dark:text-amber-400/80 mt-0.5">Folder • {{ getChildCount(selectedItem.id) }} items</p>
               </template>
 
-              <!-- File Selected -->
               <template v-else>
                 <div class="w-16 h-20 bg-gray-100 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/15 flex flex-col items-center justify-center shadow-lg mb-3">
                   <Icon :name="getItemIcon(selectedItem)" :class="getItemIconColor(selectedItem)" class="w-9 h-9 mb-1" />
@@ -314,17 +328,70 @@
 
     </div>
 
+    <!-- Mobile Floating Action Sheet for Selected Item (< 768px) -->
+    <div
+      v-if="selectedItem && isMobile"
+      class="p-3 bg-white/95 dark:bg-slate-900/95 border-t border-gray-200 dark:border-white/10 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 shrink-0 text-xs transition-all z-20"
+    >
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
+        <Icon
+          v-if="selectedItem.type === 'folder'"
+          name="lucide:folder-open"
+          class="w-6 h-6 text-amber-500 shrink-0"
+        />
+        <Icon
+          v-else
+          :name="getItemIcon(selectedItem)"
+          :class="getItemIconColor(selectedItem)"
+          class="w-6 h-6 shrink-0"
+        />
+        <div class="min-w-0">
+          <div class="font-bold text-slate-900 dark:text-white truncate text-xs">{{ selectedItem.title || selectedItem.name }}</div>
+          <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">{{ selectedItem.description || selectedItem.name }}</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button
+          v-if="selectedItem.type === 'folder'"
+          @click="navigateTo(selectedItem.id)"
+          class="bg-amber-600 hover:bg-amber-500 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 text-[11px] cursor-pointer"
+        >
+          <span>Open</span>
+          <Icon name="lucide:arrow-right" class="w-3 h-3" />
+        </button>
+
+        <template v-else>
+          <a
+            v-if="selectedItem.demoUrl"
+            :href="selectedItem.demoUrl"
+            target="_blank"
+            class="bg-sky-600 hover:bg-sky-500 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 text-[11px] cursor-pointer"
+          >
+            <span>Live Site</span>
+            <Icon name="lucide:external-link" class="w-3 h-3" />
+          </a>
+          <button
+            @click="openFile(selectedItem)"
+            class="bg-slate-100 dark:bg-slate-800 border border-gray-300 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1 text-[11px] cursor-pointer"
+          >
+            <span>Preview</span>
+          </button>
+        </template>
+      </div>
+    </div>
+
     <!-- Status Bar -->
-    <div class="h-6 px-3 bg-gray-100 dark:bg-slate-950 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 shrink-0 font-mono transition-colors duration-200">
+    <div class="h-6 px-3 bg-gray-100 dark:bg-slate-950 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 shrink-0 font-mono transition-colors duration-200">
       <span>{{ visibleItems.length }} items</span>
-      <span v-if="selectedItem">{{ selectedItem.name }} — {{ selectedItem.type === 'folder' ? 'Directory' : selectedItem.size }}</span>
+      <span v-if="selectedItem" class="truncate max-w-[180px] sm:max-w-none">{{ selectedItem.name }} — {{ selectedItem.type === 'folder' ? 'Directory' : selectedItem.size }}</span>
     </div>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useWindowManager } from '~/composables/useWindowManager'
 
 const { openWindow } = useWindowManager()
@@ -334,6 +401,13 @@ const searchQuery = ref('')
 const activeTag = ref<string | null>(null)
 const currentFolderId = ref<string | undefined>('projects')
 const selectedItemId = ref<string | null>(null)
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  if (import.meta.client) {
+    isMobile.value = window.innerWidth < 640
+  }
+}
 
 // History Stack
 const history = ref<string[]>(['projects'])
@@ -654,6 +728,20 @@ const getItemIconColor = (item: any) => {
   }
 }
 
+// Single Tap / Click Logic
+const handleItemClick = (item: any) => {
+  if (isMobile.value) {
+    if (item.type === 'folder') {
+      navigateTo(item.id)
+    } else {
+      selectedItemId.value = item.id
+    }
+  } else {
+    selectedItemId.value = item.id
+  }
+}
+
+// Double Click Logic (Desktop)
 const handleItemDblClick = (item: any) => {
   if (item.type === 'folder') {
     navigateTo(item.id)
@@ -671,4 +759,27 @@ const openFile = (file: any) => {
     alert(`Quick Look Preview for ${file.name}:\n\n${file.description}`)
   }
 }
+
+onMounted(() => {
+  if (import.meta.client) {
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+  }
+})
+
+onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('resize', checkMobile)
+  }
+})
 </script>
+
+<style scoped>
+.custom-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

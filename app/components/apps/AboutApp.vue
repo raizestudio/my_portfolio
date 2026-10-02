@@ -384,7 +384,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const { t, locale } = useI18n();
 
@@ -399,8 +399,8 @@ const page2Ref = ref(null);
 
 const titleText = t("apps.about.title");
 const pageCounterText = t("apps.about.pageCounter", {
-    currentPage: currentPage.value,
-    totalPages: 2,
+  currentPage: currentPage.value,
+  totalPages: 2,
 });
 const exportText = t("apps.about.export");
 const exportingText = t("apps.about.exporting");
@@ -437,90 +437,110 @@ const educationText = t("apps.about.education");
 const endOfDocumentText = t("apps.about.endOfDocument");
 
 const frontendSkills = [
-    { name: "Vue.js / Nuxt 3", level: 95 },
-    { name: "TypeScript", level: 85 },
-    { name: "Tailwind CSS", level: 90 },
-    { name: "UI / WebGL", level: 75 },
+  { name: "Vue.js / Nuxt 3", level: 95 },
+  { name: "TypeScript", level: 85 },
+  { name: "Tailwind CSS", level: 90 },
+  { name: "UI / WebGL", level: 75 },
 ];
 
 const backendSkills = [
-    { name: "Python / FastAPI", level: 90 },
-    { name: "PostgreSQL", level: 85 },
-    { name: "Docker / CI-CD", level: 80 },
-    { name: "RabbitMQ / Kafka", level: 70 },
+  { name: "Python / FastAPI", level: 90 },
+  { name: "PostgreSQL", level: 85 },
+  { name: "Docker / CI-CD", level: 80 },
+  { name: "RabbitMQ / Kafka", level: 70 },
 ];
 
 const toolingSkills = ["Git", "Linux", "Valkey / Redis", "WebStorm", "Figma"];
 
 const professionalExperiences = [
-    {
-        title: `${rolesFullStackText} ${experiencesSeniorText} @ ${professionalExperiencesWeDevTitleText}`,
-        date: `${new Date(2025, 7, 25).toLocaleDateString(locale.value)} - ${presentText}`,
-        description: professionalExperiencesWedevDescriptionText,
-    },
-    {
-        title: `${rolesEngineerText} @ ${professionalExperiencesQ1C1TitleText}`,
-        date: `${new Date(2024, 2, 1).toLocaleDateString(locale.value)} - ${new Date(2025, 6, 30).toLocaleDateString(locale.value)}`,
-        description: professionalExperiencesQ1C1DescriptionText,
-    },
-    {
-        title: `${rolesEngineerText} @ ${professionalExperiencesApodisTitleText}`,
-        date: `${new Date(2022, 9, 1).toLocaleDateString(locale.value)} - ${new Date(2023, 5, 31).toLocaleDateString(locale.value)}`,
-        description: professionalExperiencesApodisDescriptionText,
-    },
-    {
-        title: `${rolesFreelanceText} @ ${professionalExperiencesRaizeStudioTitleText}`,
-        date: `${new Date(2021, 7, 1).toLocaleDateString(locale.value)} - ${presentText}`,
-        description: professionalExperiencesRaizeStudioDescriptionText,
-    },
-    {
-        title: `${rolesTechLeadText} @ ${professionalExperiencesCgtiTitleText}`,
-        date: `${new Date(2019, 9, 1).toLocaleDateString(locale.value)} - ${new Date(2022, 7, 1).toLocaleDateString(locale.value)}`,
-        description: professionalExperiencesCgtiDescriptionText,
-    },
+  {
+    title: `${rolesFullStackText} ${experiencesSeniorText} @ ${professionalExperiencesWeDevTitleText}`,
+    date: `${new Date(2025, 7, 25).toLocaleDateString(locale.value)} - ${presentText}`,
+    description: professionalExperiencesWedevDescriptionText,
+  },
+  {
+    title: `${rolesEngineerText} @ ${professionalExperiencesQ1C1TitleText}`,
+    date: `${new Date(2024, 2, 1).toLocaleDateString(locale.value)} - ${new Date(2025, 6, 30).toLocaleDateString(locale.value)}`,
+    description: professionalExperiencesQ1C1DescriptionText,
+  },
+  {
+    title: `${rolesEngineerText} @ ${professionalExperiencesApodisTitleText}`,
+    date: `${new Date(2022, 9, 1).toLocaleDateString(locale.value)} - ${new Date(2023, 5, 31).toLocaleDateString(locale.value)}`,
+    description: professionalExperiencesApodisDescriptionText,
+  },
+  {
+    title: `${rolesFreelanceText} @ ${professionalExperiencesRaizeStudioTitleText}`,
+    date: `${new Date(2021, 7, 1).toLocaleDateString(locale.value)} - ${presentText}`,
+    description: professionalExperiencesRaizeStudioDescriptionText,
+  },
+  {
+    title: `${rolesTechLeadText} @ ${professionalExperiencesCgtiTitleText}`,
+    date: `${new Date(2019, 9, 1).toLocaleDateString(locale.value)} - ${new Date(2022, 7, 1).toLocaleDateString(locale.value)}`,
+    description: professionalExperiencesCgtiDescriptionText,
+  },
 ];
 
+// Determine layout and zoom based on screen size when mounted
+onMounted(() => {
+  if (import.meta.client) {
+    if (window.innerWidth < 640) {
+      showSidebar.value = false;
+      const safeWidth = window.innerWidth - 32;
+      const targetWidth = 520;
+      const rawRatio = safeWidth / targetWidth;
+      const clampedRatio = Math.max(0.4, Math.min(0.8, rawRatio));
+
+      // Round to 2 decimal places (e.g. 0.66 instead of 0.659615...)
+      zoomLevel.value = Math.round(clampedRatio * 100) / 100;
+    }
+  }
+});
+
+// Snap up to the next 10% step & strictly clamp to 1.5 (150%)
 const zoomIn = () => {
-    if (zoomLevel.value < 1.5) zoomLevel.value += 0.1;
+  const nextStep = Math.floor(zoomLevel.value * 10 + 1) / 10;
+  zoomLevel.value = Math.min(1.5, Number(nextStep.toFixed(1)));
 };
 
+// Snap down to the previous 10% step & strictly clamp to 0.4 (40%)
 const zoomOut = () => {
-    if (zoomLevel.value > 0.6) zoomLevel.value -= 0.1;
+  const prevStep = Math.ceil(zoomLevel.value * 10 - 1) / 10;
+  zoomLevel.value = Math.max(0.4, Number(prevStep.toFixed(1)));
 };
 
 const scrollToPage = (pageNumber) => {
-    currentPage.value = pageNumber;
-    const target = pageNumber === 1 ? page1Ref.value : page2Ref.value;
-    if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-    }
+  currentPage.value = pageNumber;
+  const target = pageNumber === 1 ? page1Ref.value : page2Ref.value;
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth" });
+  }
 };
 
 const handleScroll = () => {
-    if (!page2Ref.value) return;
-    const page2Top = page2Ref.value.getBoundingClientRect().top;
-    if (page2Top < window.innerHeight / 2) {
-        currentPage.value = 2;
-    } else {
-        currentPage.value = 1;
-    }
+  if (!page2Ref.value) return;
+  const page2Top = page2Ref.value.getBoundingClientRect().top;
+  if (page2Top < window.innerHeight / 2) {
+    currentPage.value = 2;
+  } else {
+    currentPage.value = 1;
+  }
 };
 
 const downloadPDF = async () => {
-    if (!import.meta.client || isExporting.value) return;
+  if (!import.meta.client || isExporting.value) return;
 
-    isExporting.value = true;
+  isExporting.value = true;
 
-    try {
-        let page1Html = page1Ref.value?.outerHTML || "";
-        let page2Html = page2Ref.value?.outerHTML || "";
+  try {
+    let page1Html = page1Ref.value?.outerHTML || "";
+    let page2Html = page2Ref.value?.outerHTML || "";
 
-        // Fix Relative Image Paths for Serverless Puppeteer
-        const origin = window.location.origin;
-        page1Html = page1Html.replace(/src="\/assets\//g, `src="${origin}/assets/`);
-        page2Html = page2Html.replace(/src="\/assets\//g, `src="${origin}/assets/`);
+    // Fix Relative Image Paths for Serverless Puppeteer
+    const origin = window.location.origin;
+    page1Html = page1Html.replace(/src="\/assets\//g, `src="${origin}/assets/`);
+    page2Html = page2Html.replace(/src="\/assets\//g, `src="${origin}/assets/`);
 
-        const combinedHtml = `
+    const combinedHtml = `
       <div class="flex flex-col gap-0 items-center justify-center">
         ${page1Html}
         <div style="page-break-before: always;"></div>
@@ -528,33 +548,33 @@ const downloadPDF = async () => {
       </div>
     `;
 
-        // POST HTML to Vercel Serverless endpoint
-        const response = await fetch("/api/export-pdf", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ html: combinedHtml }),
-        });
+    // POST HTML to Vercel Serverless endpoint
+    const response = await fetch("/api/export-pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ html: combinedHtml }),
+    });
 
-        if (!response.ok) throw new Error("PDF Generation failed on server");
+    if (!response.ok) throw new Error("PDF Generation failed on server");
 
-        // Download blob as downloadable file
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "Joel_PINHO_CV.pdf";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-    } catch (error) {
-        console.warn(
-            "Server export failed, falling back to native print window:",
-            error,
-        );
-        window.print();
-    } finally {
-        isExporting.value = false;
-    }
+    // Download blob as downloadable file
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Joel_PINHO_CV.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.warn(
+      "Server export failed, falling back to native print window:",
+      error,
+    );
+    window.print();
+  } finally {
+    isExporting.value = false;
+  }
 };
 </script>
