@@ -6,7 +6,7 @@ export const useWindowManager = () => {
   const rawWindows = useState("windows", () => [
     {
       id: "about",
-      titleKey: "apps.about",
+      titleKey: "apps.about.title",
       icon: "lucide:file-text",
       component: "AboutApp",
       isOpen: false,
@@ -45,7 +45,7 @@ export const useWindowManager = () => {
     },
     {
       id: "contact",
-      titleKey: "apps.contact",
+      titleKey: "apps.contact.title",
       icon: "lucide:mail",
       component: "ContactApp",
       isOpen: false,

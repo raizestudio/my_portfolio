@@ -1,45 +1,45 @@
 <!-- components/apps/TerminalApp.vue -->
 <template>
   <div
-    class="h-full flex flex-col font-mono text-xs bg-slate-950/95 text-slate-200 p-3 rounded-b-lg overflow-hidden select-text"
+    class="h-full flex flex-col font-mono text-xs bg-slate-100/95 dark:bg-slate-950/95 text-slate-800 dark:text-slate-200 p-3 rounded-b-lg overflow-hidden select-text transition-colors duration-200"
     @click="focusInput"
   >
     <!-- Terminal Header Bar -->
-    <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-slate-500 text-[11px] select-none shrink-0">
+    <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-300 dark:border-white/10 text-slate-500 dark:text-slate-400 text-[11px] select-none shrink-0 transition-colors duration-200">
       <div class="flex items-center space-x-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block"></span>
-        <span class="text-slate-400 font-semibold">zsh — {{ promptPath }}</span>
+        <span class="text-slate-700 dark:text-slate-400 font-semibold">zsh — {{ promptPath }}</span>
       </div>
       <span class="hidden sm:inline opacity-70">
-        Press <kbd class="px-1 py-0.5 bg-white/10 rounded text-[10px] text-slate-300">Tab</kbd> to complete,
-        <kbd class="px-1 py-0.5 bg-white/10 rounded text-[10px] text-slate-300">↑/↓</kbd> for history
+        Press <kbd class="px-1 py-0.5 bg-slate-200 dark:bg-white/10 rounded text-[10px] text-slate-700 dark:text-slate-300">Tab</kbd> to complete,
+        <kbd class="px-1 py-0.5 bg-slate-200 dark:bg-white/10 rounded text-[10px] text-slate-700 dark:text-slate-300">↑/↓</kbd> for history
       </span>
     </div>
 
     <!-- Output Logs Area -->
     <div ref="outputRef" class="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
       <!-- Welcome Greeting -->
-      <div class="text-slate-400 mb-3">
-        <p class="text-emerald-400 font-bold">zsh — Joel PINHO Portfolio Terminal v2.5</p>
-        <p>Type <span class="text-sky-300 font-bold">help</span> for commands, <span class="text-sky-300 font-bold">ls</span> to list files, or <span class="text-sky-300 font-bold">cd &lt;dir&gt;</span> to navigate.</p>
+      <div class="text-slate-600 dark:text-slate-400 mb-3">
+        <p class="text-emerald-600 dark:text-emerald-400 font-bold">zsh — Joel PINHO Portfolio Terminal v2.5</p>
+        <p>Type <span class="text-sky-600 dark:text-sky-300 font-bold">help</span> for commands, <span class="text-sky-600 dark:text-sky-300 font-bold">ls</span> to list files, or <span class="text-sky-600 dark:text-sky-300 font-bold">cd &lt;dir&gt;</span> to navigate.</p>
       </div>
 
       <!-- Output History -->
       <div v-for="(entry, index) in history" :key="index" class="space-y-1">
         <!-- Command Prompt Line -->
         <div class="flex items-center space-x-2 flex-wrap">
-          <span class="text-emerald-400 font-bold">guest@portfolio</span>
-          <span class="text-slate-500">:</span>
-          <span class="text-sky-400 font-bold">{{ entry.path }}</span>
-          <span class="text-slate-300">$</span>
-          <span class="text-white font-medium">{{ entry.command }}</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-bold">guest@portfolio</span>
+          <span class="text-slate-400 dark:text-slate-500">:</span>
+          <span class="text-sky-600 dark:text-sky-400 font-bold">{{ entry.path }}</span>
+          <span class="text-slate-600 dark:text-slate-300">$</span>
+          <span class="text-slate-900 dark:text-white font-medium">{{ entry.command }}</span>
         </div>
 
         <!-- Command Result Output -->
         <div
           v-if="entry.output"
-          class="pl-3 text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-xs border-l-2 border-white/10 my-1"
-          :class="{ 'text-rose-400 border-rose-500/50': entry.isError }"
+          class="pl-3 text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-xs border-l-2 border-slate-300 dark:border-white/10 my-1"
+          :class="{ 'text-rose-600 dark:text-rose-400 border-rose-500/50': entry.isError }"
         >
           <div v-html="entry.output"></div>
         </div>
@@ -47,16 +47,16 @@
 
       <!-- Active Input Line -->
       <form @submit.prevent="executeCommand" class="flex items-center space-x-2 pt-1">
-        <span class="text-emerald-400 font-bold">guest@portfolio</span>
-        <span class="text-slate-500">:</span>
-        <span class="text-sky-400 font-bold">{{ promptPath }}</span>
-        <span class="text-slate-300">$</span>
+        <span class="text-emerald-600 dark:text-emerald-400 font-bold">guest@portfolio</span>
+        <span class="text-slate-400 dark:text-slate-500">:</span>
+        <span class="text-sky-600 dark:text-sky-400 font-bold">{{ promptPath }}</span>
+        <span class="text-slate-600 dark:text-slate-300">$</span>
         <div class="relative flex-1">
           <input
             ref="inputRef"
             v-model="currentCommand"
             type="text"
-            class="w-full bg-transparent border-none outline-none text-white font-mono focus:ring-0 p-0 text-xs"
+            class="w-full bg-transparent border-none outline-none text-slate-900 dark:text-white font-mono focus:ring-0 p-0 text-xs"
             autofocus
             spellcheck="false"
             autocomplete="off"
@@ -374,13 +374,13 @@ const executeCommand = () => {
   switch (cmd) {
     case 'help':
       entry.output = `Available Commands:
-  • <span class="text-sky-300 font-bold">ls [dir]</span>          - List contents of current or target directory
-  • <span class="text-sky-300 font-bold">cd &lt;dir&gt;</span>       - Navigate directories (supports 'projects/', '..', '~/projects/WeDev')
-  • <span class="text-sky-300 font-bold">pwd</span>            - Print current working directory path
-  • <span class="text-sky-300 font-bold">cat &lt;file&gt;</span>     - Display file contents
-  • <span class="text-sky-300 font-bold">open &lt;file|app&gt;</span>- Launch desktop app window or open live website
-  • <span class="text-sky-300 font-bold">whoami</span>         - Print active user session details
-  • <span class="text-sky-300 font-bold">clear</span>          - Reset terminal screen buffer`
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">ls [dir]</span>          - List contents of current or target directory
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">cd &lt;dir&gt;</span>       - Navigate directories (supports 'projects/', '..', '~/projects/WeDev')
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">pwd</span>            - Print current working directory path
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">cat &lt;file&gt;</span>     - Display file contents
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">open &lt;file|app&gt;</span>- Launch desktop app window or open live website
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">whoami</span>         - Print active user session details
+  • <span class="text-sky-600 dark:text-sky-300 font-bold">clear</span>          - Reset terminal screen buffer`
       break
 
     case 'pwd':
@@ -399,7 +399,7 @@ const executeCommand = () => {
 
       const node = targetRes.node
       if (node.type === 'file') {
-        entry.output = `<span class="text-slate-200">${node.name}</span>`
+        entry.output = `<span class="text-slate-800 dark:text-slate-200">${node.name}</span>`
         break
       }
 
@@ -410,12 +410,12 @@ const executeCommand = () => {
 
       const items = Object.values(node.children).map(item => {
         if (item.type === 'dir') {
-          return `<span class="text-sky-400 font-bold">${item.name}/</span>`
+          return `<span class="text-sky-600 dark:text-sky-400 font-bold">${item.name}/</span>`
         }
-        if (item.ext === 'vue') return `<span class="text-emerald-400">${item.name}</span>`
-        if (item.ext === 'py') return `<span class="text-sky-300">${item.name}</span>`
-        if (item.ext === 'pdf') return `<span class="text-rose-400">${item.name}</span>`
-        return `<span class="text-slate-200">${item.name}</span>`
+        if (item.ext === 'vue') return `<span class="text-emerald-600 dark:text-emerald-400 font-medium">${item.name}</span>`
+        if (item.ext === 'py') return `<span class="text-sky-600 dark:text-sky-300">${item.name}</span>`
+        if (item.ext === 'pdf') return `<span class="text-rose-600 dark:text-rose-400">${item.name}</span>`
+        return `<span class="text-slate-800 dark:text-slate-200">${item.name}</span>`
       })
 
       entry.output = items.join('   ') || 'Directory is empty'
@@ -535,7 +535,9 @@ const executeCommand = () => {
   background: transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+}
+:global(.dark) .scrollbar-thin::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
 }
 </style>

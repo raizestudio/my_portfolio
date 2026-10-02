@@ -12,7 +12,40 @@
     }
   },
   "apps": {
-    "about": "cv.pdf",
+    "about": {
+      "title": "cv.pdf",
+      "pageCounter": "Page {currentPage} sur {totalPages}",
+      "export": "Export as PDF",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "pages": "Pages",
+      "role": "Full-stack Developer",
+      "summary": "Summary",
+      "summaryDescription": "Full-stack Developer passionate about creating performant and resilient web solutions. I have had the chance to work on various projects, ranging from website design to performance optimization.",
+      "coreSkills": "Core Skills",
+      "backend": "Backend Architecture",
+      "frontend": "Frontend Ingenierie",
+      "footerRight": "Confidentiel - CV Professionnel",
+      "endOfDocument": "End of Document",
+      "proTimeline": "Professional Timeline",
+      "education": "Education and Tools",
+      "fullTime": "Full Time",
+      "present": "Present",
+      "roles": {
+        "fullStack": "Full Stack Developer",
+        "engineer": "Developer Engineer"
+      },
+      "experiences": {
+        "junior": "Junior",
+        "confirmed": "Confirmed",
+        "senior": "Senior"
+      },
+      "professionalExperiences": {
+        "wedev": {
+          "description": "Conception and development of web sites and web applications for car rental agencies."
+        }
+      }
+    },
     "projects": {
       "title": "Projects",
       "gridView": "Grid View",
@@ -34,6 +67,8 @@
       "items": "items"
     },
     "terminal": "Terminal",
-    "contact": "Contact"
+    "contact": {
+      "title": "Contact"
+    }
   }
 }

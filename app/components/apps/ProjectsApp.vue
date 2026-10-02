@@ -1,18 +1,18 @@
 <!-- components/apps/ProjectsApp.vue -->
 <template>
-  <div class="h-full flex flex-col bg-slate-900 text-slate-200 select-none overflow-hidden font-sans">
+  <div class="h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 select-none overflow-hidden font-sans transition-colors duration-200">
 
     <!-- Finder Toolbar -->
-    <div class="h-11 px-3 bg-slate-800/80 border-b border-white/10 flex items-center justify-between gap-3 text-xs shrink-0">
+    <div class="h-11 px-3 bg-gray-100/90 dark:bg-slate-800/80 border-b border-gray-200 dark:border-white/10 flex items-center justify-between gap-3 text-xs shrink-0 transition-colors duration-200">
 
       <!-- Navigation Controls & Path Breadcrumbs -->
       <div class="flex items-center gap-3 min-w-0">
         <!-- Back / Forward Buttons -->
-        <div class="flex items-center gap-1 text-slate-400 shrink-0">
+        <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 shrink-0">
           <button
             @click="goBack"
             :disabled="historyIndex <= 0"
-            class="p-1 hover:bg-white/10 rounded transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+            class="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
             title="Back"
           >
             <Icon name="lucide:chevron-left" class="w-4 h-4" />
@@ -20,7 +20,7 @@
           <button
             @click="goForward"
             :disabled="historyIndex >= history.length - 1"
-            class="p-1 hover:bg-white/10 rounded transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+            class="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
             title="Forward"
           >
             <Icon name="lucide:chevron-right" class="w-4 h-4" />
@@ -28,27 +28,27 @@
         </div>
 
         <!-- Breadcrumb Path Bar -->
-        <div class="flex items-center gap-1.5 text-slate-300 font-medium text-xs truncate">
+        <div class="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium text-xs truncate">
           <button
             v-for="(crumb, idx) in pathCrumbs"
             :key="crumb.id"
             @click="navigateTo(crumb.id)"
-            class="flex items-center gap-1 hover:text-white transition-colors py-0.5 px-1 rounded hover:bg-white/10 truncate"
+            class="flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition-colors py-0.5 px-1 rounded hover:bg-gray-200/70 dark:hover:bg-white/10 truncate"
           >
-            <Icon :name="idx === 0 ? 'lucide:folder' : 'lucide:folder-open'" class="w-3.5 h-3.5 text-sky-400 shrink-0" />
+            <Icon :name="idx === 0 ? 'lucide:folder' : 'lucide:folder-open'" class="w-3.5 h-3.5 text-sky-500 dark:text-sky-400 shrink-0" />
             <span class="truncate">{{ crumb.name }}</span>
-            <span v-if="idx < pathCrumbs.length - 1" class="text-slate-500 ml-1">/</span>
+            <span v-if="idx < pathCrumbs.length - 1" class="text-slate-400 dark:text-slate-500 ml-1">/</span>
           </button>
         </div>
       </div>
 
       <!-- View Toggles & Search -->
       <div class="flex items-center gap-3 shrink-0">
-        <div class="flex items-center bg-slate-950/50 p-0.5 rounded-lg border border-white/10">
+        <div class="flex items-center bg-white dark:bg-slate-950/50 p-0.5 rounded-lg border border-gray-300 dark:border-white/10 shadow-sm dark:shadow-none">
           <button
             @click="viewMode = 'grid'"
             class="p-1 rounded transition-colors"
-            :class="viewMode === 'grid' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'"
+            :class="viewMode === 'grid' ? 'bg-gray-200 dark:bg-white/20 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
             :title="appsProjectsGridViewText"
           >
             <Icon name="lucide:layout-grid" class="w-3.5 h-3.5" />
@@ -56,7 +56,7 @@
           <button
             @click="viewMode = 'list'"
             class="p-1 rounded transition-colors"
-            :class="viewMode === 'list' ? 'bg-white/20 text-white shadow' : 'text-slate-400 hover:text-white'"
+            :class="viewMode === 'list' ? 'bg-gray-200 dark:bg-white/20 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
             :title="appsProjectsListViewText"
           >
             <Icon name="lucide:list" class="w-3.5 h-3.5" />
@@ -65,12 +65,12 @@
 
         <!-- Search Input -->
         <div class="relative flex items-center">
-          <Icon name="lucide:search" class="w-3.5 h-3.5 absolute left-2 text-slate-400" />
+          <Icon name="lucide:search" class="w-3.5 h-3.5 absolute left-2 text-slate-400 dark:text-slate-500" />
           <input
             v-model="searchQuery"
             type="text"
             :placeholder="appsProjectsSearchText"
-            class="w-32 sm:w-44 pl-7 pr-2 py-1 bg-slate-950/60 border border-white/10 rounded-md text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-all"
+            class="w-32 sm:w-44 pl-7 pr-2 py-1 bg-white dark:bg-slate-950/60 border border-gray-300 dark:border-white/10 rounded-md text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-all shadow-sm dark:shadow-none"
           />
         </div>
       </div>
@@ -81,9 +81,9 @@
     <div class="flex-1 flex overflow-hidden">
 
       <!-- Finder Sidebar -->
-      <div class="w-44 bg-slate-950/40 border-r border-white/10 p-3 space-y-4 shrink-0 hidden sm:block text-[12px]">
+      <div class="w-44 bg-gray-50/80 dark:bg-slate-950/40 border-r border-gray-200 dark:border-white/10 p-3 space-y-4 shrink-0 hidden sm:block text-[12px] transition-colors duration-200">
         <div>
-          <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-2 mb-1">
+          <div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-2 mb-1">
             {{ appsProjectsFavoritesText }}
           </div>
           <div class="space-y-0.5">
@@ -91,9 +91,9 @@
             <button
               @click="navigateTo('root'); activeFilter = 'all'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="currentFolderId === 'root' && activeFilter === 'all' ? 'bg-sky-600/30 text-sky-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="currentFolderId === 'root' && activeFilter === 'all' ? 'bg-sky-500/15 dark:bg-sky-600/30 text-sky-700 dark:text-sky-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="lucide:hard-drive" class="w-4 h-4 text-sky-400" />
+              <Icon name="lucide:hard-drive" class="w-4 h-4 text-sky-500 dark:text-sky-400" />
               <span>{{ appsProjectsAllProjectsText }}</span>
             </button>
 
@@ -101,49 +101,49 @@
             <button
               @click="activeFilter = 'folders'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="activeFilter === 'folders' ? 'bg-sky-600/30 text-sky-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="activeFilter === 'folders' ? 'bg-amber-500/15 dark:bg-sky-600/30 text-amber-700 dark:text-sky-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="lucide:folder" class="w-4 h-4 text-amber-400" />
+              <Icon name="lucide:folder" class="w-4 h-4 text-amber-500 dark:text-amber-400" />
               <span>{{ appsProjectsFoldersText }}</span>
             </button>
             <button
               @click="activeFilter = 'html'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="activeFilter === 'html' ? 'bg-sky-600/30 text-sky-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="activeFilter === 'html' ? 'bg-orange-500/15 dark:bg-sky-600/30 text-orange-700 dark:text-sky-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="simple-icons:html5" class="w-4 h-4 text-orange-400" />
+              <Icon name="simple-icons:html5" class="w-4 h-4 text-orange-500 dark:text-orange-400" />
               <span>{{ appsProjectsWebText }} (.html)</span>
             </button>
             <button
               @click="activeFilter = 'vue'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="activeFilter === 'vue' ? 'bg-green-600/30 text-green-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="activeFilter === 'vue' ? 'bg-emerald-500/15 dark:bg-green-600/30 text-emerald-700 dark:text-green-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="simple-icons:vuedotjs" class="w-4 h-4 text-green-400" />
+              <Icon name="simple-icons:vuedotjs" class="w-4 h-4 text-emerald-500 dark:text-green-400" />
               <span>{{ appsProjectsVueText }} (.vue)</span>
             </button>
             <button
               @click="activeFilter = 'python'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="activeFilter === 'python' ? 'bg-sky-600/30 text-sky-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="activeFilter === 'python' ? 'bg-sky-500/15 dark:bg-sky-600/30 text-sky-700 dark:text-sky-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="simple-icons:python" class="w-4 h-4 text-sky-400" />
+              <Icon name="simple-icons:python" class="w-4 h-4 text-sky-500 dark:text-sky-400" />
               <span>{{ appsProjectsPythonText }} (.py)</span>
             </button>
             <button
               @click="activeFilter = 'scripts'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="activeFilter === 'scripts' ? 'bg-emerald-600/30 text-emerald-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="activeFilter === 'scripts' ? 'bg-emerald-500/15 dark:bg-emerald-600/30 text-emerald-700 dark:text-emerald-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="simple-icons:gnubash" class="w-4 h-4 text-emerald-400" />
+              <Icon name="simple-icons:gnubash" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
               <span>{{ appsProjectsScriptsText }} (.sh)</span>
             </button>
             <button
               @click="activeFilter = 'markdown'"
               class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-left transition-colors"
-              :class="activeFilter === 'markdown' ? 'bg-gray-600/30 text-gray-200 font-medium' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'"
+              :class="activeFilter === 'markdown' ? 'bg-slate-500/15 dark:bg-gray-600/30 text-slate-700 dark:text-gray-200 font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-gray-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'"
             >
-              <Icon name="simple-icons:markdown" class="w-4 h-4 text-gray-400" />
+              <Icon name="simple-icons:markdown" class="w-4 h-4 text-slate-500 dark:text-gray-400" />
               <span>{{ appsProjectsMarkdownText }} (.md)</span>
             </button>
           </div>
@@ -151,7 +151,7 @@
       </div>
 
       <!-- File & Folder Browser Area -->
-      <div class="flex-1 flex overflow-hidden bg-slate-900/60">
+      <div class="flex-1 flex overflow-hidden bg-white/60 dark:bg-slate-900/60 transition-colors duration-200">
 
         <!-- Display Area -->
         <div class="flex-1 p-4 overflow-y-auto">
@@ -169,33 +169,33 @@
               class="group flex flex-col items-center p-2.5 rounded-xl cursor-pointer border transition-all"
               :class="[
                 selectedItemId === item.id
-                  ? 'bg-sky-600/25 border-sky-500/50 ring-1 ring-sky-400/50'
-                  : 'bg-transparent border-transparent hover:bg-white/5'
+                  ? 'bg-sky-500/15 dark:bg-sky-600/25 border-sky-500/50 ring-1 ring-sky-400/50'
+                  : 'bg-transparent border-transparent hover:bg-gray-200/50 dark:hover:bg-white/5'
               ]"
             >
               <!-- Item Icon Tile -->
               <!-- FOLDER ICON -->
               <div
                 v-if="item.type === 'folder'"
-                class="relative w-14 h-14 bg-amber-500/10 border border-amber-500/30 rounded-2xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform shrink-0"
+                class="relative w-14 h-14 bg-amber-500/10 border border-amber-500/30 rounded-2xl shadow-md dark:shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform shrink-0"
               >
-                <Icon name="lucide:folder-closed" class="w-8 h-8 text-amber-400 group-hover:hidden" />
-                <Icon name="lucide:folder-open" class="w-8 h-8 text-amber-300 hidden group-hover:block" />
+                <Icon name="lucide:folder-closed" class="w-8 h-8 text-amber-500 dark:text-amber-400 group-hover:hidden" />
+                <Icon name="lucide:folder-open" class="w-8 h-8 text-amber-600 dark:text-amber-300 hidden group-hover:block" />
               </div>
 
               <!-- FILE ICON -->
               <div
                 v-else
-                class="relative w-12 h-14 bg-slate-800 rounded-lg border border-white/10 shadow-lg flex flex-col items-center justify-center group-hover:scale-105 transition-transform shrink-0"
+                class="relative w-12 h-14 bg-gray-100 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-white/10 shadow-md dark:shadow-lg flex flex-col items-center justify-center group-hover:scale-105 transition-transform shrink-0"
               >
                 <Icon :name="getItemIcon(item)" :class="getItemIconColor(item)" class="w-6 h-6 mb-0.5" />
-                <span class="text-[8px] font-mono font-bold uppercase text-slate-400 bg-slate-950/80 px-1 py-0.2 rounded">
+                <span class="text-[8px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400 bg-gray-200/80 dark:bg-slate-950/80 px-1 py-0.2 rounded">
                   .{{ item.ext }}
                 </span>
               </div>
 
               <!-- Item Name -->
-              <span class="mt-2 text-[11px] font-medium text-center text-slate-200 line-clamp-2 leading-tight w-full break-words">
+              <span class="mt-2 text-[11px] font-medium text-center text-slate-800 dark:text-slate-200 line-clamp-2 leading-tight w-full break-words">
                 {{ item.name }}
               </span>
             </div>
@@ -211,15 +211,15 @@
               class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer border text-xs transition-colors"
               :class="[
                 selectedItemId === item.id
-                  ? 'bg-sky-600/30 border-sky-500/50'
-                  : 'bg-transparent border-transparent hover:bg-white/5'
+                  ? 'bg-sky-500/15 dark:bg-sky-600/30 border-sky-500/50'
+                  : 'bg-transparent border-transparent hover:bg-gray-200/50 dark:hover:bg-white/5'
               ]"
             >
               <div class="flex items-center gap-3">
                 <Icon
                   v-if="item.type === 'folder'"
                   name="lucide:folder"
-                  class="w-4 h-4 text-amber-400"
+                  class="w-4 h-4 text-amber-500 dark:text-amber-400"
                 />
                 <Icon
                   v-else
@@ -227,9 +227,9 @@
                   :class="getItemIconColor(item)"
                   class="w-4 h-4"
                 />
-                <span class="font-medium text-slate-200">{{ item.name }}</span>
+                <span class="font-medium text-slate-800 dark:text-slate-200">{{ item.name }}</span>
               </div>
-              <div class="flex items-center gap-4 text-slate-400 font-mono text-[11px]">
+              <div class="flex items-center gap-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
                 <span>{{ item.type === 'folder' ? `${getChildCount(item.id)} items` : item.size }}</span>
                 <span>{{ item.updatedAt }}</span>
               </div>
@@ -237,7 +237,7 @@
           </div>
 
           <!-- Empty State -->
-          <div v-if="visibleItems.length === 0" class="h-full flex flex-col items-center justify-center text-slate-500 py-12">
+          <div v-if="visibleItems.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-12">
             <Icon name="lucide:folder-open" class="w-10 h-10 mb-2 opacity-50" />
             <p class="text-xs">{{ appsProjectsNoSearchMatchText }}</p>
           </div>
@@ -247,52 +247,52 @@
         <!-- Right File/Folder Inspector (macOS Quick Inspector Pane) -->
         <div
           v-if="selectedItem"
-          class="w-64 bg-slate-950/50 border-l border-white/10 p-4 flex flex-col justify-between shrink-0 hidden md:flex text-xs"
+          class="w-64 bg-gray-50/90 dark:bg-slate-950/50 border-l border-gray-200 dark:border-white/10 p-4 flex flex-col justify-between shrink-0 hidden md:flex text-xs transition-colors duration-200"
         >
           <div class="space-y-4">
             <!-- Large Preview Icon -->
             <div class="flex flex-col items-center pt-2">
               <!-- Folder Selected -->
               <template v-if="selectedItem.type === 'folder'">
-                <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center shadow-xl mb-3">
-                  <Icon name="lucide:folder-open" class="w-9 h-9 text-amber-400" />
+                <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-center shadow-lg mb-3">
+                  <Icon name="lucide:folder-open" class="w-9 h-9 text-amber-500 dark:text-amber-400" />
                 </div>
-                <h4 class="font-bold text-slate-100 text-center text-sm leading-tight">
+                <h4 class="font-bold text-slate-900 dark:text-slate-100 text-center text-sm leading-tight">
                   {{ selectedItem.title || selectedItem.name }}
                 </h4>
-                <p class="text-[11px] font-mono text-amber-400/80 mt-0.5">Folder • {{ getChildCount(selectedItem.id) }} items</p>
+                <p class="text-[11px] font-mono text-amber-600 dark:text-amber-400/80 mt-0.5">Folder • {{ getChildCount(selectedItem.id) }} items</p>
               </template>
 
               <!-- File Selected -->
               <template v-else>
-                <div class="w-16 h-20 bg-slate-800 rounded-xl border border-white/15 flex flex-col items-center justify-center shadow-xl mb-3">
+                <div class="w-16 h-20 bg-gray-100 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/15 flex flex-col items-center justify-center shadow-lg mb-3">
                   <Icon :name="getItemIcon(selectedItem)" :class="getItemIconColor(selectedItem)" class="w-9 h-9 mb-1" />
-                  <span class="text-[10px] font-mono font-bold uppercase text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded">
+                  <span class="text-[10px] font-mono font-bold uppercase text-slate-500 dark:text-slate-400 bg-gray-200 dark:bg-slate-900 px-1.5 py-0.5 rounded">
                     .{{ selectedItem.ext }}
                   </span>
                 </div>
-                <h4 class="font-bold text-slate-100 text-center text-sm leading-tight">
+                <h4 class="font-bold text-slate-900 dark:text-slate-100 text-center text-sm leading-tight">
                   {{ selectedItem.title }}
                 </h4>
-                <p class="text-[11px] font-mono text-slate-400 mt-0.5">{{ selectedItem.name }}</p>
+                <p class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">{{ selectedItem.name }}</p>
               </template>
             </div>
 
-            <div class="border-t border-white/10 pt-3 space-y-2">
+            <div class="border-t border-gray-200 dark:border-white/10 pt-3 space-y-2">
               <div>
-                <span class="text-slate-500 text-[10px] uppercase font-semibold">{{ appsProjectsDescriptionText }}</span>
-                <p class="text-slate-300 text-[11px] leading-relaxed mt-0.5">
+                <span class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-semibold">{{ appsProjectsDescriptionText }}</span>
+                <p class="text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed mt-0.5">
                   {{ selectedItem.description || 'No description available.' }}
                 </p>
               </div>
 
               <div v-if="selectedItem.type === 'file' && selectedItem.techStack">
-                <span class="text-slate-500 text-[10px] uppercase font-semibold">{{ appsProjectsStackText }}</span>
+                <span class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-semibold">{{ appsProjectsStackText }}</span>
                 <div class="flex flex-wrap gap-1 mt-1 font-mono text-[10px]">
                   <span
                     v-for="tech in selectedItem.techStack"
                     :key="tech"
-                    class="bg-white/10 text-sky-300 px-1.5 py-0.5 rounded"
+                    class="bg-gray-200/80 dark:bg-white/10 text-sky-700 dark:text-sky-300 px-1.5 py-0.5 rounded"
                   >
                     {{ tech }}
                   </span>
@@ -302,12 +302,12 @@
           </div>
 
           <!-- Quick Actions -->
-          <div class="pt-4 border-t border-white/10 space-y-2">
+          <div class="pt-4 border-t border-gray-200 dark:border-white/10 space-y-2">
             <!-- Folder Action -->
             <button
               v-if="selectedItem.type === 'folder'"
               @click="navigateTo(selectedItem.id)"
-              class="w-full bg-amber-600 hover:bg-amber-500 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+              class="w-full bg-amber-600 hover:bg-amber-500 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <span>Open Folder</span>
               <Icon name="lucide:folder-open" class="w-3.5 h-3.5" />
@@ -319,7 +319,7 @@
                 v-if="selectedItem.demoUrl"
                 :href="selectedItem.demoUrl"
                 target="_blank"
-                class="w-full bg-sky-600 hover:bg-sky-500 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                class="w-full bg-sky-600 hover:bg-sky-500 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
                 <span>{{ appsProjectsOpenWebsiteText }}</span>
                 <Icon name="lucide:external-link" class="w-3.5 h-3.5" />
@@ -327,7 +327,7 @@
 
               <button
                 @click="openProject(selectedItem)"
-                class="w-full bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-200 font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+                class="w-full bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-300 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm dark:shadow-none cursor-pointer"
               >
                 <span>{{ appsProjectsQuickViewText }}</span>
                 <Icon name="lucide:eye" class="w-3.5 h-3.5" />
@@ -341,7 +341,7 @@
     </div>
 
     <!-- Bottom Status Bar -->
-    <div class="h-6 px-3 bg-slate-950 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
+    <div class="h-6 px-3 bg-gray-100 dark:bg-slate-950 border-t border-gray-200 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 shrink-0 font-mono transition-colors duration-200">
       <span>{{ visibleItems.length }} {{ appsProjectsItemsText }}</span>
       <span v-if="selectedItem">{{ selectedItem.name }} — {{ selectedItem.type === 'folder' ? 'Folder' : selectedItem.size }}</span>
     </div>
@@ -357,7 +357,7 @@ const { t } = useI18n()
 // View & Navigation State
 const viewMode = ref('grid') // 'grid' | 'list'
 const searchQuery = ref('')
-const activeFilter = ref('all') // 'all' | 'folders' | 'html' | 'python' | 'scripts'
+const activeFilter = ref('all') // 'all' | 'folders' | 'html' | 'vue' | 'python' | 'scripts' | 'markdown'
 const currentFolderId = ref('root')
 const selectedItemId = ref(null)
 
@@ -415,42 +415,6 @@ const fileSystem = ref([
     description: 'Solutions logiciels facilitant le déploiement de la fibre optique pour le compte de TDF',
     updatedAt: 'Sep 24, 2026'
   },
-  // {
-  //   id: 'folder-nexus-store',
-  //   parentId: 'root',
-  //   name: 'nexus-storefront',
-  //   type: 'folder',
-  //   title: 'Nexus E-Commerce Platform',
-  //   description: 'Full-stack storefront with Nuxt 3, Stripe integration, and Payload CMS.',
-  //   updatedAt: 'Sep 28, 2026'
-  // },
-
-  // Root Files
-  // {
-  //   id: 'file-portfolio-os',
-  //   parentId: 'root',
-  //   name: 'portfolio-os.html',
-  //   type: 'file',
-  //   ext: 'html',
-  //   title: 'macOS Web Desktop',
-  //   description: 'Interactive web operating system portfolio built with Nuxt 3, Vue 3, and Tailwind CSS.',
-  //   techStack: ['Nuxt 3', 'Vue 3', 'TailwindCSS'],
-  //   size: '88 KB',
-  //   updatedAt: 'Sep 29, 2026',
-  //   demoUrl: '#'
-  // },
-  // {
-  //   id: 'file-deploy-script',
-  //   parentId: 'root',
-  //   name: 'deploy_cluster.sh',
-  //   type: 'file',
-  //   ext: 'sh',
-  //   title: 'K8s Cluster Deployer',
-  //   description: 'Shell script utility for initializing microservice environments on Kubernetes.',
-  //   techStack: ['Bash', 'Docker', 'Kubernetes'],
-  //   size: '4 KB',
-  //   updatedAt: 'Jul 10, 2026'
-  // },
 
   // Items Inside WeDev Folder
   {
@@ -482,7 +446,7 @@ const fileSystem = ref([
   {
     id: 'helios_admin',
     parentId: 'wedev',
-    name: 'helios_admin.py',
+    name: 'helios_admin.vue',
     type: 'file',
     ext: 'vue',
     title: 'Helios Admin',
@@ -516,65 +480,13 @@ const fileSystem = ref([
     techStack: ['Markdown'],
     size: '11 KB',
     updatedAt: 'Sep 24, 2026',
-  },
-  // {
-  //   id: 'loc-file-demo',
-  //   parentId: 'folder-location-engine',
-  //   name: 'index.html',
-  //   type: 'file',
-  //   ext: 'html',
-  //   title: 'Location Sandbox UI',
-  //   description: 'Interactive Leaflet.js map client for semantic location search.',
-  //   techStack: ['HTML5', 'Tailwind', 'Leaflet.js'],
-  //   size: '114 KB',
-  //   updatedAt: 'Sep 24, 2026',
-  //   demoUrl: 'https://example.com'
-  // },
-  // {
-  //   id: 'loc-file-env',
-  //   parentId: 'folder-location-engine',
-  //   name: 'docker-compose.yml',
-  //   type: 'file',
-  //   ext: 'yml',
-  //   title: 'Docker Service Stack',
-  //   description: 'Container setup for Postgres, pgvector extension, and FastAPI workers.',
-  //   techStack: ['Docker', 'YAML'],
-  //   size: '2.5 KB',
-  //   updatedAt: 'Sep 20, 2026'
-  // },
-
-  // Items Inside nexus-storefront Folder
-  // {
-  //   id: 'nex-file-app',
-  //   parentId: 'folder-nexus-store',
-  //   name: 'app.vue',
-  //   type: 'file',
-  //   ext: 'vue',
-  //   title: 'Nuxt Storefront Application',
-  //   description: 'Client application handling SSR, shopping cart, and product routing.',
-  //   techStack: ['Nuxt 3', 'Vue 3', 'Pinia', 'Tailwind'],
-  //   size: '45 KB',
-  //   updatedAt: 'Sep 28, 2026'
-  // },
-  // {
-  //   id: 'nex-file-stripe',
-  //   parentId: 'folder-nexus-store',
-  //   name: 'checkout.py',
-  //   type: 'file',
-  //   ext: 'py',
-  //   title: 'Stripe Webhook Handler',
-  //   description: 'Secure payment handler and order fulfillment pipeline.',
-  //   techStack: ['Python', 'Stripe API'],
-  //   size: '16 KB',
-  //   updatedAt: 'Sep 27, 2026'
-  // }
+  }
 ])
 
 // Navigation Methods
 const navigateTo = (folderId) => {
   if (currentFolderId.value === folderId) return
 
-  // Truncate forward history if navigating from a past point
   history.value = history.value.slice(0, historyIndex.value + 1)
   history.value.push(folderId)
   historyIndex.value = history.value.length - 1
@@ -670,11 +582,11 @@ const getItemIcon = (item) => {
 
 const getItemIconColor = (item) => {
   switch (item.ext) {
-    case 'html': return 'text-orange-400'
-    case 'py': return 'text-sky-400'
-    case 'sh': return 'text-emerald-400'
-    case 'vue': return 'text-emerald-500'
-    case 'yml': return 'text-purple-400'
+    case 'html': return 'text-orange-500 dark:text-orange-400'
+    case 'py': return 'text-sky-500 dark:text-sky-400'
+    case 'sh': return 'text-emerald-500 dark:text-emerald-400'
+    case 'vue': return 'text-emerald-600 dark:text-emerald-500'
+    case 'yml': return 'text-purple-500 dark:text-purple-400'
     default: return 'text-slate-400'
   }
 }

@@ -12,7 +12,40 @@
     }
   },
   "apps": {
-    "about": "cv.pdf",
+    "about": {
+      "title": "cv.pdf",
+      "pageCounter": "Page {currentPage} sur {totalPages}",
+      "export": "Exporter en PDF",
+      "zoomIn": "Zoomer",
+      "zoomOut": "Dézoomer",
+      "pages": "Pages",
+      "role": "Développeur Full-stack",
+      "summary": "Bio",
+      "summaryDescription": "Développeur Full-stack passionné par la création de solutions web performantes et résilientes. J'ai eu la chance de travailler sur des projets variés, allant de la conception de sites web à l'optimisation de performances.",
+      "coreSkills": "Compétences",
+      "backend": "Architecture Backend",
+      "frontend": "Ingénierie Frontend",
+      "footerRight": "Confidentiel - CV Professionnel",
+      "endOfDocument": "Fin du document",
+      "proTimeline": "Timeline Professionnel",
+      "education": "Éducation et Outils",
+      "fullTime": "Temps plein",
+      "present": "Présent",
+      "roles": {
+        "fullStack": "Développeur Full-stack",
+        "engineer": "Ingénieur Développeur"
+      },
+      "experiences": {
+        "junior": "Junior",
+        "confimed": "Confirmé",
+        "senior": "Senior"
+      },
+      "professionalExperiences": {
+        "wedev": {
+          "description": "Conception et développement de sites web et applications web à destination des loueurs de voiture."
+        }
+      }
+    },
     "projects": {
       "title": "Projets",
       "gridView": "Vue grille",
@@ -34,6 +67,8 @@
       "items": "items"
     },
     "terminal": "Terminal",
-    "contact": "Contact"
+    "contact": {
+      "title": "Contact"
+    }
   }
 }
