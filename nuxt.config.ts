@@ -4,7 +4,13 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ["@nuxt/icon", "@nuxtjs/i18n", "@vueuse/nuxt"],
+  modules: [
+    "@nuxt/icon",
+    "@nuxtjs/i18n",
+    "@vueuse/nuxt",
+    "@nuxtjs/seo",
+    "nuxt-ai-ready",
+  ],
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
@@ -20,15 +26,30 @@ export default defineNuxtConfig({
       { code: "fr", language: "fr-FR", file: "fr.json" },
     ],
     defaultLocale: "fr",
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "i18n_redirected",
+    },
     langDir: "locales/",
     strategy: "prefix_except_default",
   },
+  site: {
+    url: "https://joelpinho.fr",
+    name: "Joel PINHO | Portfolio",
+  },
+  aiReady: {
+    contentSignal: {
+      aiTrain: true,
+      search: true,
+      aiInput: true,
+    },
+  },
   app: {
     head: {
-      htmlAttrs: {
-        lang: "fr",
-      },
-      title: "Joel PINHO | Portfolio",
+      // htmlAttrs: {
+      //   lang: "fr",
+      // },
+      // title: "Joel PINHO | Portfolio",
       meta: [
         {
           name: "description",
@@ -46,7 +67,7 @@ export default defineNuxtConfig({
           property: "og:image",
           content: "https://joelpinho.fr/assets/images/profile.webp",
         },
-        { property: "og:url", content: "https://joelpinho.fr" },
+        // { property: "og:url", content: "https://joelpinho.fr" },
         {
           name: "twitter:title",
           content: "Joel PINHO | Portfolio",
