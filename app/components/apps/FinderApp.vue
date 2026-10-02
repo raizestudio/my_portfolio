@@ -366,6 +366,7 @@ const fileSystem = ref([
     title: 'About Me & Resume',
     description: 'Full-stack developer resume & summary PDF.',
     size: '1.2 MB',
+    tag: 'featured',
     updatedAt: 'Oct 01, 2026'
   },
   {

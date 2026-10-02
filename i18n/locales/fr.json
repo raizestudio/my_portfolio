@@ -132,6 +132,12 @@
         "requiredMessage": "Le corps du message ne peut pas être vide."
       },
       "errorSending": "Erreur lors de l'envoi du message. Veuillez réessayer."
+    },
+    "dice": {
+      "title": "Dice"
+    },
+    "zed": {
+      "title": "Zed"
     }
   }
 }

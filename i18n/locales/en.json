@@ -132,6 +132,12 @@
         "requiredMessage": "Message body cannot be empty."
       },
       "errorSending": "Error sending message. Please try again."
+    },
+    "dice": {
+      "title": "Dice"
+    },
+    "zed": {
+      "title": "Zed"
     }
   }
 }

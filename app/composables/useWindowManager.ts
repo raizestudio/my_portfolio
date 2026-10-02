@@ -56,6 +56,32 @@ export const useWindowManager = () => {
       size: { width: 650, height: 480 },
       iconPosition: { x: 24, y: 384 },
     },
+    {
+      id: "dice",
+      titleKey: "apps.dice.title",
+      icon: "lucide:dices",
+      component: "DiceApp",
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: 10,
+      position: { x: 160, y: 180 },
+      size: { width: 650, height: 500 },
+      iconPosition: { x: 24, y: 496 },
+    },
+    {
+      id: "zed",
+      titleKey: "apps.zed.title",
+      icon: "simple-icons:zedindustries",
+      component: "ZedApp",
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: 10,
+      position: { x: 120, y: 120 },
+      size: { width: 750, height: 500 },
+      iconPosition: { x: 24, y: 608 },
+    },
   ]);
 
   // Dynamically resolve `title` using `t()` whenever `locale` changes

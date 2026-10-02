@@ -57,6 +57,8 @@ import AboutApp from "~/components/apps/AboutApp.vue"
 import TerminalApp from "~/components/apps/TerminalApp.vue"
 import ContactApp from "~/components/apps/ContactApp.vue"
 import Spotlight from "~/components/desktop/Spotlight.vue"
+import DiceApp from "~/components/apps/DiceApp.vue"
+import ZedApp from "~/components/apps/ZedApp.vue"
 
 const { windows, openWindow, toggleSpotlight } = useWindowManager()
 const { t } = useI18n()
@@ -71,6 +73,8 @@ const componentsMap: Record<string, any> = {
   TerminalApp,
   AboutApp,
   ContactApp,
+  DiceApp,
+  ZedApp,
 }
 
 const getComponent = (name: string) => componentsMap[name]

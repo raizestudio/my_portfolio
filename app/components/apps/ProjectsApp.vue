@@ -431,7 +431,7 @@ const fileSystem = ref([
     demoUrl: 'https://gaia.we-dev.io'
   },
   {
-    id: 'europcarmb',
+    id: 'europcar_mb',
     parentId: 'wedev',
     name: 'europcar_mb.vue',
     type: 'file',
