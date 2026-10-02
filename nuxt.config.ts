@@ -64,13 +64,20 @@ export default defineNuxtConfig({
           content: "summary_large_image",
         },
       ],
-      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+      link: [
+        {
+          rel: "icon",
+          type: "image/png",
+          sizes: "192x192",
+          href: "/favicon-192x192.png",
+        },
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      ],
     },
   },
   runtimeConfig: {
     resendApiKey: process.env.RESEND_API_KEY,
 
-    public: {
-    },
+    public: {},
   },
 });
