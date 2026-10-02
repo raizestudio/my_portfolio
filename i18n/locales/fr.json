@@ -88,7 +88,50 @@
     },
     "terminal": "Terminal",
     "contact": {
-      "title": "Contact"
+      "title": "Contact",
+      "send": "Envoyer",
+      "copyEmail": "Copier l'email",
+      "copiedEmail": "Email copié !",
+      "openInDefaultEmailClient": "Ouvrir dans le client de messagerie par défaut",
+      "to": "À",
+      "from": "De",
+      "fromPlaceholder": "votre{'@'}email.com",
+      "yourNamePlaceholder": "Votre nom (facultatif)",
+      "subject": "Objet",
+      "subjectPlaceholder": "Objet du message",
+      "newMessagePlaceholder": "Tapez votre message ici...",
+      "quickTemplates": "Modèles rapides",
+      "templatesOptions": {
+        "project": "💼 Projet",
+        "job": "🚀 Job",
+        "coffee": "☕ Café"
+      },
+      "templates": {
+        "project": {
+          "subject": "Demande de collaboration — Projet Web",
+          "body": "Bonjour Joel,\n\nJ'ai découvert ton profil et je souhaiterais échanger avec toi concernant la réalisation d'un projet web.\n\nAperçu du projet :\n- Objectif : [Décris brièvement ton besoin]\n- Calendrier : [Ex: Dès que possible, Q4 2026...]\n- Stack / Technos : [Ex: Nuxt, Vue, Python...]\n\nSerais-tu disponible pour un court échange afin d'en discuter ?"
+        },
+        "job": {
+          "subject": "Opportunité de poste — Développeur Full Stack",
+          "body": "Bonjour Joel,\n\nNous sommes actuellement à la recherche d'un Développeur Full Stack pour rejoindre notre équipe chez [Nom de l'entreprise].\n\nAu vu de ton parcours et de tes réalisations, ton profil a particulièrement retenu notre attention.\n\nSerais-tu disponible pour un premier échange téléphonique afin de faire connaissance ?"
+        },
+        "coffee": {
+          "subject": "Échange réseau — Retour sur ton portfolio",
+          "body": "Bonjour Joel,\n\nJe viens de parcourir ton portfolio interactif style macOS, félicitations pour la qualité de réalisation et le soin apporté aux détails !\n\nÉgalement passionné par le développement web, j'aimerais beaucoup échanger avec toi autour de nos retours d'expérience.\n\nAu plaisir de discuter autour d'un café virtuel !"
+        }
+      },
+      "messageDelivered": "Message transmis !",
+      "messageThanks": "Merci pour votre message ! Je vous répondrai bientôt",
+      "messageTo": "Envoyé à",
+      "newMessage": "Composez un nouveau message",
+      "outboxStatus": "Boîte d'envoi: Prête",
+      "fieldErrors": {
+        "requiredEmail": "Adresse email requise.",
+        "invalidEmail": "Adresse email invalide (ex: nom{'@'}domaine.com).",
+        "requiredSubject": "Sujet du message requis.",
+        "requiredMessage": "Le corps du message ne peut pas être vide."
+      },
+      "errorSending": "Erreur lors de l'envoi du message. Veuillez réessayer."
     }
   }
 }

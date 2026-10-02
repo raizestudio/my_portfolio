@@ -10,23 +10,23 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
   routeRules: {
-      '/api/export-pdf': {
-        isr: false,
-      },
+    "/api/export-pdf": {
+      isr: false,
     },
+  },
   i18n: {
     locales: [
       { code: "en", language: "en-US", file: "en.json" },
       { code: "fr", language: "fr-FR", file: "fr.json" },
     ],
-    defaultLocale: 'fr',
-    langDir: 'locales/',
-    strategy: 'prefix_except_default',
+    defaultLocale: "fr",
+    langDir: "locales/",
+    strategy: "prefix_except_default",
   },
   app: {
     head: {
       htmlAttrs: {
-        lang: 'fr',
+        lang: "fr",
       },
       title: "Joel PINHO | Portfolio",
       meta: [
@@ -35,34 +35,42 @@ export default defineNuxtConfig({
           content: "Portfolio de Joel PINHO, développeur Full-stack.",
         },
         {
-          name: 'og:title',
-          content: 'Joel PINHO | Portfolio',
+          name: "og:title",
+          content: "Joel PINHO | Portfolio",
         },
         {
-          name: 'og:description',
-          content: 'Portfolio de Joel PINHO, développeur Full-stack.',
-        },
-        { property: 'og:image', content: 'https://joelpinho.fr/assets/images/profile.webp' },
-        { property: 'og:url', content: 'https://joelpinho.fr' },
-        {
-          name: 'twitter:title',
-          content: 'Joel PINHO | Portfolio',
+          name: "og:description",
+          content: "Portfolio de Joel PINHO, développeur Full-stack.",
         },
         {
-          name: 'twitter:description',
-          content: 'Portfolio de Joel PINHO, développeur Full-stack.',
+          property: "og:image",
+          content: "https://joelpinho.fr/assets/images/profile.webp",
+        },
+        { property: "og:url", content: "https://joelpinho.fr" },
+        {
+          name: "twitter:title",
+          content: "Joel PINHO | Portfolio",
         },
         {
-          name: 'twitter:image',
-          content: 'https://joelpinho.fr/assets/images/profile.webp',
+          name: "twitter:description",
+          content: "Portfolio de Joel PINHO, développeur Full-stack.",
         },
         {
-          name: 'twitter:card',
-          content: 'summary_large_image',
+          name: "twitter:image",
+          content: "https://joelpinho.fr/assets/images/profile.webp",
+        },
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
         },
       ],
       link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+    },
+  },
+  runtimeConfig: {
+    resendApiKey: process.env.RESEND_API_KEY,
 
+    public: {
     },
   },
 });

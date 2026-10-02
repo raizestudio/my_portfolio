@@ -88,7 +88,50 @@
     },
     "terminal": "Terminal",
     "contact": {
-      "title": "Contact"
+      "title": "Contact",
+      "send": "Send",
+      "copyEmail": "Copy Email",
+      "copiedEmail": "Email copied!",
+      "openInDefaultEmailClient": "Open in Default Email Client",
+      "to": "To",
+      "from": "From",
+      "fromPlaceholder": "your{'@'}email.com",
+      "yourNamePlaceholder": "Your Name (Optional)",
+      "subject": "Subject",
+      "subjectPlaceholder": "Subject of the message",
+      "newMessagePlaceholder": "Type your message here...",
+      "quickTemplates": "Quick Templates",
+      "templatesOptions": {
+        "project": "💼 Project",
+        "job": "🚀 Job",
+        "coffee": "☕ Coffee"
+      },
+      "templates": {
+        "project": {
+          "subject": "Project Inquiry — Web Development",
+          "body": "Hi Joel,\n\nI came across your profile and would love to discuss a potential web development project with you.\n\nProject Overview:\n- Goal/Scope: [Briefly describe your project]\n- Timeline: [e.g., As soon as possible, Q4 2026...]\n- Preferred Stack: [e.g., Nuxt, Vue, Python...]\n\nWould you be available for a quick call to chat about this?"
+        },
+        "job": {
+          "subject": "Career Opportunity — Full Stack Developer Role",
+          "body": "Hi Joel,\n\nWe are currently looking for a Full Stack Developer to join our team at [Company Name].\n\nGiven your engineering background and project highlights, your profile caught our attention.\n\nWould you be open to a brief introductory call to discuss the role?"
+        },
+        "coffee": {
+          "subject": "Networking — Loved your portfolio!",
+          "body": "Hi Joel,\n\nI just checked out your interactive macOS web desktop portfolio — incredible work on the execution and attention to detail!\n\nAs a fellow web enthusiast, I'd love to connect and chat about tech, UI/UX, or engineering in general.\n\nLooking forward to connecting over a virtual coffee!"
+        }
+      },
+      "messageDelivered": "Message delivered!",
+      "messageThanks": "Thank you for your message! I will get back to you soon",
+      "messageTo": "Sent to",
+      "newMessage": "Compose another message",
+      "outboxStatus": "Outbox: Ready",
+      "fieldErrors": {
+        "requiredEmail": "Email is required.",
+        "invalidEmail": "Invalid email address (e.g., nom{'@'}domaine.com).",
+        "requiredSubject": "Subject is required.",
+        "requiredMessage": "Message body cannot be empty."
+      },
+      "errorSending": "Error sending message. Please try again."
     }
   }
 }
