@@ -4,7 +4,6 @@
     <div
       v-if="isOpen"
       class="fixed top-8 right-2 sm:right-3 w-80 sm:w-[360px] max-h-[calc(100vh-3rem)] overflow-y-auto  p-3 text-slate-100 z-[150] space-y-3 font-sans transition-colors duration-200 custom-scrollbar transform-gpu"
-      style="-webkit-backdrop-filter: blur(32px) saturate(180%);"
     >
       <!-- Header Title -->
       <div class="flex items-center justify-between px-1 text-slate-100 font-semibold text-xs">
