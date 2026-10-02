@@ -4,7 +4,7 @@
     <!-- macOS Translucent Dock Container -->
     <div
       ref="dockRef"
-      class="flex items-end gap-0.5 sm:gap-1 px-1.5 sm:px-3 pb-1.5 sm:pb-2 pt-2 sm:pt-2.5 max-w-[calc(100vw-1rem)] overflow-x-auto custom-scrollbar-none bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-180 border border-white/20 ring-1 ring-white/10 rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.6)] transform-gpu"
+      class="flex items-end gap-0.5 sm:gap-1 px-1.5 sm:px-3 pb-1.5 sm:pb-2 pt-2 sm:pt-2.5 max-w-[calc(100vw-1rem)] sm:max-w-max overflow-x-auto sm:overflow-visible custom-scrollbar-none bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-180 border border-white/20 ring-1 ring-white/10 rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.6)]"
       style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
       @mousemove="handleMouseMove"
       @mouseleave="handleMouseLeave"
@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useWindowManager } from '~/composables/useWindowManager'
 
 const { windows, activeWindowId, openWindow, closeWindow, toggleMinimize, focusWindow } = useWindowManager()

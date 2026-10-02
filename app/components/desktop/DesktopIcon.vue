@@ -16,7 +16,7 @@
   >
     <!-- Icon Tile -->
     <div class="w-14 h-14 rounded-2xl bg-slate-900/40 border border-white/15 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:scale-105 transition-transform">
-      <Icon :name="win.icon" class="w-8 h-8 text-white drop-shadow-md" />
+      <Icon :name="win.icon" class="w-16 h-16 text-white drop-shadow-md" />
     </div>
 
     <!-- Label -->

@@ -6,7 +6,7 @@ export const useWindowManager = () => {
     {
       id: "about",
       titleKey: "apps.about.title",
-      icon: "lucide:file-text",
+      icon: "ri:file-pdf-2-fill",
       component: "AboutApp",
       isOpen: false,
       isMinimized: false,
@@ -19,7 +19,7 @@ export const useWindowManager = () => {
     {
       id: "projects",
       titleKey: "apps.projects.title",
-      icon: "lucide:folder",
+      icon: "ri:folder-6-fill",
       component: "FinderApp",
       isOpen: false,
       isMinimized: false,
@@ -32,7 +32,7 @@ export const useWindowManager = () => {
     {
       id: "terminal",
       titleKey: "apps.terminal",
-      icon: "lucide:terminal",
+      icon: "ri:terminal-fill",
       component: "TerminalApp",
       isOpen: false,
       isMinimized: false,
@@ -45,7 +45,7 @@ export const useWindowManager = () => {
     {
       id: "contact",
       titleKey: "apps.contact.title",
-      icon: "lucide:mail",
+      icon: "ri:mail-add-fill",
       component: "ContactApp",
       isOpen: false,
       isMinimized: false,
@@ -58,7 +58,7 @@ export const useWindowManager = () => {
     {
       id: "dice",
       titleKey: "apps.dice.title",
-      icon: "lucide:dices",
+      icon: "ri:dice-fill",
       component: "DiceApp",
       isOpen: false,
       isMinimized: false,
