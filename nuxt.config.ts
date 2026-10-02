@@ -64,7 +64,7 @@ export default defineNuxtConfig({
           content: "summary_large_image",
         },
       ],
-      link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
   },
   runtimeConfig: {

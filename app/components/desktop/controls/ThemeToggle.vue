@@ -21,26 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted } from 'vue'
+import { useTheme } from '~/composables/useTheme'
 
-// Auto-imported by @vueuse/nuxt module
-const theme = useLocalStorage<'dark' | 'light'>('portfolio-theme', 'dark')
-
-const syncHtmlClass = (currentTheme: 'dark' | 'light') => {
-  if (import.meta.client) {
-    document.documentElement.classList.toggle('dark', currentTheme === 'dark')
-  }
-}
-
-const toggleTheme = () => {
-  theme.value = theme.value === 'dark' ? 'light' : 'dark'
-}
-
-watch(theme, (newTheme) => {
-  syncHtmlClass(newTheme)
-})
-
-onMounted(() => {
-  syncHtmlClass(theme.value)
-})
+const { theme, toggleTheme } = useTheme()
 </script>
