@@ -11,7 +11,7 @@
 
     <!-- Lazy-Loaded WebGL Background (Only fetches chunk & mounts on desktop screens >= 640px) -->
     <ClientOnly>
-      <FluidBackground v-if="!isMobile" />
+      <FluidBackground />
     </ClientOnly>
 
     <MenuBar />
