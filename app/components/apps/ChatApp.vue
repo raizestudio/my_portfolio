@@ -1,17 +1,39 @@
 <!-- components/apps/ChatApp.vue -->
 <template>
-  <div class="flex h-full w-full bg-slate-900/90 text-slate-100 font-sans select-none overflow-hidden rounded-b-xl backdrop-blur-2xl">
+  <div class="relative flex h-full w-full bg-slate-900/90 text-slate-100 font-sans select-none overflow-hidden rounded-b-xl backdrop-blur-2xl">
+
+    <!-- Mobile Backdrop Overlay -->
+    <div
+      v-if="isSidebarOpen"
+      @click="isSidebarOpen = false"
+      class="sm:hidden absolute inset-0 bg-black/60 z-20 backdrop-blur-xs transition-opacity"
+    />
+
     <!-- Sidebar: Channels & Online Users -->
-    <div class="w-48 sm:w-60 border-r border-white/10 bg-slate-950/40 flex flex-col justify-between shrink-0">
+    <div
+      class="absolute sm:relative inset-y-0 left-0 z-30 w-64 sm:w-60 border-r border-white/10 bg-slate-950/95 sm:bg-slate-950/40 flex flex-col justify-between shrink-0 transition-transform duration-300 ease-in-out"
+      :class="[
+        isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full sm:translate-x-0'
+      ]"
+    >
       <!-- Sidebar Header -->
       <div class="p-3 border-b border-white/10 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
           <span class="text-xs font-semibold tracking-wide text-slate-300 uppercase">iMessage</span>
         </div>
-        <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-mono">
-          {{ onlineUsersCount }} online
-        </span>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-mono">
+            {{ onlineUsersCount }} online
+          </span>
+          <!-- Mobile Close Drawer Button -->
+          <button
+            @click="isSidebarOpen = false"
+            class="sm:hidden p-1 text-slate-400 hover:text-white rounded-lg active:bg-white/10 cursor-pointer"
+          >
+            <Icon name="lucide:x" class="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       <!-- Channels List -->
@@ -20,8 +42,8 @@
         <button
           v-for="channel in channels"
           :key="channel.id"
-          @click="activeChannel = channel.id"
-          class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer"
+          @click="selectChannel(channel.id)"
+          class="w-full flex items-center gap-2.5 px-2.5 py-2.5 sm:py-2 rounded-lg text-xs font-medium transition-all cursor-pointer active:scale-98"
           :class="activeChannel === channel.id ? 'bg-sky-600/80 text-white shadow-md' : 'text-slate-300 hover:bg-white/5'"
         >
           <Icon :name="channel.icon" class="w-4 h-4 text-sky-300 shrink-0" />
@@ -40,21 +62,22 @@
 
       <!-- Current User Card -->
       <div class="p-2.5 border-t border-white/10 bg-black/20 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-md">
             {{ userNickname.slice(0, 2).toUpperCase() }}
           </div>
+          <!-- text-[16px] sm:text-xs disables mobile zoom on click -->
           <input
             v-model="userNickname"
             @blur="updateNickname"
             @keyup.enter="updateNickname"
             type="text"
-            class="bg-transparent text-xs text-white font-medium focus:outline-none focus:bg-white/10 px-1.5 py-0.5 rounded transition-colors w-full truncate border border-transparent focus:border-white/20"
+            class="bg-transparent text-[16px] sm:text-xs text-white font-medium focus:outline-none focus:bg-white/10 px-1.5 py-0.5 rounded transition-colors w-full truncate border border-transparent focus:border-white/20"
             title="Click to change your nickname"
           />
         </div>
-        <button @click="generateRandomNickname" class="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white transition-colors" title="Randomize Nickname">
-          <Icon name="lucide:shuffle" class="w-3.5 h-3.5" />
+        <button @click="generateRandomNickname" class="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer" title="Randomize Nickname">
+          <Icon name="lucide:shuffle" class="w-4 h-4 sm:w-3.5 sm:h-3.5" />
         </button>
       </div>
     </div>
@@ -62,8 +85,17 @@
     <!-- Main Message Area -->
     <div class="flex-1 flex flex-col justify-between bg-slate-900/40 relative min-w-0">
       <!-- Chat Header -->
-      <div class="h-11 px-4 border-b border-white/10 flex items-center justify-between bg-slate-900/60 backdrop-blur-md">
+      <div class="h-11 px-3 sm:px-4 border-b border-white/10 flex items-center justify-between bg-slate-900/60 backdrop-blur-md shrink-0">
         <div class="flex items-center gap-2 min-w-0">
+          <!-- Mobile Sidebar Toggle Button -->
+          <button
+            @click="isSidebarOpen = !isSidebarOpen"
+            class="sm:hidden p-1.5 -ml-1 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+            aria-label="Toggle Channels"
+          >
+            <Icon name="lucide:panel-left" class="w-4 h-4 text-sky-400" />
+          </button>
+
           <Icon :name="currentChannelData.icon" class="w-4 h-4 text-sky-400 shrink-0" />
           <h2 class="text-xs font-semibold text-white truncate">#{{ currentChannelData.name }}</h2>
           <span class="text-[11px] text-slate-400 hidden sm:inline truncate">— {{ currentChannelData.description }}</span>
@@ -71,7 +103,7 @@
       </div>
 
       <!-- Messages Feed -->
-      <div ref="messagesFeedRef" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+      <div ref="messagesFeedRef" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 custom-scrollbar touch-pan-y">
         <div v-if="filteredMessages.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 text-xs space-y-2">
           <Icon name="lucide:messages-square" class="w-8 h-8 opacity-40 text-sky-400" />
           <p>No messages in #{{ currentChannelData.name }} yet. Say hi!</p>
@@ -94,7 +126,7 @@
 
           <!-- Message Bubble -->
           <div
-            class="max-w-[82%] sm:max-w-[70%] px-3.5 py-2 rounded-2xl text-xs leading-relaxed break-words shadow-md"
+            class="max-w-[88%] sm:max-w-[70%] px-3.5 py-2 rounded-2xl text-xs leading-relaxed break-words shadow-md"
             :class="[
               msg.user_id === currentUserId
                 ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-br-xs'
@@ -107,18 +139,19 @@
       </div>
 
       <!-- Message Input Bar -->
-      <div class="p-3 border-t border-white/10 bg-slate-950/60 backdrop-blur-md">
+      <div class="p-2.5 sm:p-3 border-t border-white/10 bg-slate-950/60 backdrop-blur-md shrink-0">
         <form @submit.prevent="sendMessage" class="flex items-center gap-2">
+          <!-- text-[16px] sm:text-xs prevents iOS Safari auto-zoom on focus -->
           <input
             v-model="newMessage"
             type="text"
             placeholder="Type a message..."
-            class="flex-1 bg-slate-800/80 border border-white/15 focus:border-sky-500/50 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500/50 transition-all"
+            class="flex-1 bg-slate-800/80 border border-white/15 focus:border-sky-500/50 rounded-xl px-3.5 py-2.5 sm:py-2 text-[16px] sm:text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500/50 transition-all"
           />
           <button
             type="submit"
             :disabled="!newMessage.trim()"
-            class="p-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-40 disabled:hover:bg-sky-500 text-white rounded-xl transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-lg"
+            class="p-2.5 sm:p-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-40 disabled:hover:bg-sky-500 text-white rounded-xl transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-lg"
           >
             <Icon name="lucide:send" class="w-4 h-4" />
           </button>
@@ -152,6 +185,7 @@ const channels = [
 ]
 
 const activeChannel = ref('general')
+const isSidebarOpen = ref(false)
 const newMessage = ref('')
 const messages = ref<ChatMessage[]>([])
 const presenceList = ref<UserPresence[]>([])
@@ -173,6 +207,11 @@ const onlineUsersCount = computed(() => presenceList.value.length || 1)
 
 let supabase: any = null
 let realtimeChannel: any = null
+
+const selectChannel = (id: string) => {
+  activeChannel.value = id
+  isSidebarOpen.value = false
+}
 
 const generateRandomNickname = () => {
   const adjectives = ['Quantum', 'Neon', 'Cosmic', 'Pixel', 'Turbo', 'Cyber', 'Aura']
@@ -361,3 +400,19 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+</style>
