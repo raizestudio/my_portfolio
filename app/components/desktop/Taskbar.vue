@@ -1,15 +1,32 @@
 <!-- components/desktop/Taskbar.vue -->
 <template>
   <div class="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-[100] max-w-full px-2 touch-manipulation">
-    <!-- Bouton flottant mobile quand le Dock est réduit -->
-    <button
+    <!-- Mobile Draggable Floating Toggle Button -->
+    <div
       v-if="isMobile && !isMobileDockOpen"
-      @click="isMobileDockOpen = true"
-      class="sm:hidden flex items-center gap-2 px-3.5 py-2 bg-slate-900/80 backdrop-blur-2xl border border-white/20 rounded-full shadow-2xl text-white text-xs font-medium active:scale-95 transition-all"
+      ref="floatingBtnRef"
+      class="fixed bottom-3 z-[100] touch-none select-none left-1/2 -translate-x-1/2"
+      :style="buttonX !== null ? { left: `${buttonX}px`, transform: 'none' } : {}"
+      @pointerdown="handlePointerDown"
+      @pointermove="handlePointerMove"
+      @pointerup="handlePointerUp"
+      @pointercancel="handlePointerUp"
     >
-      <Icon name="lucide:layout-grid" class="w-4 h-4 text-sky-400" />
-      <span>Applications</span>
-    </button>
+      <button
+        @click="handleFloatingClick"
+        class="flex items-center gap-2 px-3 py-2 bg-slate-900/85 backdrop-blur-2xl border border-white/20 rounded-full shadow-2xl text-white text-xs font-medium active:scale-95 transition-all duration-300"
+      >
+        <Icon name="lucide:layout-grid" class="w-4 h-4 text-sky-400 shrink-0" />
+
+        <!-- Animated Collapsing Label -->
+        <span
+          class="whitespace-nowrap transition-all duration-500 ease-in-out overflow-hidden"
+          :class="showButtonLabel ? 'max-w-28 opacity-100 ml-0.5' : 'max-w-0 opacity-0 ml-0'"
+        >
+          Applications
+        </span>
+      </button>
+    </div>
 
     <!-- macOS Translucent Dock Container -->
     <div
@@ -20,12 +37,12 @@
       @mousemove="handleMouseMove"
       @mouseleave="handleMouseLeave"
     >
-      <!-- Bouton de fermeture sur mobile -->
+      <!-- Mobile Close Dock Arrow -->
       <button
         v-if="isMobile"
-        @click="isMobileDockOpen = false"
-        class="sm:hidden p-2 text-slate-400 hover:text-white shrink-0 my-auto"
-        aria-label="Fermer le dock"
+        @click="closeMobileDock"
+        class="sm:hidden p-2 text-slate-400 hover:text-white shrink-0 my-auto cursor-pointer"
+        aria-label="Close dock"
       >
         <Icon name="lucide:chevron-down" class="w-4 h-4" />
       </button>
@@ -137,6 +154,7 @@ import { useWindowManager } from '~/composables/useWindowManager'
 const { windows, activeWindowId, openWindow, closeWindow, toggleMinimize, focusWindow } = useWindowManager()
 
 const dockRef = ref<HTMLElement | null>(null)
+const floatingBtnRef = ref<HTMLElement | null>(null)
 const iconRefs = ref<any[]>([])
 const mouseX = ref<number | null>(null)
 const bouncingId = ref<string | null>(null)
@@ -144,9 +162,72 @@ const bouncingId = ref<string | null>(null)
 const isMobile = ref(false)
 const isMobileDockOpen = ref(false)
 
+// Floating button label collapse timer
+const showButtonLabel = ref(true)
+let labelTimer: ReturnType<typeof setTimeout> | null = null
+
+const startLabelTimer = () => {
+  showButtonLabel.value = true
+  if (labelTimer) clearTimeout(labelTimer)
+  labelTimer = setTimeout(() => {
+    showButtonLabel.value = false
+  }, 3200)
+}
+
+// Dragging state for mobile floating button
+const buttonX = ref<number | null>(null)
+const isDragging = ref(false)
+let startPointerX = 0
+let startButtonX = 0
+let hasDragged = false
+
+const handlePointerDown = (e: PointerEvent) => {
+  isDragging.value = true
+  hasDragged = false
+  startPointerX = e.clientX
+
+  if (floatingBtnRef.value) {
+    const rect = floatingBtnRef.value.getBoundingClientRect()
+    startButtonX = rect.left
+  }
+}
+
+const handlePointerMove = (e: PointerEvent) => {
+  if (!isDragging.value) return
+  const deltaX = e.clientX - startPointerX
+
+  if (Math.abs(deltaX) > 5) {
+    hasDragged = true
+  }
+
+  const btnWidth = floatingBtnRef.value ? floatingBtnRef.value.offsetWidth : 48
+  const screenWidth = window.innerWidth
+  const newX = startButtonX + deltaX
+
+  // Clamp within viewport margins (12px padding)
+  buttonX.value = Math.max(12, Math.min(screenWidth - btnWidth - 12, newX))
+}
+
+const handlePointerUp = () => {
+  isDragging.value = false
+}
+
+const handleFloatingClick = () => {
+  if (hasDragged) return
+  isMobileDockOpen.value = true
+}
+
+const closeMobileDock = () => {
+  isMobileDockOpen.value = false
+  startLabelTimer()
+}
+
 const checkMobile = () => {
   if (import.meta.client) {
     isMobile.value = window.innerWidth < 640
+    if (isMobile.value && !isMobileDockOpen.value) {
+      startLabelTimer()
+    }
   }
 }
 
@@ -159,7 +240,7 @@ const systemItems = [
     bgClass: 'from-emerald-500/20 to-emerald-700/10 border-emerald-400/30',
     action: () => {
       openWindow('projects')
-      if (isMobile.value) isMobileDockOpen.value = false
+      if (isMobile.value) closeMobileDock()
     }
   },
   {
@@ -170,7 +251,7 @@ const systemItems = [
     bgClass: 'from-white/15 to-white/5 border-white/20',
     action: () => {
       openWindow('projects')
-      if (isMobile.value) isMobileDockOpen.value = false
+      if (isMobile.value) closeMobileDock()
     }
   }
 ]
@@ -236,9 +317,8 @@ const handleDockClick = (win: any) => {
     focusWindow(win.id)
   }
 
-  // Auto-fermeture sur mobile après sélection
   if (isMobile.value) {
-    isMobileDockOpen.value = false
+    closeMobileDock()
   }
 }
 
@@ -265,14 +345,14 @@ const handleContextAction = (action: 'open' | 'minimize' | 'quit') => {
   else if (action === 'quit') closeWindow(win.id)
 
   closeContextMenu()
-  if (isMobile.value) isMobileDockOpen.value = false
+  if (isMobile.value) closeMobileDock()
 }
 
 const closeContextMenu = () => {
   contextMenu.value.visible = false
 }
 
-const handleOutsideClick = (e: MouseEvent) => {
+const handleOutsideClick = () => {
   if (contextMenu.value.visible) closeContextMenu()
 }
 
@@ -288,6 +368,7 @@ onUnmounted(() => {
   if (import.meta.client) {
     window.removeEventListener('resize', checkMobile)
     window.removeEventListener('click', handleOutsideClick)
+    if (labelTimer) clearTimeout(labelTimer)
   }
 })
 </script>
