@@ -211,11 +211,13 @@
                                 <!-- Photo Container -->
                                 <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-700 shadow-md overflow-hidden shrink-0">
                                     <NuxtImg
-                                        src="/assets/images/profile.webp"
-                                        alt="Joel PINHO"
-                                        class="w-full h-full object-cover"
-                                        loading="lazy"
-                                        format="webp"
+                                      src="/assets/images/profile.webp"
+                                      alt="Joel PINHO"
+                                      class="w-full h-full object-cover"
+                                      loading="eager"
+                                      fetchpriority="high"
+                                      format="webp"
+                                      sizes="xs:80px sm:96px"
                                     />
                                 </div>
 

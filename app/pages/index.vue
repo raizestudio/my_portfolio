@@ -347,15 +347,16 @@ const initWebGL = () => {
 };
 
 const resizeCanvas = () => {
-    if (!canvasRef.value || !gl) return;
-    const isMobile = window.innerWidth < 640;
-    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
-    const width = window.innerWidth * dpr;
-    const height = window.innerHeight * dpr;
+  if (!canvasRef.value || !gl) return;
+  const isMobile = window.innerWidth < 640;
+  // Cap mobile DPR at 0.75 to keep mobile rendering fast
+  const dpr = isMobile ? 0.75 : Math.min(window.devicePixelRatio || 1, 2);
+  const width = window.innerWidth * dpr;
+  const height = window.innerHeight * dpr;
 
-    canvasRef.value.width = width;
-    canvasRef.value.height = height;
-    gl.viewport(0, 0, width, height);
+  canvasRef.value.width = width;
+  canvasRef.value.height = height;
+  gl.viewport(0, 0, width, height);
 };
 
 const render = (time: number) => {
@@ -460,39 +461,35 @@ const handleGlobalKeydown = (e: KeyboardEvent) => {
 };
 
 onMounted(() => {
-    if (import.meta.client) {
-        checkTheme();
+  if (import.meta.client) {
+    checkTheme();
 
-        themeObserver = new MutationObserver(checkTheme);
-        themeObserver.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["class"],
-        });
+    themeObserver = new MutationObserver(checkTheme);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
-        window.addEventListener("resize", resizeCanvas);
-        window.addEventListener("keydown", handleGlobalKeydown);
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("keydown", handleGlobalKeydown);
 
-        mouse.x = mouse.targetX = window.innerWidth / 2;
-        mouse.y = mouse.targetY = window.innerHeight / 2;
-        press.x = press.targetX = window.innerWidth / 2;
-        press.y = press.targetY = window.innerHeight / 2;
+    mouse.x = mouse.targetX = window.innerWidth / 2;
+    mouse.y = mouse.targetY = window.innerHeight / 2;
+    press.x = press.targetX = window.innerWidth / 2;
+    press.y = press.targetY = window.innerHeight / 2;
 
-        const isMobile = window.innerWidth < 640;
+    // Run deferred WebGL initialization on ALL devices
+    const startShader = () => {
+      initWebGL();
+      if (program) animationFrameId = requestAnimationFrame(render);
+    };
 
-        // Only initialize WebGL on desktop, deferred after initial paint
-        if (!isMobile) {
-            const startShader = () => {
-                initWebGL();
-                if (program) animationFrameId = requestAnimationFrame(render);
-            };
-
-            if ("requestIdleCallback" in window) {
-                requestIdleCallback(() => setTimeout(startShader, 800));
-            } else {
-                setTimeout(startShader, 1200);
-            }
-        }
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(() => setTimeout(startShader, 800));
+    } else {
+      setTimeout(startShader, 1200);
     }
+  }
 });
 
 onUnmounted(() => {
