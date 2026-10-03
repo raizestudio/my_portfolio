@@ -31,6 +31,7 @@ const press = { x: 0, y: 0, targetX: 0, targetY: 0, intensity: 0, isDown: false 
 const ripple = { x: 0, y: 0, time: -10 }
 let isDarkMode = false
 let currentDarkVal = 1.0
+const isAnimating = ref(true)
 
 const vsSource = `
   attribute vec2 position;
@@ -251,8 +252,16 @@ const render = (time: number) => {
   press.x += (press.targetX - press.x) * 0.15
   press.y += (press.targetY - press.y) * 0.15
 
-  press.intensity += ((press.isDown ? 1.0 : 0.0) - press.intensity) * 0.1
-  currentDarkVal += ((isDarkMode ? 1.0 : 0.0) - currentDarkVal) * 0.05
+  const targetIntensity = press.isDown ? 1.0 : 0.0
+  press.intensity += (targetIntensity - press.intensity) * 0.1
+
+  const targetDark = isDarkMode ? 1.0 : 0.0
+  currentDarkVal += (targetDark - currentDarkVal) * 0.05
+
+  // Calculate activity: only request next frame if mouse/ripple/press is actively moving
+  const isMouseMoving = Math.abs(mouse.targetX - mouse.x) > 0.1 || Math.abs(mouse.targetY - mouse.y) > 0.1
+  const isRippleActive = (seconds - ripple.time) < 3.0
+  const isPressActive = press.intensity > 0.01
 
   gl.uniform2f(uResLoc, canvasRef.value!.width, canvasRef.value!.height)
   gl.uniform2f(uMouseLoc, mouse.x * (canvasRef.value!.width / window.innerWidth), (window.innerHeight - mouse.y) * (canvasRef.value!.height / window.innerHeight))
@@ -266,7 +275,12 @@ const render = (time: number) => {
   gl.uniform1f(uPressIntensityLoc, press.intensity)
 
   gl.drawArrays(gl.TRIANGLES, 0, 6)
-  animationFrameId = requestAnimationFrame(render)
+
+  if (!document.hidden && (isMouseMoving || isRippleActive || isPressActive || seconds < 2.0)) {
+    animationFrameId = requestAnimationFrame(render)
+  } else {
+    isAnimating.value = false
+  }
 }
 
 const handlePointerMove = (e: PointerEvent) => {
@@ -275,6 +289,10 @@ const handlePointerMove = (e: PointerEvent) => {
   if (press.isDown) {
     press.targetX = e.clientX
     press.targetY = e.clientY
+  }
+  if (!isAnimating.value) {
+    isAnimating.value = true
+    animationFrameId = requestAnimationFrame(render)
   }
 }
 

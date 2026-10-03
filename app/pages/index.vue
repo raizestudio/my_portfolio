@@ -67,6 +67,7 @@ const { windows, openWindow, toggleSpotlight } = useWindowManager()
 const selectedIconId = ref<string | null>(null)
 const fluidBgRef = ref<any>(null)
 const isMobile = ref(false)
+const showShader = ref(false)
 
 const componentsMap: Record<string, any> = {
   FinderApp,
@@ -106,6 +107,10 @@ onMounted(() => {
     checkMobile()
     window.addEventListener("resize", checkMobile)
     window.addEventListener("keydown", handleGlobalKeydown)
+
+    setTimeout(() => {
+      showShader.value = true
+    }, 1500)
   }
 })
 
