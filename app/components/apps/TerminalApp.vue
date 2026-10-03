@@ -253,8 +253,8 @@ const fileSystem: Record<string, FSNode> = {
         name: "desktop",
         type: "dir",
         children: {
-            "About_Me.pdf": {
-                name: "About_Me.pdf",
+            "cv.pdf": {
+                name: "cv.pdf",
                 type: "file",
                 ext: "pdf",
                 targetAppId: "about",

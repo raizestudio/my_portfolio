@@ -1,14 +1,35 @@
 <!-- components/desktop/Taskbar.vue -->
 <template>
   <div class="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-[100] max-w-full px-2 touch-manipulation">
+    <!-- Bouton flottant mobile quand le Dock est réduit -->
+    <button
+      v-if="isMobile && !isMobileDockOpen"
+      @click="isMobileDockOpen = true"
+      class="sm:hidden flex items-center gap-2 px-3.5 py-2 bg-slate-900/80 backdrop-blur-2xl border border-white/20 rounded-full shadow-2xl text-white text-xs font-medium active:scale-95 transition-all"
+    >
+      <Icon name="lucide:layout-grid" class="w-4 h-4 text-sky-400" />
+      <span>Applications</span>
+    </button>
+
     <!-- macOS Translucent Dock Container -->
     <div
+      v-else
       ref="dockRef"
-      class="flex items-end gap-0.5 sm:gap-1 px-1.5 sm:px-3 pb-1.5 sm:pb-2 pt-2 sm:pt-2.5 max-w-[calc(100vw-1rem)] sm:max-w-max overflow-x-auto sm:overflow-visible custom-scrollbar-none bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-180 border border-white/20 ring-1 ring-white/10 rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.6)]"
+      class="flex items-end gap-0.5 sm:gap-1 px-1.5 sm:px-3 pb-1.5 sm:pb-2 pt-2 sm:pt-2.5 max-w-[calc(100vw-1rem)] sm:max-w-max overflow-x-auto sm:overflow-visible custom-scrollbar-none bg-slate-900/80 sm:bg-slate-900/60 backdrop-blur-3xl backdrop-saturate-180 border border-white/20 ring-1 ring-white/10 rounded-2xl sm:rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.6)] animate-in fade-in slide-in-from-bottom-2 duration-200"
       style="-webkit-backdrop-filter: blur(24px) saturate(180%);"
       @mousemove="handleMouseMove"
       @mouseleave="handleMouseLeave"
     >
+      <!-- Bouton de fermeture sur mobile -->
+      <button
+        v-if="isMobile"
+        @click="isMobileDockOpen = false"
+        class="sm:hidden p-2 text-slate-400 hover:text-white shrink-0 my-auto"
+        aria-label="Fermer le dock"
+      >
+        <Icon name="lucide:chevron-down" class="w-4 h-4" />
+      </button>
+
       <!-- Application Windows Dock Buttons -->
       <button
         v-for="(win, index) in windows"
@@ -61,14 +82,12 @@
         class="group relative flex flex-col items-center justify-end focus:outline-none origin-bottom transition-all duration-75 ease-out select-none cursor-pointer shrink-0"
         :style="getIconStyle(windows.length + sIdx)"
       >
-        <!-- Dynamic Tooltip (Desktop Only) -->
         <div
           class="hidden sm:block absolute -top-11 px-3 py-1 bg-slate-900/90 border border-white/20 text-white text-[11px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none shadow-2xl backdrop-blur-xl whitespace-nowrap z-50"
         >
           {{ sys.title }}
         </div>
 
-        <!-- System Icon Tile -->
         <div
           class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-b border flex items-center justify-center shadow-xl backdrop-blur-md transition-all duration-200 group-hover:border-white/40 group-active:scale-95"
           :class="sys.bgClass"
@@ -76,7 +95,6 @@
           <Icon :name="sys.icon" :class="sys.iconColor" class="w-4 h-4 sm:w-6 sm:h-6" />
         </div>
 
-        <!-- Spacing matching active dot row -->
         <div class="h-1 sm:h-1.5 mt-0.5 sm:mt-1" />
       </button>
     </div>
@@ -124,6 +142,7 @@ const mouseX = ref<number | null>(null)
 const bouncingId = ref<string | null>(null)
 
 const isMobile = ref(false)
+const isMobileDockOpen = ref(false)
 
 const checkMobile = () => {
   if (import.meta.client) {
@@ -131,7 +150,6 @@ const checkMobile = () => {
   }
 }
 
-// System Items definition integrated into dock indexing
 const systemItems = [
   {
     id: 'downloads',
@@ -139,7 +157,10 @@ const systemItems = [
     icon: 'lucide:download',
     iconColor: 'text-emerald-300',
     bgClass: 'from-emerald-500/20 to-emerald-700/10 border-emerald-400/30',
-    action: () => openWindow('projects')
+    action: () => {
+      openWindow('projects')
+      if (isMobile.value) isMobileDockOpen.value = false
+    }
   },
   {
     id: 'trash',
@@ -147,17 +168,14 @@ const systemItems = [
     icon: 'lucide:trash-2',
     iconColor: 'text-slate-300',
     bgClass: 'from-white/15 to-white/5 border-white/20',
-    action: () => openWindow('projects')
+    action: () => {
+      openWindow('projects')
+      if (isMobile.value) isMobileDockOpen.value = false
+    }
   }
 ]
 
-// Right-Click Context Menu State
-const contextMenu = ref<{
-  visible: boolean
-  x: number
-  y: number
-  win: any | null
-}>({
+const contextMenu = ref<{ visible: boolean; x: number; y: number; win: any | null }>({
   visible: false,
   x: 0,
   y: 0,
@@ -165,9 +183,7 @@ const contextMenu = ref<{
 })
 
 const handleMouseMove = (e: MouseEvent) => {
-  if (!isMobile.value) {
-    mouseX.value = e.clientX
-  }
+  if (!isMobile.value) mouseX.value = e.clientX
 }
 
 const handleMouseLeave = () => {
@@ -181,7 +197,6 @@ const getIconStyle = (index: number) => {
     zIndex: 1,
   }
 
-  // Disable magnification on mobile or when cursor is outside the dock
   if (isMobile.value || mouseX.value === null || !iconRefs.value[index]) {
     return defaultStyle
   }
@@ -193,13 +208,10 @@ const getIconStyle = (index: number) => {
   const iconCenterX = rect.left + rect.width / 2
 
   const distance = Math.abs(mouseX.value - iconCenterX)
-  const maxDistance = 150 // Distance influence radius
+  const maxDistance = 150
 
-  if (distance > maxDistance) {
-    return defaultStyle
-  }
+  if (distance > maxDistance) return defaultStyle
 
-  // Cosine curve scale interpolation (1.0 to 1.45) across desktop items
   const scale = 1 + 0.45 * Math.cos((distance / maxDistance) * (Math.PI / 2))
   const translateY = -14 * ((scale - 1) / 0.45)
   const dynamicMargin = 3 + (scale - 1) * 12
@@ -223,6 +235,11 @@ const handleDockClick = (win: any) => {
   } else {
     focusWindow(win.id)
   }
+
+  // Auto-fermeture sur mobile après sélection
+  if (isMobile.value) {
+    isMobileDockOpen.value = false
+  }
 }
 
 const triggerBounce = (id: string) => {
@@ -236,37 +253,27 @@ const handleContextMenu = (e: MouseEvent, win: any) => {
   const x = Math.min(e.clientX, window.innerWidth - 180)
   const y = Math.max(10, e.clientY - 110)
 
-  contextMenu.value = {
-    visible: true,
-    x,
-    y,
-    win,
-  }
+  contextMenu.value = { visible: true, x, y, win }
 }
 
 const handleContextAction = (action: 'open' | 'minimize' | 'quit') => {
   if (!contextMenu.value.win) return
 
   const win = contextMenu.value.win
-  if (action === 'open') {
-    openWindow(win.id)
-  } else if (action === 'minimize') {
-    toggleMinimize(win.id)
-  } else if (action === 'quit') {
-    closeWindow(win.id)
-  }
+  if (action === 'open') openWindow(win.id)
+  else if (action === 'minimize') toggleMinimize(win.id)
+  else if (action === 'quit') closeWindow(win.id)
 
   closeContextMenu()
+  if (isMobile.value) isMobileDockOpen.value = false
 }
 
 const closeContextMenu = () => {
   contextMenu.value.visible = false
 }
 
-const handleOutsideClick = () => {
-  if (contextMenu.value.visible) {
-    closeContextMenu()
-  }
+const handleOutsideClick = (e: MouseEvent) => {
+  if (contextMenu.value.visible) closeContextMenu()
 }
 
 onMounted(() => {
@@ -287,27 +294,17 @@ onUnmounted(() => {
 
 <style scoped>
 @keyframes dock-bounce {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  30% {
-    transform: translateY(-16px) scale(1.08);
-  }
-  50% {
-    transform: translateY(0) scale(0.95);
-  }
-  75% {
-    transform: translateY(-6px) scale(1.02);
-  }
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-16px) scale(1.08); }
+  50% { transform: translateY(0) scale(0.95); }
+  75% { transform: translateY(-6px) scale(1.02); }
 }
 
 .animate-bounce-dock {
   animation: dock-bounce 0.8s ease-in-out infinite;
 }
 
-.custom-scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
+.custom-scrollbar-none::-webkit-scrollbar { display: none; }
 .custom-scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
