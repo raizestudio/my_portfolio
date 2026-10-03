@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     "@nuxt/icon",
+    "@nuxt/image",
     "@nuxtjs/i18n",
     "@vueuse/nuxt",
     "@nuxtjs/seo",
@@ -14,8 +15,30 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // drop: ["console", "debugger"],
+
+      cssCodeSplit: true,
+      target: "esnext",
+    },
+    optimizeDeps: {
+      include: ["vue", "highlight.js"],
+    },
   },
+  experimental: {
+    payloadExtraction: true,
+    renderJsonPayloads: true,
+    viewTransition: true,
+    buildCache: true,
+  },
+  icon: {
+      mode: 'css',
+      serverBundle: {
+        collections: ['lucide', 'simple-icons', 'ri'] // Pre-bundle these on the server
+      }
+    },
   routeRules: {
+    "/": { isr: 3600 },
     "/api/export-pdf": {
       isr: false,
     },
@@ -147,6 +170,7 @@ export default defineNuxtConfig({
           sizes: "180x180",
           href: "/apple-touch-icon.png",
         },
+        { rel: "preconnect", href: "https://cdn.jsdelivr.net" }
       ],
     },
   },
