@@ -43,6 +43,7 @@ export default defineNuxtConfig({
       search: true,
       aiInput: true,
     },
+    runtimeSync: true,
     llmsTxt: {
       markdownLinks: true,
       sections: [
