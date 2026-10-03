@@ -29,7 +29,6 @@ export default defineNuxtConfig({
           minify: true,
           codeSplitting: true,
         },
-        external: ['tslib'],
       },
       cssCodeSplit: true,
       target: "esnext",
