@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxtjs/seo",
     "nuxt-ai-ready",
     "@nuxt/fonts",
+    "@vercel/analytics",
   ],
   css: ["~/assets/css/main.css"],
   features: {
