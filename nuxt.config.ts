@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     "nuxt-ai-ready",
     "@nuxt/fonts",
     "@vercel/analytics",
+    "@vercel/speed-insights",
   ],
   css: ["~/assets/css/main.css"],
   features: {
