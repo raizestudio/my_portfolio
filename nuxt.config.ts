@@ -17,7 +17,12 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     build: {
       // drop: ["console", "debugger"],
-
+      rolldownOptions: {
+        output: {
+          minify: true,
+          codeSplitting: true,
+        },
+      },
       cssCodeSplit: true,
       target: "esnext",
     },
@@ -32,11 +37,11 @@ export default defineNuxtConfig({
     buildCache: true,
   },
   icon: {
-      mode: 'css',
-      serverBundle: {
-        collections: ['lucide', 'simple-icons', 'ri'] // Pre-bundle these on the server
-      }
+    mode: "css",
+    serverBundle: {
+      collections: ["lucide", "simple-icons", "ri"], // Pre-bundle these on the server
     },
+  },
   routeRules: {
     "/": { isr: 3600 },
     "/api/export-pdf": {
@@ -170,7 +175,7 @@ export default defineNuxtConfig({
           sizes: "180x180",
           href: "/apple-touch-icon.png",
         },
-        { rel: "preconnect", href: "https://cdn.jsdelivr.net" }
+        { rel: "preconnect", href: "https://cdn.jsdelivr.net" },
       ],
     },
   },
