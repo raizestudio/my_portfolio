@@ -46,16 +46,46 @@ export default defineNuxtConfig({
     runtimeSync: true,
     llmsTxt: {
       markdownLinks: true,
+
       sections: [
         {
           title: "Portfolio",
           description:
-            "Portfolio interactif présentant le parcours, les compétences, les projets et les moyens de contact de Joel PINHO.",
+            "Portfolio interactif de Joel PINHO, développeur Full-stack, présentant son parcours, son CV, ses compétences, ses projets et ses informations de contact.",
+
           links: [
             {
-              title: "Joel PINHO — Portfolio interactif",
+              title: "Portfolio interactif",
               description:
-                "Portfolio interactif de Joel PINHO, développeur Full-stack. L'interface simule un environnement macOS et permet d'explorer son CV, ses projets, ses compétences et ses outils interactifs, dont un éditeur de code basé sur Pyodide et WebAssembly.",
+                "Interface de portfolio conçue comme un environnement de bureau inspiré de macOS. Les contenus sont accessibles via des fenêtres et applications interactives.",
+              href: "https://joelpinho.fr",
+            },
+          ],
+        },
+
+        {
+          title: "Interactive IDE",
+          description:
+            "Le portfolio contient un éditeur de code inspiré de Zed, intégré directement dans l'interface.",
+
+          links: [
+            {
+              title: "Éditeur Python",
+              description:
+                "Éditeur de code exécutant Python directement dans le navigateur avec Pyodide et WebAssembly.",
+              href: "https://joelpinho.fr",
+            },
+          ],
+        },
+
+        {
+          title: "Interactive tools",
+          description:
+            "Le portfolio contient également des outils interactifs, notamment un lanceur de dés, en complément des applications dédiées au CV, aux projets et au contact.",
+
+          links: [
+            {
+              title: "Portfolio",
               href: "https://joelpinho.fr",
             },
           ],
