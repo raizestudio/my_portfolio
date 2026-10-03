@@ -5,24 +5,26 @@
     <div
       v-if="isMobile && !isMobileDockOpen"
       ref="floatingBtnRef"
-      class="fixed bottom-3 z-[100] touch-none select-none"
-      :class="buttonX === null ? 'left-1/2 -translate-x-1/2' : ''"
-      :style="buttonX !== null ? { left: `${buttonX}px` } : {}"
+      class="fixed bottom-3 z-[100] left-1/2 touch-none select-none"
+      :class="isDragging ? 'transition-none' : 'transition-transform duration-300 ease-out'"
+      :style="{
+        transform: `translate3d(calc(-50% + ${dragX}px), 0, 0)`
+      }"
       @pointerdown="handlePointerDown"
-      @pointermove="handlePointerMove"
-      @pointerup="handlePointerUp"
-      @pointercancel="handlePointerUp"
+      @click="handleFloatingClick"
     >
       <button
-        @click="handleFloatingClick"
         class="flex items-center justify-center bg-slate-900/85 backdrop-blur-2xl border border-white/20 rounded-full shadow-2xl text-white text-xs font-medium active:scale-95 transition-all duration-300 ease-in-out shrink-0 cursor-pointer"
-        :class="showButtonLabel ? 'px-3.5 h-10 gap-2' : 'w-10 h-10 px-0 gap-0'"
+        :class="[
+          showButtonLabel ? 'px-3.5 h-10 gap-2' : 'w-10 h-10 px-0 gap-0',
+          isDragging ? 'transition-none' : ''
+        ]"
       >
         <Icon name="lucide:layout-grid" class="w-4 h-4 text-sky-400 shrink-0" />
 
         <!-- Animated Collapsing Label -->
         <span
-          class="whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden"
+          class="whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden pointer-events-none"
           :class="showButtonLabel ? 'max-w-28 opacity-100' : 'max-w-0 opacity-0'"
         >
           Applications
@@ -176,44 +178,33 @@ const startLabelTimer = () => {
   }, 3200)
 }
 
-// Re-clamp position when label opens/collapses so expanding text stays on screen
-watch(showButtonLabel, () => {
-  nextTick(() => clampButtonPosition())
-})
-
 // Dragging state for mobile floating button
-const buttonX = ref<number | null>(null)
+const dragX = ref(0)
 const isDragging = ref(false)
 let startPointerX = 0
-let startButtonX = 0
+let initialDragX = 0
 let hasDragged = false
 
 const handlePointerDown = (e: PointerEvent) => {
-  const target = e.currentTarget as HTMLElement
-  if (target && typeof target.setPointerCapture === 'function') {
-    try {
-      target.setPointerCapture(e.pointerId)
-    } catch {}
-  }
+  if (e.button !== 0 && e.pointerType === 'mouse') return
 
   isDragging.value = true
   hasDragged = false
   startPointerX = e.clientX
+  initialDragX = dragX.value
 
-  if (floatingBtnRef.value) {
-    const rect = floatingBtnRef.value.getBoundingClientRect()
-    startButtonX = rect.left
-  }
+  window.addEventListener('pointermove', handlePointerMove, { passive: true })
+  window.addEventListener('pointerup', handlePointerUp)
+  window.addEventListener('pointercancel', handlePointerUp)
 }
 
-const clampButtonPosition = () => {
-  if (buttonX.value !== null && floatingBtnRef.value) {
-    const btnWidth = floatingBtnRef.value.offsetWidth
-    const screenWidth = window.innerWidth
-    const minX = 12
-    const maxX = screenWidth - btnWidth - 12
-    buttonX.value = Math.max(minX, Math.min(maxX, buttonX.value))
-  }
+const clampDragX = () => {
+  if (!floatingBtnRef.value) return
+  const btnWidth = floatingBtnRef.value.offsetWidth
+  const screenWidth = window.innerWidth
+  const padding = 12
+  const maxOffset = Math.max(0, (screenWidth - btnWidth) / 2 - padding)
+  dragX.value = Math.max(-maxOffset, Math.min(maxOffset, dragX.value))
 }
 
 const handlePointerMove = (e: PointerEvent) => {
@@ -224,30 +215,30 @@ const handlePointerMove = (e: PointerEvent) => {
     hasDragged = true
   }
 
-  if (!floatingBtnRef.value) return
-  const btnWidth = floatingBtnRef.value.offsetWidth
+  const btnWidth = floatingBtnRef.value ? floatingBtnRef.value.offsetWidth : 40
   const screenWidth = window.innerWidth
-  const rawX = startButtonX + deltaX
+  const padding = 12
 
-  const minX = 12
-  const maxX = screenWidth - btnWidth - 12
+  const maxOffset = Math.max(0, (screenWidth - btnWidth) / 2 - padding)
+  const rawX = initialDragX + deltaX
 
-  buttonX.value = Math.max(minX, Math.min(maxX, rawX))
+  dragX.value = Math.max(-maxOffset, Math.min(maxOffset, rawX))
 }
 
-const handlePointerUp = (e: PointerEvent) => {
+const handlePointerUp = () => {
   if (!isDragging.value) return
   isDragging.value = false
 
-  const target = e.currentTarget as HTMLElement
-  if (target && typeof target.releasePointerCapture === 'function') {
-    try {
-      target.releasePointerCapture(e.pointerId)
-    } catch {}
-  }
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', handlePointerUp)
+  window.removeEventListener('pointercancel', handlePointerUp)
 
-  clampButtonPosition()
+  clampDragX()
 }
+
+watch(showButtonLabel, () => {
+  nextTick(() => clampDragX())
+})
 
 const handleFloatingClick = () => {
   if (hasDragged) return
@@ -405,6 +396,9 @@ onUnmounted(() => {
   if (import.meta.client) {
     window.removeEventListener('resize', checkMobile)
     window.removeEventListener('click', handleOutsideClick)
+    window.removeEventListener('pointermove', handlePointerMove)
+    window.removeEventListener('pointerup', handlePointerUp)
+    window.removeEventListener('pointercancel', handlePointerUp)
     if (labelTimer) clearTimeout(labelTimer)
   }
 })
