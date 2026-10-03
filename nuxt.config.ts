@@ -40,6 +40,11 @@ export default defineNuxtConfig({
   build: {
     transpile: ["tslib"],
   },
+  nitro: {
+    externals: {
+      inline: ["tslib", "@supabase/auth-js"],
+    },
+  },
   experimental: {
     payloadExtraction: true,
     renderJsonPayloads: true,
