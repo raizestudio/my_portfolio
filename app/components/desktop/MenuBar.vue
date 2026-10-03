@@ -11,6 +11,7 @@
           @click.stop="toggleMenu('apple')"
           class="px-2 py-1 rounded-full transition-colors flex items-center justify-center focus:outline-none cursor-pointer"
           :class="activeMenu === 'apple' ? 'bg-black/10 dark:bg-white/15' : 'hover:bg-black/5 dark:hover:bg-white/10'"
+          title="Apple Menu"
         >
           <Icon name="simple-icons:apple" class="w-3.5 h-3.5 fill-current" />
         </button>

@@ -210,11 +210,12 @@
                             <div class="flex items-center gap-6 border-b border-gray-200 dark:border-white/10 pb-6">
                                 <!-- Photo Container -->
                                 <div class="w-20 h-20 rounded-full bg-gray-100 dark:bg-slate-800 border-2 border-white dark:border-slate-700 shadow-md overflow-hidden shrink-0">
-                                    <img
+                                    <NuxtImg
                                         src="/assets/images/profile.webp"
                                         alt="Joel PINHO"
                                         class="w-full h-full object-cover"
-                                        lazy
+                                        loading="lazy"
+                                        format="webp"
                                     />
                                 </div>
 
