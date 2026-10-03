@@ -150,6 +150,9 @@
     },
     "zed": {
       "title": "Zed"
+    },
+    "chat": {
+      "title": "Chat"
     }
   }
 }

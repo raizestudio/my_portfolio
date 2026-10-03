@@ -81,6 +81,19 @@ export const useWindowManager = () => {
       size: { width: 750, height: 500 },
       iconPosition: { x: 24, y: 608 },
     },
+    {
+      id: "chat",
+      titleKey: "apps.chat.title",
+      icon: "ri:chat-3-fill",
+      component: "ChatApp",
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: 10,
+      position: { x: 200, y: 140 },
+      size: { width: 650, height: 480 },
+      iconPosition: { x: 24, y: 720 },
+    },
   ]);
 
   const windows = computed(() =>

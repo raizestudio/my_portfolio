@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@vercel/analytics",
     "@vercel/speed-insights",
+    "@nuxtjs/supabase",
   ],
   css: ["~/assets/css/main.css"],
   features: {
@@ -127,6 +128,9 @@ export default defineNuxtConfig({
       ],
     },
   },
+  supabase: {
+    redirect: false,
+  },
   app: {
     head: {
       // htmlAttrs: {
@@ -188,6 +192,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     resendApiKey: process.env.RESEND_API_KEY,
 
-    public: {},
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseKey: process.env.SUPABASE_KEY,
+    },
   },
 });
