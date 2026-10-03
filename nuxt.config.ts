@@ -43,6 +43,24 @@ export default defineNuxtConfig({
       search: true,
       aiInput: true,
     },
+    llmsTxt: {
+      markdownLinks: true,
+      sections: [
+        {
+          title: "Portfolio",
+          description:
+            "Portfolio interactif présentant le parcours, les compétences, les projets et les moyens de contact de Joel PINHO.",
+          links: [
+            {
+              title: "Joel PINHO — Portfolio interactif",
+              description:
+                "Portfolio interactif de Joel PINHO, développeur Full-stack. L'interface simule un environnement macOS et permet d'explorer son CV, ses projets, ses compétences et ses outils interactifs, dont un éditeur de code basé sur Pyodide et WebAssembly.",
+              href: "https://joelpinho.fr",
+            },
+          ],
+        },
+      ],
+    },
   },
   app: {
     head: {
