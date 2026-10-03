@@ -4,14 +4,14 @@
     class="fixed inset-0 overflow-hidden font-sans select-none bg-slate-100 dark:bg-slate-950 transition-colors duration-500 touch-manipulation"
     @pointerdown="handleGlobalPointerDown"
   >
-    <!-- Ambient CSS Gradient Overlay (Renders immediately on both Mobile & Desktop) -->
+    <!-- Ambient CSS Gradient Overlay -->
     <div
       class="absolute inset-0 -z-10 pointer-events-none opacity-70 dark:opacity-80 transition-opacity duration-700 bg-[radial-gradient(at_0%_0%,_rgba(56,189,248,0.3)_0px,_transparent_50%),_radial-gradient(at_100%_0%,_rgba(244,63,94,0.3)_0px,_transparent_50%),_radial-gradient(at_100%_100%,_rgba(168,85,247,0.3)_0px,_transparent_50%),_radial-gradient(at_0%_100%,_rgba(16,185,129,0.3)_0px,_transparent_50%)]"
     />
 
-    <!-- Lazy-Loaded WebGL Background (Only fetches chunk & mounts on desktop screens >= 640px) -->
+    <!-- Lazy-Loaded WebGL Background -->
     <ClientOnly>
-      <FluidBackground />
+      <FluidBackground ref="fluidBgRef" />
     </ClientOnly>
 
     <MenuBar />
@@ -50,7 +50,6 @@ import Taskbar from "~/components/desktop/Taskbar.vue"
 import MenuBar from "~/components/desktop/MenuBar.vue"
 import Spotlight from "~/components/desktop/Spotlight.vue"
 
-// WEBGL BACKGROUND
 const FluidBackground = defineAsyncComponent(
   () => import("~/components/desktop/FluidBackground.vue")
 )
@@ -66,6 +65,7 @@ const ZedApp = defineAsyncComponent(() => import("~/components/apps/ZedApp.vue")
 const { windows, openWindow, toggleSpotlight } = useWindowManager()
 
 const selectedIconId = ref<string | null>(null)
+const fluidBgRef = ref<any>(null)
 const isMobile = ref(false)
 
 const componentsMap: Record<string, any> = {
@@ -83,6 +83,8 @@ const getComponent = (name: string) => componentsMap[name]
 const handleGlobalPointerDown = (e: PointerEvent) => {
   if (e.target === e.currentTarget) {
     selectedIconId.value = null
+    // 🚀 Trigger ripple wave on empty desktop space click
+    fluidBgRef.value?.triggerRipple(e.clientX, e.clientY)
   }
 }
 

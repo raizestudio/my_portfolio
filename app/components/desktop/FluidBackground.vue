@@ -278,20 +278,23 @@ const handlePointerMove = (e: PointerEvent) => {
   }
 }
 
-const handlePointerDown = (e: PointerEvent) => {
-  if (e.target === canvasRef.value) {
-    press.isDown = true
-    press.targetX = e.clientX
-    press.targetY = e.clientY
-    ripple.x = e.clientX
-    ripple.y = e.clientY
-    ripple.time = performance.now() * 0.001
-  }
-}
-
 const handlePointerUp = () => {
   press.isDown = false
 }
+
+// 🚀 Expose ripple trigger method to parent component
+const triggerRipple = (x: number, y: number) => {
+  press.isDown = true
+  press.targetX = x
+  press.targetY = y
+  ripple.x = x
+  ripple.y = y
+  ripple.time = performance.now() * 0.001
+}
+
+defineExpose({
+  triggerRipple,
+})
 
 let themeObserver: MutationObserver | null = null
 const checkTheme = () => {
@@ -306,7 +309,6 @@ onMounted(() => {
 
     window.addEventListener("resize", resizeCanvas)
     window.addEventListener("pointermove", handlePointerMove)
-    window.addEventListener("pointerdown", handlePointerDown)
     window.addEventListener("pointerup", handlePointerUp)
 
     mouse.x = mouse.targetX = window.innerWidth / 2
@@ -324,7 +326,6 @@ onUnmounted(() => {
     cancelAnimationFrame(animationFrameId)
     window.removeEventListener("resize", resizeCanvas)
     window.removeEventListener("pointermove", handlePointerMove)
-    window.removeEventListener("pointerdown", handlePointerDown)
     window.removeEventListener("pointerup", handlePointerUp)
     if (themeObserver) themeObserver.disconnect()
   }
