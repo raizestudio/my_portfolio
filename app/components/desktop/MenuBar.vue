@@ -25,7 +25,8 @@
           <button
             @click="openWindow('about')"
             class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors flex items-center justify-between group/item cursor-pointer"
-          >
+            title="About Portfolio"
+            >
             <span>{{ aboutPortfolioText }}</span>
             <span class="text-[10px] opacity-50 group-hover/item:opacity-80 font-mono">⌘I</span>
           </button>
@@ -46,6 +47,7 @@
           <button
             @click="reloadPage"
             class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-purple-600 hover:text-white transition-colors cursor-pointer"
+            title="Restart Desktop"
           >
             {{ restartDesktopText }}
           </button>
@@ -58,6 +60,7 @@
           @click.stop="toggleMenu('app')"
           class="px-2 py-0.5 rounded font-bold transition-colors focus:outline-none truncate max-w-[120px] sm:max-w-none cursor-pointer"
           :class="activeMenu === 'app' ? 'bg-black/10 dark:bg-white/20' : 'hover:bg-black/5 dark:hover:bg-white/10'"
+          title="Active Application"
         >
           {{ activeAppName }}
         </button>
@@ -75,6 +78,7 @@
           <button
             @click="closeWindow(activeWindow.id)"
             class="w-full text-left px-2.5 py-1 rounded-lg hover:bg-rose-600 hover:text-white flex items-center justify-between text-rose-600 dark:text-rose-300 transition-colors cursor-pointer"
+            :title="'Quit ' + activeWindow.title"
           >
             <span>Quit {{ activeWindow.title }}</span>
             <span class="text-[10px] opacity-60 font-mono">⌘Q</span>
@@ -87,6 +91,7 @@
         v-for="option in optionsText"
         :key="option.key"
         class="hidden sm:inline-block px-2 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors focus:outline-none cursor-pointer"
+        :title="option.text"
       >
         {{ option.text }}
       </button>
@@ -185,6 +190,7 @@
           @click.stop="toggleMenu('controlCenter')"
           class="px-1.5 py-0.5 rounded transition-colors focus:outline-none flex items-center cursor-pointer"
           :class="activeMenu === 'controlCenter' ? 'bg-black/10 dark:bg-white/20' : 'hover:bg-black/5 dark:hover:bg-white/10'"
+          title="Control Center"
         >
           <Icon name="lucide:sliders-horizontal" class="w-3.5 h-3.5" />
         </button>
@@ -266,6 +272,7 @@
           @click.stop="toggleMenu('notificationCenter')"
           class="px-1.5 py-0.5 rounded hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer text-[12px] tabular-nums font-medium whitespace-nowrap flex items-center gap-1.5 focus:outline-none"
           :class="activeMenu === 'notificationCenter' ? 'bg-black/10 dark:bg-white/20' : ''"
+          title="Notification Center"
         >
           <span class="hidden sm:inline">{{ formattedDate }}</span>
           <span>{{ formattedTime }}</span>
