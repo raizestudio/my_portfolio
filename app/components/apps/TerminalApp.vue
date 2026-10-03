@@ -23,12 +23,12 @@
                     class="px-1 py-0.5 bg-slate-200 dark:bg-white/10 rounded text-[10px] text-slate-700 dark:text-slate-300"
                     >Tab</kbd
                 >
-                to complete,
+                {{ toCompleteText }},
                 <kbd
                     class="px-1 py-0.5 bg-slate-200 dark:bg-white/10 rounded text-[10px] text-slate-700 dark:text-slate-300"
                     >↑/↓</kbd
                 >
-                for history
+                {{ forHistoryText }}
             </span>
         </div>
 
@@ -43,19 +43,19 @@
                     zsh — Joel PINHO Portfolio Terminal v2.5
                 </p>
                 <p>
-                    Type
+                    {{ typeText }}
                     <span class="text-sky-600 dark:text-sky-300 font-bold"
                         >help</span
                     >
-                    for commands,
+                    {{ forCommandsText }},
                     <span class="text-sky-600 dark:text-sky-300 font-bold"
                         >neofetch</span
                     >
-                    for system info, or
+                    {{ forSystemInfoText }}, {{ orText }}
                     <span class="text-sky-600 dark:text-sky-300 font-bold"
                         >ls</span
                     >
-                    to list files.
+                    {{ toListFilesText }}.
                 </p>
             </div>
 
@@ -237,6 +237,15 @@ const inputRef = ref<HTMLInputElement | null>(null);
 const outputRef = ref<HTMLElement | null>(null);
 
 const pressText = t("apps.terminal.press")
+const toCompleteText = t("apps.terminal.toComplete")
+const forHistoryText = t("apps.terminal.forHistory")
+const typeText = t("apps.terminal.type")
+const forCommandsText = t("apps.terminal.forCommands")
+const forSystemInfoText = t("apps.terminal.forSystemInfo")
+const orText = t("apps.terminal.or")
+const toListFilesText = t("apps.terminal.toListFiles")
+const aboutDescriptionText = t("apps.about.description")
+const contactDescriptionText = t("contact.description")
 
 // Virtual File System Definition
 const fileSystem: Record<string, FSNode> = {
@@ -250,7 +259,7 @@ const fileSystem: Record<string, FSNode> = {
                 ext: "pdf",
                 targetAppId: "about",
                 content:
-                    "About Me Resume PDF\nRole: Full-Stack Developer\nStack: Vue 3, Nuxt 4, FastAPI, Python, PostgreSQL",
+                    aboutDescriptionText,
             },
             "Contact_Mail.eml": {
                 name: "Contact_Mail.eml",
@@ -258,7 +267,7 @@ const fileSystem: Record<string, FSNode> = {
                 ext: "eml",
                 targetAppId: "contact",
                 content:
-                    "Draft email to Joel PINHO\nLaunch the Contact app on desktop to send a direct message!",
+                    contactDescriptionText,
             },
         },
     },

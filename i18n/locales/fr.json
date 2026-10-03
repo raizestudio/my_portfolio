@@ -14,6 +14,7 @@
   "apps": {
     "about": {
       "title": "cv.pdf",
+      "description": "CV Professionnel de Joel PINHO, développeur Full-stack.",
       "pageCounter": "Page {currentPage} sur {totalPages}",
       "export": "Exporter en PDF",
       "exporting": "Je génère le PDF...",
@@ -88,10 +89,18 @@
     },
     "terminal": {
       "title": "Terminal",
-      "press": "Appuyez sur"
+      "press": "Appuyez sur",
+      "toComplete": "pour compléter",
+      "forHistory": "pour l'historique",
+      "type": "Tapez",
+      "forCommands": "pour les commandes",
+      "forSystemInfo": "pour les informations système",
+      "or": "ou",
+      "toListFiles": "pour lister les fichiers"
     },
     "contact": {
       "title": "Contact",
+      "description": "Formulaire de contact",
       "send": "Envoyer",
       "copyEmail": "Copier l'email",
       "copiedEmail": "Email copié !",
