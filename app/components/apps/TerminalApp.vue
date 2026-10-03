@@ -18,7 +18,7 @@
                 >
             </div>
             <span class="hidden sm:inline opacity-70 shrink-0">
-                Press
+                {{ pressText }}
                 <kbd
                     class="px-1 py-0.5 bg-slate-200 dark:bg-white/10 rounded text-[10px] text-slate-700 dark:text-slate-300"
                     >Tab</kbd
@@ -222,6 +222,8 @@ interface FSNode {
     children?: Record<string, FSNode>;
 }
 
+const { t } = useI18n();
+
 const { openWindow } = useWindowManager();
 const { toggleTheme } = useTheme();
 
@@ -233,6 +235,8 @@ const cmdHistoryPointer = ref<number>(-1);
 
 const inputRef = ref<HTMLInputElement | null>(null);
 const outputRef = ref<HTMLElement | null>(null);
+
+const pressText = t("apps.terminal.press")
 
 // Virtual File System Definition
 const fileSystem: Record<string, FSNode> = {

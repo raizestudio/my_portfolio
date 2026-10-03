@@ -86,7 +86,10 @@
       "quickView": "Aperçu rapide",
       "items": "items"
     },
-    "terminal": "Terminal",
+    "terminal": {
+      "title": "Terminal",
+      "press": "Appuyez sur"
+    },
     "contact": {
       "title": "Contact",
       "send": "Envoyer",

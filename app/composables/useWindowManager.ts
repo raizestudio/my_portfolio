@@ -31,7 +31,7 @@ export const useWindowManager = () => {
     },
     {
       id: "terminal",
-      titleKey: "apps.terminal",
+      titleKey: "apps.terminal.title",
       icon: "ri:terminal-fill",
       component: "TerminalApp",
       isOpen: false,
