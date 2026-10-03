@@ -35,7 +35,7 @@
 
         <!-- Windows Layer -->
         <template v-for="win in windows" :key="win.id">
-            <Window v-show="win.isOpen && !win.isMinimized" :win="win">
+            <Window v-if="win.isOpen" v-show="!win.isMinimized" :win="win">
                 <component :is="getComponent(win.component)" />
             </Window>
         </template>
