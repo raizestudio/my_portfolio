@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@nuxtjs/seo",
     "nuxt-ai-ready",
+    "@nuxt/fonts",
   ],
   css: ["~/assets/css/main.css"],
   vite: {

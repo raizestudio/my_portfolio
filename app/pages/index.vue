@@ -306,6 +306,8 @@ const initWebGL = () => {
     });
     if (!gl) return;
 
+    const ext = gl.getExtension("KHR_parallel_shader_compile");
+
     const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
     const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
     if (!vs || !fs) return;
@@ -459,7 +461,6 @@ const handleGlobalKeydown = (e: KeyboardEvent) => {
 
 onMounted(() => {
     if (import.meta.client) {
-        initWebGL();
         checkTheme();
 
         themeObserver = new MutationObserver(checkTheme);
@@ -476,11 +477,21 @@ onMounted(() => {
         press.x = press.targetX = window.innerWidth / 2;
         press.y = press.targetY = window.innerHeight / 2;
 
-        // animationFrameId = requestAnimationFrame(render)
-        setTimeout(() => {
-            initWebGL();
-            animationFrameId = requestAnimationFrame(render);
-        }, 400);
+        const isMobile = window.innerWidth < 640;
+
+        // Only initialize WebGL on desktop, deferred after initial paint
+        if (!isMobile) {
+            const startShader = () => {
+                initWebGL();
+                if (program) animationFrameId = requestAnimationFrame(render);
+            };
+
+            if ("requestIdleCallback" in window) {
+                requestIdleCallback(() => setTimeout(startShader, 800));
+            } else {
+                setTimeout(startShader, 1200);
+            }
+        }
     }
 });
 
