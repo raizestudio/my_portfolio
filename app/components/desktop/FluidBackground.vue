@@ -277,7 +277,7 @@ const render = (time: number) => {
   gl.drawArrays(gl.TRIANGLES, 0, 6)
 
   // if (!document.hidden && (isMouseMoving || isRippleActive || isPressActive || seconds < 2.0)) {
-  if (!document.hidden || seconds < 2.0) {
+  if (!document.hidden) {
     animationFrameId = requestAnimationFrame(render)
   } else {
     isAnimating.value = false
