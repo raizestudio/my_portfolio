@@ -34,8 +34,11 @@ export default defineNuxtConfig({
       target: "esnext",
     },
     optimizeDeps: {
-      include: ["vue", "highlight.js"],
+      include: ["vue", "highlight.js", "tslib"],
     },
+  },
+  build: {
+    transpile: ["tslib"],
   },
   experimental: {
     payloadExtraction: true,
