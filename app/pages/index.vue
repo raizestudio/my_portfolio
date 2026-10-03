@@ -1,125 +1,151 @@
 <!-- pages/index.vue -->
 <template>
-  <div
-    class="fixed inset-0 overflow-hidden font-sans select-none bg-slate-100 dark:bg-slate-950 transition-colors duration-500 touch-manipulation"
-    @pointerdown="handlePointerDown"
-    @pointermove="handlePointerMove"
-    @pointerup="handlePointerUp"
-    @pointerleave="handlePointerUp"
-  >
-    <!-- WebGL Dynamic Fluid Mesh Shader Canvas -->
-    <canvas
-      ref="canvasRef"
-      class="absolute inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-700"
-    />
+    <div
+        class="fixed inset-0 overflow-hidden font-sans select-none bg-slate-100 dark:bg-slate-950 transition-colors duration-500 touch-manipulation"
+        @pointerdown="handlePointerDown"
+        @pointermove="handlePointerMove"
+        @pointerup="handlePointerUp"
+        @pointerleave="handlePointerUp"
+    >
+        <!-- WebGL Dynamic Fluid Mesh Shader Canvas -->
+        <canvas
+            ref="canvasRef"
+            class="absolute inset-0 w-full h-full -z-10 pointer-events-none transition-opacity duration-700"
+        />
 
-    <!-- Fallback Glass Grain Overlay -->
-    <div class="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-black/5 dark:via-slate-950/20 to-black/20 dark:to-slate-950/60" />
+        <!-- Fallback Glass Grain Overlay -->
+        <div
+            class="absolute inset-0 -z-10 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-black/5 dark:via-slate-950/20 to-black/20 dark:to-slate-950/60"
+        />
 
-    <!-- Top Menu Bar -->
-    <MenuBar />
+        <!-- Top Menu Bar -->
+        <MenuBar />
 
-    <!-- Desktop Icons (Hidden on mobile < 640px to prevent clutter and double-tap zoom) -->
-    <div class="hidden sm:block">
-      <DesktopIcon
-        v-for="win in windows"
-        :key="win.id"
-        :win="win"
-        :is-selected="selectedIconId === win.id"
-        @select="selectedIconId = $event"
-        @open="openWindow"
-      />
+        <!-- Desktop Icons (Hidden on mobile < 640px to prevent clutter and double-tap zoom) -->
+        <div class="hidden sm:block">
+            <DesktopIcon
+                v-for="win in windows"
+                :key="win.id"
+                :win="win"
+                :is-selected="selectedIconId === win.id"
+                @select="selectedIconId = $event"
+                @open="openWindow"
+            />
+        </div>
+
+        <!-- Windows Layer -->
+        <template v-for="win in windows" :key="win.id">
+            <Window v-show="win.isOpen && !win.isMinimized" :win="win">
+                <component :is="getComponent(win.component)" />
+            </Window>
+        </template>
+
+        <!-- Spotlight Search Overlay -->
+        <Spotlight />
+
+        <!-- Bottom Dock / Taskbar -->
+        <Taskbar />
     </div>
-
-    <!-- Windows Layer -->
-    <template v-for="win in windows" :key="win.id">
-      <Window v-show="win.isOpen && !win.isMinimized" :win="win">
-        <component :is="getComponent(win.component)" />
-      </Window>
-    </template>
-
-    <!-- Spotlight Search Overlay -->
-    <Spotlight />
-
-    <!-- Bottom Dock / Taskbar -->
-    <Taskbar />
-  </div>
 </template>
 
 <script setup lang="ts">
-import { useWindowManager } from "~/composables/useWindowManager"
+import { useWindowManager } from "~/composables/useWindowManager";
 
-import DesktopIcon from "~/components/desktop/DesktopIcon.vue"
-import Window from "~/components/desktop/Window.vue"
-import Taskbar from "~/components/desktop/Taskbar.vue"
-import MenuBar from "~/components/desktop/MenuBar.vue"
-import FinderApp from "~/components/apps/FinderApp.vue"
-import AboutApp from "~/components/apps/AboutApp.vue"
-import TerminalApp from "~/components/apps/TerminalApp.vue"
-import ContactApp from "~/components/apps/ContactApp.vue"
-import Spotlight from "~/components/desktop/Spotlight.vue"
-import DiceApp from "~/components/apps/DiceApp.vue"
-import ZedApp from "~/components/apps/ZedApp.vue"
+import DesktopIcon from "~/components/desktop/DesktopIcon.vue";
+import Window from "~/components/desktop/Window.vue";
+import Taskbar from "~/components/desktop/Taskbar.vue";
+import MenuBar from "~/components/desktop/MenuBar.vue";
+// import FinderApp from "~/components/apps/FinderApp.vue"
+// import AboutApp from "~/components/apps/AboutApp.vue"
+// import TerminalApp from "~/components/apps/TerminalApp.vue"
+// import ContactApp from "~/components/apps/ContactApp.vue"
+import Spotlight from "~/components/desktop/Spotlight.vue";
+// import DiceApp from "~/components/apps/DiceApp.vue"
+// import ZedApp from "~/components/apps/ZedApp.vue"
 
-const { windows, openWindow, toggleSpotlight } = useWindowManager()
-const { t } = useI18n()
+const FinderApp = defineAsyncComponent(
+    () => import("~/components/apps/FinderApp.vue"),
+);
+const AboutApp = defineAsyncComponent(
+    () => import("~/components/apps/AboutApp.vue"),
+);
+const TerminalApp = defineAsyncComponent(
+    () => import("~/components/apps/TerminalApp.vue"),
+);
+const ContactApp = defineAsyncComponent(
+    () => import("~/components/apps/ContactApp.vue"),
+);
+const DiceApp = defineAsyncComponent(
+    () => import("~/components/apps/DiceApp.vue"),
+);
+const ZedApp = defineAsyncComponent(
+    () => import("~/components/apps/ZedApp.vue"),
+);
 
-const selectedIconId = ref<string | null>(null)
-const canvasRef = ref<HTMLCanvasElement | null>(null)
+const { windows, openWindow, toggleSpotlight } = useWindowManager();
+const { t } = useI18n();
+
+const selectedIconId = ref<string | null>(null);
+const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 // Component map
 const componentsMap: Record<string, any> = {
-  FinderApp,
-  ProjectsApp: FinderApp,
-  TerminalApp,
-  AboutApp,
-  ContactApp,
-  DiceApp,
-  ZedApp,
-}
+    FinderApp,
+    ProjectsApp: FinderApp,
+    TerminalApp,
+    AboutApp,
+    ContactApp,
+    DiceApp,
+    ZedApp,
+};
 
-const getComponent = (name: string) => componentsMap[name]
+const getComponent = (name: string) => componentsMap[name];
 
 // --- WebGL Hydrodynamic Liquid Shader Engine ---
-let gl: WebGLRenderingContext | null = null
-let animationFrameId: number
-let program: WebGLProgram | null = null
+let gl: WebGLRenderingContext | null = null;
+let animationFrameId: number;
+let program: WebGLProgram | null = null;
 
-let uResLoc: WebGLUniformLocation | null = null
-let uMouseLoc: WebGLUniformLocation | null = null
-let uVelLoc: WebGLUniformLocation | null = null
-let uSpinLoc: WebGLUniformLocation | null = null
-let uTimeLoc: WebGLUniformLocation | null = null
-let uDarkLoc: WebGLUniformLocation | null = null
-let uRipplePosLoc: WebGLUniformLocation | null = null
-let uRippleTimeLoc: WebGLUniformLocation | null = null
-let uPressPosLoc: WebGLUniformLocation | null = null
-let uPressIntensityLoc: WebGLUniformLocation | null = null
+let uResLoc: WebGLUniformLocation | null = null;
+let uMouseLoc: WebGLUniformLocation | null = null;
+let uVelLoc: WebGLUniformLocation | null = null;
+let uSpinLoc: WebGLUniformLocation | null = null;
+let uTimeLoc: WebGLUniformLocation | null = null;
+let uDarkLoc: WebGLUniformLocation | null = null;
+let uRipplePosLoc: WebGLUniformLocation | null = null;
+let uRippleTimeLoc: WebGLUniformLocation | null = null;
+let uPressPosLoc: WebGLUniformLocation | null = null;
+let uPressIntensityLoc: WebGLUniformLocation | null = null;
 
 const mouse = {
-  x: 0, y: 0,
-  targetX: 0, targetY: 0,
-  vx: 0, vy: 0,
-  spin: 0
-}
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+    vx: 0,
+    vy: 0,
+    spin: 0,
+};
 
 const press = {
-  x: 0, y: 0,
-  targetX: 0, targetY: 0,
-  intensity: 0,
-  isDown: false
-}
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+    intensity: 0,
+    isDown: false,
+};
 
-const ripple = { x: 0, y: 0, time: -10 }
-let isDarkMode = false
-let currentDarkVal = 1.0
+const ripple = { x: 0, y: 0, time: -10 };
+let isDarkMode = false;
+let currentDarkVal = 1.0;
 
 const vsSource = `
   attribute vec2 position;
   void main() {
     gl_Position = vec4(position, 0.0, 1.0);
   }
-`
+`;
 
 const fsSource = `
   precision highp float;
@@ -253,185 +279,219 @@ const fsSource = `
 
     gl_FragColor = vec4(color, 1.0);
   }
-`
+`;
 
-const createShader = (gl: WebGLRenderingContext, type: number, source: string) => {
-  const shader = gl.createShader(type)
-  if (!shader) return null
-  gl.shaderSource(shader, source)
-  gl.compileShader(shader)
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error(gl.getShaderInfoLog(shader))
-    gl.deleteShader(shader)
-    return null
-  }
-  return shader
-}
+const createShader = (
+    gl: WebGLRenderingContext,
+    type: number,
+    source: string,
+) => {
+    const shader = gl.createShader(type);
+    if (!shader) return null;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+    }
+    return shader;
+};
 
 const initWebGL = () => {
-  if (!canvasRef.value) return
-  gl = canvasRef.value.getContext("webgl", { alpha: false, powerPreference: "high-performance" })
-  if (!gl) return
+    if (!canvasRef.value) return;
+    gl = canvasRef.value.getContext("webgl", {
+        alpha: false,
+        powerPreference: "high-performance",
+    });
+    if (!gl) return;
 
-  const vs = createShader(gl, gl.VERTEX_SHADER, vsSource)
-  const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource)
-  if (!vs || !fs) return
+    const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+    if (!vs || !fs) return;
 
-  program = gl.createProgram()
-  if (!program) return
+    program = gl.createProgram();
+    if (!program) return;
 
-  gl.attachShader(program, vs)
-  gl.attachShader(program, fs)
-  gl.linkProgram(program)
-  gl.useProgram(program)
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    gl.useProgram(program);
 
-  const buffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW)
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+        gl.STATIC_DRAW,
+    );
 
-  const posLoc = gl.getAttribLocation(program, "position")
-  gl.enableVertexAttribArray(posLoc)
-  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0)
+    const posLoc = gl.getAttribLocation(program, "position");
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-  uResLoc = gl.getUniformLocation(program, "u_resolution")
-  uMouseLoc = gl.getUniformLocation(program, "u_mouse")
-  uVelLoc = gl.getUniformLocation(program, "u_velocity")
-  uSpinLoc = gl.getUniformLocation(program, "u_spin")
-  uTimeLoc = gl.getUniformLocation(program, "u_time")
-  uDarkLoc = gl.getUniformLocation(program, "u_dark")
-  uRipplePosLoc = gl.getUniformLocation(program, "u_ripple_pos")
-  uRippleTimeLoc = gl.getUniformLocation(program, "u_ripple_time")
-  uPressPosLoc = gl.getUniformLocation(program, "u_press_pos")
-  uPressIntensityLoc = gl.getUniformLocation(program, "u_press_intensity")
+    uResLoc = gl.getUniformLocation(program, "u_resolution");
+    uMouseLoc = gl.getUniformLocation(program, "u_mouse");
+    uVelLoc = gl.getUniformLocation(program, "u_velocity");
+    uSpinLoc = gl.getUniformLocation(program, "u_spin");
+    uTimeLoc = gl.getUniformLocation(program, "u_time");
+    uDarkLoc = gl.getUniformLocation(program, "u_dark");
+    uRipplePosLoc = gl.getUniformLocation(program, "u_ripple_pos");
+    uRippleTimeLoc = gl.getUniformLocation(program, "u_ripple_time");
+    uPressPosLoc = gl.getUniformLocation(program, "u_press_pos");
+    uPressIntensityLoc = gl.getUniformLocation(program, "u_press_intensity");
 
-  resizeCanvas()
-}
+    resizeCanvas();
+};
 
 const resizeCanvas = () => {
-  if (!canvasRef.value || !gl) return
-  const dpr = Math.min(window.devicePixelRatio || 1, 2)
-  const width = window.innerWidth * dpr
-  const height = window.innerHeight * dpr
+    if (!canvasRef.value || !gl) return;
+    const isMobile = window.innerWidth < 640;
+    const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+    const width = window.innerWidth * dpr;
+    const height = window.innerHeight * dpr;
 
-  canvasRef.value.width = width
-  canvasRef.value.height = height
-  gl.viewport(0, 0, width, height)
-}
+    canvasRef.value.width = width;
+    canvasRef.value.height = height;
+    gl.viewport(0, 0, width, height);
+};
 
 const render = (time: number) => {
-  if (!gl || !program) return
+    if (!gl || !program) return;
 
-  const seconds = time * 0.001
+    const seconds = time * 0.001;
 
-  const prevX = mouse.x
-  const prevY = mouse.y
+    const prevX = mouse.x;
+    const prevY = mouse.y;
 
-  mouse.x += (mouse.targetX - mouse.x) * 0.08
-  mouse.y += (mouse.targetY - mouse.y) * 0.08
+    mouse.x += (mouse.targetX - mouse.x) * 0.08;
+    mouse.y += (mouse.targetY - mouse.y) * 0.08;
 
-  const dx = mouse.x - prevX
-  const dy = mouse.y - prevY
+    const dx = mouse.x - prevX;
+    const dy = mouse.y - prevY;
 
-  mouse.vx += (dx - mouse.vx) * 0.1
-  mouse.vy += (dy - mouse.vy) * 0.1
+    mouse.vx += (dx - mouse.vx) * 0.1;
+    mouse.vy += (dy - mouse.vy) * 0.1;
 
-  const rawSpin = (mouse.vx * dy - mouse.vy * dx) * 0.015
-  mouse.spin += (rawSpin - mouse.spin) * 0.05
-  mouse.spin = Math.max(-0.6, Math.min(0.6, mouse.spin))
+    const rawSpin = (mouse.vx * dy - mouse.vy * dx) * 0.015;
+    mouse.spin += (rawSpin - mouse.spin) * 0.05;
+    mouse.spin = Math.max(-0.6, Math.min(0.6, mouse.spin));
 
-  press.x += (press.targetX - press.x) * 0.15
-  press.y += (press.targetY - press.y) * 0.15
+    press.x += (press.targetX - press.x) * 0.15;
+    press.y += (press.targetY - press.y) * 0.15;
 
-  const targetIntensity = press.isDown ? 1.0 : 0.0
-  press.intensity += (targetIntensity - press.intensity) * 0.1
+    const targetIntensity = press.isDown ? 1.0 : 0.0;
+    press.intensity += (targetIntensity - press.intensity) * 0.1;
 
-  const targetDark = isDarkMode ? 1.0 : 0.0
-  currentDarkVal += (targetDark - currentDarkVal) * 0.05
+    const targetDark = isDarkMode ? 1.0 : 0.0;
+    currentDarkVal += (targetDark - currentDarkVal) * 0.05;
 
-  gl.uniform2f(uResLoc, canvasRef.value!.width, canvasRef.value!.height)
-  gl.uniform2f(uMouseLoc, mouse.x * (canvasRef.value!.width / window.innerWidth), (window.innerHeight - mouse.y) * (canvasRef.value!.height / window.innerHeight))
-  gl.uniform2f(uVelLoc, mouse.vx * 0.05, -mouse.vy * 0.05)
-  gl.uniform1f(uSpinLoc, mouse.spin)
-  gl.uniform1f(uTimeLoc, seconds)
-  gl.uniform1f(uDarkLoc, currentDarkVal)
-  gl.uniform2f(uRipplePosLoc, ripple.x * (canvasRef.value!.width / window.innerWidth), (window.innerHeight - ripple.y) * (canvasRef.value!.height / window.innerHeight))
-  gl.uniform1f(uRippleTimeLoc, ripple.time)
-  gl.uniform2f(uPressPosLoc, press.x * (canvasRef.value!.width / window.innerWidth), (window.innerHeight - press.y) * (canvasRef.value!.height / window.innerHeight))
-  gl.uniform1f(uPressIntensityLoc, press.intensity)
+    gl.uniform2f(uResLoc, canvasRef.value!.width, canvasRef.value!.height);
+    gl.uniform2f(
+        uMouseLoc,
+        mouse.x * (canvasRef.value!.width / window.innerWidth),
+        (window.innerHeight - mouse.y) *
+            (canvasRef.value!.height / window.innerHeight),
+    );
+    gl.uniform2f(uVelLoc, mouse.vx * 0.05, -mouse.vy * 0.05);
+    gl.uniform1f(uSpinLoc, mouse.spin);
+    gl.uniform1f(uTimeLoc, seconds);
+    gl.uniform1f(uDarkLoc, currentDarkVal);
+    gl.uniform2f(
+        uRipplePosLoc,
+        ripple.x * (canvasRef.value!.width / window.innerWidth),
+        (window.innerHeight - ripple.y) *
+            (canvasRef.value!.height / window.innerHeight),
+    );
+    gl.uniform1f(uRippleTimeLoc, ripple.time);
+    gl.uniform2f(
+        uPressPosLoc,
+        press.x * (canvasRef.value!.width / window.innerWidth),
+        (window.innerHeight - press.y) *
+            (canvasRef.value!.height / window.innerHeight),
+    );
+    gl.uniform1f(uPressIntensityLoc, press.intensity);
 
-  gl.drawArrays(gl.TRIANGLES, 0, 6)
-  animationFrameId = requestAnimationFrame(render)
-}
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    animationFrameId = requestAnimationFrame(render);
+};
 
 const handlePointerMove = (e: PointerEvent) => {
-  mouse.targetX = e.clientX
-  mouse.targetY = e.clientY
+    mouse.targetX = e.clientX;
+    mouse.targetY = e.clientY;
 
-  if (press.isDown) {
-    press.targetX = e.clientX
-    press.targetY = e.clientY
-  }
-}
+    if (press.isDown) {
+        press.targetX = e.clientX;
+        press.targetY = e.clientY;
+    }
+};
 
 const handlePointerDown = (e: PointerEvent) => {
-  if (e.target === e.currentTarget) {
-    selectedIconId.value = null
+    if (e.target === e.currentTarget) {
+        selectedIconId.value = null;
 
-    press.isDown = true
-    press.targetX = e.clientX
-    press.targetY = e.clientY
+        press.isDown = true;
+        press.targetX = e.clientX;
+        press.targetY = e.clientY;
 
-    ripple.x = e.clientX
-    ripple.y = e.clientY
-    ripple.time = performance.now() * 0.001
-  }
-}
+        ripple.x = e.clientX;
+        ripple.y = e.clientY;
+        ripple.time = performance.now() * 0.001;
+    }
+};
 
 const handlePointerUp = () => {
-  press.isDown = false
-}
+    press.isDown = false;
+};
 
-let themeObserver: MutationObserver | null = null
+let themeObserver: MutationObserver | null = null;
 
 const checkTheme = () => {
-  isDarkMode = document.documentElement.classList.contains("dark")
-}
+    isDarkMode = document.documentElement.classList.contains("dark");
+};
 
 const handleGlobalKeydown = (e: KeyboardEvent) => {
-  if ((e.metaKey || e.ctrlKey) && e.code === "Space") {
-    e.preventDefault()
-    toggleSpotlight()
-  }
-}
+    if ((e.metaKey || e.ctrlKey) && e.code === "Space") {
+        e.preventDefault();
+        toggleSpotlight();
+    }
+};
 
 onMounted(() => {
-  if (import.meta.client) {
-    initWebGL()
-    checkTheme()
+    if (import.meta.client) {
+        initWebGL();
+        checkTheme();
 
-    themeObserver = new MutationObserver(checkTheme)
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+        themeObserver = new MutationObserver(checkTheme);
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
 
-    window.addEventListener("resize", resizeCanvas)
-    window.addEventListener("keydown", handleGlobalKeydown)
+        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("keydown", handleGlobalKeydown);
 
-    mouse.x = mouse.targetX = window.innerWidth / 2
-    mouse.y = mouse.targetY = window.innerHeight / 2
-    press.x = press.targetX = window.innerWidth / 2
-    press.y = press.targetY = window.innerHeight / 2
+        mouse.x = mouse.targetX = window.innerWidth / 2;
+        mouse.y = mouse.targetY = window.innerHeight / 2;
+        press.x = press.targetX = window.innerWidth / 2;
+        press.y = press.targetY = window.innerHeight / 2;
 
-    animationFrameId = requestAnimationFrame(render)
-  }
-})
+        // animationFrameId = requestAnimationFrame(render)
+        setTimeout(() => {
+            initWebGL();
+            animationFrameId = requestAnimationFrame(render);
+        }, 400);
+    }
+});
 
 onUnmounted(() => {
-  if (import.meta.client) {
-    cancelAnimationFrame(animationFrameId)
-    window.removeEventListener("resize", resizeCanvas)
-    window.removeEventListener("keydown", handleGlobalKeydown)
-    if (themeObserver) themeObserver.disconnect()
-  }
-})
+    if (import.meta.client) {
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener("resize", resizeCanvas);
+        window.removeEventListener("keydown", handleGlobalKeydown);
+        if (themeObserver) themeObserver.disconnect();
+    }
+});
 
 // useHead({
 //   title: () => t("title"),
