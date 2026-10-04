@@ -176,5 +176,42 @@
         }
       }
     }
+  },
+  "fidelity": {
+    "title": "K Fé",
+    "description": "Gestionnaire de carte de fidélité",
+    "descriptionLong": "Gérez les cartes de fidélité de vos clients, offrant une expérience de fidélité personnalisée.",
+    "newCard": "Nouvelle carte de fidélité",
+    "activeCustomers": "Clients actifs",
+    "stampsGiven": "Cachets donnés",
+    "rewardsClaimable": "Récompenses à réclamer",
+    "overallProgress": "Progression globale",
+    "cardTitle": "CARTE DE FIDÉLITÉ • NOM DU CLIENT",
+    "card": "carte",
+    "stamp": "cachet",
+    "completed": "terminé",
+    "claimAndReset": "Réclamer et réinitialiser",
+    "editLoyaltyCard": "Modifier la carte de fidélité",
+    "issueLoyaltyCard": "Émettre une carte de fidélité",
+    "editLoyaltyCardDescription": "Mettre à jour les informations du membre, le titre de l'objectif ou la récompense",
+    "issueLoyaltyCardDescription": "Créer une carte de punch pour les visites et les milestones de récompenses",
+    "customerIdentify": "Nom du client / identifiant",
+    "targetGoal": "Objectif cible",
+    "rewardDescription": "Description de la récompense",
+    "cardTheme": "Thème de la carte",
+    "cancel": "Annuler",
+    "saveChanges": "Enregistrer les modifications",
+    "all": "Tout",
+    "active": "Actif",
+    "ready": "Complet",
+    "rewardReady": "Prêt pour la récompense",
+    "noCards": "Aucune carte de fidélité ne correspond à votre recherche",
+    "noCardsIssueNew": "Émettre une nouvelle carte de fidélité pour commencer",
+    "createCard": "Créer la première carte de fidélité",
+    "searchCards": "Rechercher des cartes de fidélité",
+    "defaultFreeReward": "Café offert",
+    "defaultFiveStampsReward": "Chocolat offert",
+    "defaultTenStampsReward": "Café offert",
+    "defaultTwentyStampsReward": "Irish coffee offert"
   }
 }

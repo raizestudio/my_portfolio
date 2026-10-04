@@ -176,5 +176,42 @@
         }
       }
     }
+  },
+  "fidelity": {
+    "title": "Ko Fee",
+    "description": "Loyalty card management",
+    "descriptionLong": "Manage loyalty cards for your clients, offering a personalized fidelity experience.",
+    "newCard": "New loyalty card",
+    "activeCustomers": "Active customers",
+    "stampsGiven": "Cachets donnés",
+    "rewardsClaimable": "Rewards claimable",
+    "overallProgress": "Overall progress",
+    "cardTitle": "PUNCH CARD • CLIENT NAME",
+    "card": "card",
+    "stamp": "stamp",
+    "completed": "completed",
+    "claimAndReset": "Claim and reset",
+    "editLoyaltyCard": "Edit loyalty card",
+    "issueLoyaltyCard": "Issue loyalty card",
+    "editLoyaltyCardDescription": "Update member info, goal or reward title",
+    "issueLoyaltyCardDescription": "Create a punch card for visits & reward milestones",
+    "customerIdentify": "Customer name / identifier",
+    "targetGoal": "Target goal",
+    "rewardDescription": "Reward description",
+    "cardTheme": "Card theme",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes",
+    "all": "All",
+    "active": "Active",
+    "ready": "Ready",
+    "rewardReady": "Reward ready",
+    "noCards": "No customer cards match your search",
+    "noCardsIssueNew": "Issue a new card to start stamping coffee, pastry, or artisan visit goals.",
+    "createCard": "Create the first card",
+    "searchCards": "Search for loyalty cards",
+    "defaultFreeReward": "Free coffee",
+    "defaultFiveStampsReward": "Free pastry",
+    "defaultTenStampsReward": "Free coffee",
+    "defaultTwentyStampsReward": "Free Irish coffee"
   }
 }
