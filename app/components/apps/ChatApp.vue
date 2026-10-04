@@ -52,10 +52,10 @@
 
         <div class="text-[10px] font-semibold text-slate-400 uppercase px-2 py-1 mt-4 tracking-wider">Online Guests</div>
         <div v-for="user in presenceList" :key="user.id" class="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-300">
-          <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
-            {{ user.nickname.slice(0, 2).toUpperCase() }}
-          </div>
-          <span class="truncate text-slate-200">{{ user.nickname }}</span>
+            <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+              {{ (user.nickname || 'Guest').slice(0, 2).toUpperCase() }}
+            </div>
+            <span class="truncate text-slate-200">{{ user.nickname || 'Guest' }}</span>
           <span v-if="user.id === currentUserId" class="text-[9px] text-sky-400 ml-auto font-mono">({{ youText }})</span>
         </div>
       </div>
@@ -63,9 +63,9 @@
       <!-- Current User Card -->
       <div class="p-2.5 border-t border-white/10 bg-black/20 flex items-center justify-between gap-2">
         <div class="flex items-center gap-2 min-w-0 flex-1">
-          <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-md">
-            {{ userNickname.slice(0, 2).toUpperCase() }}
-          </div>
+            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-md">
+              {{ (userNickname || 'Guest').slice(0, 2).toUpperCase() }}
+            </div>
           <!-- text-[16px] sm:text-xs disables mobile zoom on click -->
           <input
             v-model="userNickname"
@@ -325,13 +325,15 @@ const sendMessage = async () => {
 }
 
 const updatePresence = () => {
+  const safeNickname = userNickname.value?.trim() || 'Guest'
+
   if (realtimeChannel && typeof realtimeChannel.track === 'function') {
     realtimeChannel.track({
       id: currentUserId.value,
-      nickname: userNickname.value,
+      nickname: safeNickname,
     })
   } else {
-    presenceList.value = [{ id: currentUserId.value, nickname: userNickname.value }]
+    presenceList.value = [{ id: currentUserId.value, nickname: safeNickname }]
   }
 }
 
@@ -359,10 +361,15 @@ const initSupabaseChat = () => {
     realtimeChannel.on('presence', { event: 'sync' }, () => {
       const state = realtimeChannel.presenceState()
       const users: UserPresence[] = []
+
       Object.keys(state).forEach(key => {
         const presences = state[key] as any[]
         if (presences && presences.length > 0) {
-          users.push({ id: presences[0].id, nickname: presences[0].nickname })
+          const p = presences[0]
+          users.push({
+            id: p.id || key,
+            nickname: p.nickname?.trim() || 'Guest'
+          })
         }
       })
       presenceList.value = users
