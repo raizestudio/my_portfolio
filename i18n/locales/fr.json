@@ -152,7 +152,29 @@
       "title": "Zed"
     },
     "chat": {
-      "title": "Chat"
+      "title": "Chat",
+      "online": "En ligne",
+      "channels": "Salons",
+      "you": "toi",
+      "clickToChangeUsername": "Cliquez ici pour changer votre nom d'utilisateur",
+      "randomizeNickname": "Nouveau nom aléatoire",
+      "channelMessageEmpty": "Aucun message dans {channel}. Dites quelque chose!",
+      "typeMessage": "Écrivez votre message ici...",
+      "justNow": "Il y a peu",
+      "chatChannels": {
+        "general": {
+          "name": "général",
+          "description": "Discussions générales."
+        },
+        "techStack": {
+          "name": "tech-stack",
+          "description": "Discussions sur la tech"
+        },
+        "feedback": {
+          "name": "feedback",
+          "description": "Feedback & demandes de fonctionnalités"
+        }
+      }
     }
   }
 }

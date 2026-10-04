@@ -24,7 +24,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-mono">
-            {{ onlineUsersCount }} online
+            {{ onlineUsersCount }} {{ onlineText }}
           </span>
           <!-- Mobile Close Drawer Button -->
           <button
@@ -38,7 +38,7 @@
 
       <!-- Channels List -->
       <div class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
-        <div class="text-[10px] font-semibold text-slate-400 uppercase px-2 py-1 tracking-wider">Channels</div>
+        <div class="text-[10px] font-semibold text-slate-400 uppercase px-2 py-1 tracking-wider">{{ channelsText }}</div>
         <button
           v-for="channel in channels"
           :key="channel.id"
@@ -56,7 +56,7 @@
             {{ user.nickname.slice(0, 2).toUpperCase() }}
           </div>
           <span class="truncate text-slate-200">{{ user.nickname }}</span>
-          <span v-if="user.id === currentUserId" class="text-[9px] text-sky-400 ml-auto font-mono">(you)</span>
+          <span v-if="user.id === currentUserId" class="text-[9px] text-sky-400 ml-auto font-mono">({{ youText }})</span>
         </div>
       </div>
 
@@ -73,10 +73,10 @@
             @keyup.enter="updateNickname"
             type="text"
             class="bg-transparent text-[16px] sm:text-xs text-white font-medium focus:outline-none focus:bg-white/10 px-1.5 py-0.5 rounded transition-colors w-full truncate border border-transparent focus:border-white/20"
-            title="Click to change your nickname"
+            :title="clickToChangeUsernameText"
           />
         </div>
-        <button @click="generateRandomNickname" class="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer" title="Randomize Nickname">
+        <button @click="generateRandomNickname" class="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer" :title="randomizeNicknameText">
           <Icon name="lucide:shuffle" class="w-4 h-4 sm:w-3.5 sm:h-3.5" />
         </button>
       </div>
@@ -106,7 +106,8 @@
       <div ref="messagesFeedRef" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 custom-scrollbar touch-pan-y">
         <div v-if="filteredMessages.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 text-xs space-y-2">
           <Icon name="lucide:messages-square" class="w-8 h-8 opacity-40 text-sky-400" />
-          <p>No messages in #{{ currentChannelData.name }} yet. Say hi!</p>
+          <!-- <p>No messages in #{{ currentChannelData.name }} yet. Say hi!</p> -->
+          <p>{{ channelMessageEmptyText }}</p>
         </div>
 
         <div
@@ -118,7 +119,7 @@
           <!-- Sender name & timestamp -->
           <div class="flex items-center gap-1.5 mb-1 px-1 text-[10px] text-slate-400">
             <span class="font-medium text-slate-300" :class="msg.user_id === currentUserId ? 'text-sky-300' : ''">
-              {{ msg.user_id === currentUserId ? 'You' : msg.nickname }}
+              {{ msg.user_id === currentUserId ? youText : msg.nickname }}
             </span>
             <span>•</span>
             <span>{{ formatTime(msg.created_at) }}</span>
@@ -126,7 +127,7 @@
 
           <!-- Message Bubble -->
           <div
-            class="max-w-[88%] sm:max-w-[70%] px-3.5 py-2 rounded-2xl text-xs leading-relaxed break-words shadow-md"
+            class="max-w-[88%] sm:max-w-[70%] px-3.5 py-2 rounded-2xl text-xs leading-relaxed wrap-break-word shadow-md"
             :class="[
               msg.user_id === currentUserId
                 ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-br-xs'
@@ -145,7 +146,7 @@
           <input
             v-model="newMessage"
             type="text"
-            placeholder="Type a message..."
+            :placeholder="typeMessageText"
             class="flex-1 bg-slate-800/80 border border-white/15 focus:border-sky-500/50 rounded-xl px-3.5 py-2.5 sm:py-2 text-[16px] sm:text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500/50 transition-all"
           />
           <button
@@ -178,10 +179,27 @@ interface UserPresence {
   nickname: string
 }
 
+const { t } = useI18n()
+
+const onlineText = t('apps.chat.online')
+const channelsText = t('apps.chat.channels')
+const youText = t('apps.chat.you')
+const clickToChangeUsernameText = t('apps.chat.clickToChangeUsername')
+const randomizeNicknameText = t('apps.chat.randomizeNickname')
+const channelMessageEmptyText = computed(() => t('apps.chat.channelMessageEmpty', { channel: currentChannelData.value.name }))
+const typeMessageText = t('apps.chat.typeMessage')
+const generalChannelTitle = t('apps.chat.chatChannels.general.name')
+const generalChannelDescription = t('apps.chat.chatChannels.general.description')
+const techStackChannelTitle = t('apps.chat.chatChannels.techStack.name')
+const techStackChannelDescription = t('apps.chat.chatChannels.techStack.description')
+const feedbackChannelTitle = t('apps.chat.chatChannels.feedback.name')
+const feedbackChannelDescription = t('apps.chat.chatChannels.feedback.description')
+
+
 const channels = [
-  { id: 'general', name: 'general', icon: 'lucide:hash', description: 'General portfolio chat' },
-  { id: 'tech-stack', name: 'tech-stack', icon: 'lucide:code-2', description: 'Nuxt 4, Vue 3, Tailwind & WebGL discussions' },
-  { id: 'feedback', name: 'feedback', icon: 'lucide:sparkles', description: 'Feedback & feature requests' },
+  { id: 'general', name: generalChannelTitle, icon: 'lucide:hash', description: generalChannelDescription },
+  { id: 'tech-stack', name: techStackChannelTitle, icon: 'lucide:code-2', description: techStackChannelDescription },
+  { id: 'feedback', name: feedbackChannelTitle, icon: 'lucide:sparkles', description: feedbackChannelDescription },
 ]
 
 const activeChannel = ref('general')
@@ -190,6 +208,7 @@ const newMessage = ref('')
 const messages = ref<ChatMessage[]>([])
 const presenceList = ref<UserPresence[]>([])
 const messagesFeedRef = ref<HTMLElement | null>(null)
+const justNowText = t('apps.chat.justNow')
 
 // Current User State
 const currentUserId = ref(`user_${Math.random().toString(36).substring(2, 9)}`)
@@ -238,7 +257,7 @@ const formatTime = (isoString: string) => {
     const date = new Date(isoString)
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   } catch {
-    return 'Just now'
+    return justNowText
   }
 }
 
@@ -250,7 +269,6 @@ const scrollToBottom = () => {
   })
 }
 
-// 📥 Fetch historical messages from Supabase Postgres DB
 const fetchMessages = async () => {
   if (!supabase) return
   const { data, error } = await supabase
@@ -265,7 +283,6 @@ const fetchMessages = async () => {
   }
 }
 
-// 📤 Send message: Save to DB + Broadcast via WebSockets
 const sendMessage = async () => {
   const content = newMessage.value.trim()
   if (!content) return
@@ -280,7 +297,6 @@ const sendMessage = async () => {
 
   newMessage.value = ''
 
-  // 1. Optimistic local update
   const localMsg: ChatMessage = {
     id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
     ...msgPayload
@@ -288,7 +304,6 @@ const sendMessage = async () => {
   messages.value.push(localMsg)
   scrollToBottom()
 
-  // 2. Insert into Supabase Postgres database
   if (supabase) {
     const { error } = await supabase
       .from('messages')
@@ -334,7 +349,6 @@ const initSupabaseChat = () => {
       config: { presence: { key: currentUserId.value } }
     })
 
-    // Listen for live broadcast messages from other users
     realtimeChannel.on('broadcast', { event: 'chat_message' }, ({ payload }: { payload: ChatMessage }) => {
       if (payload.user_id !== currentUserId.value) {
         messages.value.push(payload)
@@ -342,7 +356,6 @@ const initSupabaseChat = () => {
       }
     })
 
-    // Presence tracking (online users list)
     realtimeChannel.on('presence', { event: 'sync' }, () => {
       const state = realtimeChannel.presenceState()
       const users: UserPresence[] = []

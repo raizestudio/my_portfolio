@@ -152,7 +152,29 @@
       "title": "Zed"
     },
     "chat": {
-      "title": "Chat"
+      "title": "Chat",
+      "online": "Online",
+      "channels": "Channels",
+      "you": "you",
+      "clickToChangeUsername": "Click here to change your username",
+      "randomizeNickname": "Randomize Nickname",
+      "channelMessageEmpty": "No messages in {channel}. Say hi!",
+      "typeMessage": "Type your message here...",
+      "justNow": "Just now",
+      "chatChannels": {
+        "general": {
+          "name": "general",
+          "description": "General chat channel."
+        },
+        "techStack": {
+          "name": "tech-stack",
+          "description": "Nuxt 4, Vue 3, Tailwind & WebGL discussions"
+        },
+        "feedback": {
+          "name": "feedback",
+          "description": "Feedback & feature requests"
+        }
+      }
     }
   }
 }
