@@ -13,7 +13,7 @@
             @click="goBack"
             :disabled="historyIndex <= 0"
             class="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors disabled:opacity-30 cursor-pointer"
-            title="Back"
+            :title="backText"
           >
             <Icon name="lucide:chevron-left" class="w-4 h-4" />
           </button>
@@ -21,7 +21,7 @@
             @click="goForward"
             :disabled="historyIndex >= history.length - 1"
             class="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors disabled:opacity-30 cursor-pointer"
-            title="Forward"
+            :title="forwardText"
           >
             <Icon name="lucide:chevron-right" class="w-4 h-4" />
           </button>
@@ -49,7 +49,7 @@
             @click="viewMode = 'grid'"
             class="p-1 rounded transition-colors cursor-pointer"
             :class="viewMode === 'grid' ? 'bg-gray-200 dark:bg-white/20 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
-            title="Icon View"
+            :title="gridViewText"
           >
             <Icon name="lucide:layout-grid" class="w-3.5 h-3.5" />
           </button>
@@ -57,7 +57,7 @@
             @click="viewMode = 'list'"
             class="p-1 rounded transition-colors cursor-pointer"
             :class="viewMode === 'list' ? 'bg-gray-200 dark:bg-white/20 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
-            title="List View"
+            :title="listViewText"
           >
             <Icon name="lucide:list" class="w-3.5 h-3.5" />
           </button>
@@ -69,7 +69,7 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search..."
+            :placeholder="searchText"
             class="w-24 sm:w-44 pl-7 pr-2 py-1 bg-white dark:bg-slate-950/60 border border-gray-300 dark:border-white/10 rounded-md text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-all shadow-sm dark:shadow-none"
           />
         </div>
@@ -102,7 +102,7 @@
         <!-- Favorites Section -->
         <div>
           <div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-2 mb-1.5">
-            Favorites
+            {{ favoritesText }}
           </div>
           <div class="space-y-0.5">
             <button
@@ -121,7 +121,7 @@
         <!-- Tags Section -->
         <div>
           <div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-2 mb-1.5">
-            Tags
+            {{ tagText }}
           </div>
           <div class="space-y-1 px-2">
             <button
@@ -130,7 +130,7 @@
               :class="{ 'text-purple-600 dark:text-purple-300 font-medium': activeTag === 'featured' }"
             >
               <span class="w-2.5 h-2.5 rounded-full bg-purple-500" />
-              <span>Featured</span>
+              <span>{{ featuredText }}</span>
             </button>
             <button
               @click="activeTag = activeTag === 'work' ? null : 'work'"
@@ -138,7 +138,7 @@
               :class="{ 'text-sky-600 dark:text-sky-300 font-medium': activeTag === 'work' }"
             >
               <span class="w-2.5 h-2.5 rounded-full bg-sky-500" />
-              <span>Work</span>
+              <span>{{ workText }}</span>
             </button>
           </div>
         </div>
@@ -232,7 +232,7 @@
           <!-- Empty Directory State -->
           <div v-if="visibleItems.length === 0" class="h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 py-12">
             <Icon name="lucide:folder-open" class="w-10 h-10 mb-2 opacity-40" />
-            <p class="text-xs">This folder is empty</p>
+            <p class="text-xs">{{ emptyFolderText }}</p>
           </div>
 
         </div>
@@ -270,14 +270,14 @@
 
             <div class="border-t border-gray-200 dark:border-white/10 pt-3 space-y-2">
               <div>
-                <span class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-semibold">Description</span>
+                <span class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-semibold">{{ descriptionText }}</span>
                 <p class="text-slate-700 dark:text-slate-300 text-[11px] leading-relaxed mt-0.5">
                   {{ selectedItem.description || 'No description available.' }}
                 </p>
               </div>
 
               <div v-if="selectedItem.type === 'file' && selectedItem.techStack">
-                <span class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-semibold">Tech Stack</span>
+                <span class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-semibold">{{ stackText }}</span>
                 <div class="flex flex-wrap gap-1 mt-1 font-mono text-[10px]">
                   <span
                     v-for="tech in selectedItem.techStack"
@@ -298,7 +298,7 @@
               @click="navigateTo(selectedItem.id)"
               class="w-full bg-amber-600 hover:bg-amber-500 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <span>Open Folder</span>
+              <span>{{ openFolderText }}</span>
               <Icon name="lucide:folder-open" class="w-3.5 h-3.5" />
             </button>
 
@@ -309,7 +309,7 @@
                 target="_blank"
                 class="w-full bg-sky-600 hover:bg-sky-500 text-white font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
-                <span>Open Live Site</span>
+                <span>{{ openWebsiteText }}</span>
                 <Icon name="lucide:external-link" class="w-3.5 h-3.5" />
               </a>
 
@@ -317,7 +317,7 @@
                 @click="openFile(selectedItem)"
                 class="w-full bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-300 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-sm dark:shadow-none cursor-pointer"
               >
-                <span>Quick Look</span>
+                <span>{{ quickViewText }}</span>
                 <Icon name="lucide:eye" class="w-3.5 h-3.5" />
               </button>
             </template>
@@ -357,7 +357,7 @@
           @click="navigateTo(selectedItem.id)"
           class="bg-amber-600 hover:bg-amber-500 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 text-[11px] cursor-pointer"
         >
-          <span>Open</span>
+          <span>{{ openFolderText }}</span>
           <Icon name="lucide:arrow-right" class="w-3 h-3" />
         </button>
 
@@ -368,14 +368,14 @@
             target="_blank"
             class="bg-sky-600 hover:bg-sky-500 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 text-[11px] cursor-pointer"
           >
-            <span>Live Site</span>
+            <span>{{ openWebsiteText }}</span>
             <Icon name="lucide:external-link" class="w-3 h-3" />
           </a>
           <button
             @click="openFile(selectedItem)"
             class="bg-slate-100 dark:bg-slate-800 border border-gray-300 dark:border-white/10 text-slate-800 dark:text-slate-200 font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1 text-[11px] cursor-pointer"
           >
-            <span>Preview</span>
+            <span>{{ quickViewText }}</span>
           </button>
         </template>
       </div>
@@ -395,6 +395,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useWindowManager } from '~/composables/useWindowManager'
 
 const { openWindow } = useWindowManager()
+const { t } = useI18n()
 
 const viewMode = ref<'grid' | 'list'>('grid')
 const searchQuery = ref('')
@@ -402,6 +403,29 @@ const activeTag = ref<string | null>(null)
 const currentFolderId = ref<string | undefined>('projects')
 const selectedItemId = ref<string | null>(null)
 const isMobile = ref(false)
+
+const backText = t('apps.finder.back')
+const forwardText = t('apps.finder.forward')
+const gridViewText = t('apps.finder.gridView')
+const listViewText = t('apps.finder.listView')
+const searchText = t('apps.finder.search')
+const favoritesText = t('apps.finder.favorites')
+const tagText = t('apps.finder.tags')
+const featuredText = t('apps.finder.featured')
+const workText = t('apps.finder.work')
+const emptyFolderText = t('apps.finder.emptyFolder')
+const descriptionText = t('apps.finder.description')
+const stackText = t('apps.finder.stack')
+const openFolderText = t('apps.finder.openFolder')
+const openWebsiteText = t('apps.finder.openWebsite')
+const quickViewText = t('apps.finder.quickView')
+const desktopFolderText = t('apps.finder.sysFolders.desktop')
+const projectsFolderText = t('apps.finder.sysFolders.projects')
+const documentsFolderText = t('apps.finder.sysFolders.documents')
+const downloadsFolderText = t('apps.finder.sysFolders.downloads')
+const musicFolderText = t('apps.finder.sysFolders.music')
+const picturesFolderText = t('apps.finder.sysFolders.pictures')
+const videosFolderText = t('apps.finder.sysFolders.videos')
 
 const checkMobile = () => {
   if (import.meta.client) {
@@ -415,10 +439,10 @@ const historyIndex = ref(0)
 
 // Sidebar Favorites List
 const sidebarFavorites = [
-  { id: 'desktop', name: 'Desktop', icon: 'lucide:monitor', iconColor: 'text-indigo-500 dark:text-indigo-400' },
-  { id: 'projects', name: 'Projects', icon: 'lucide:folder-git-2', iconColor: 'text-amber-500 dark:text-amber-400' },
-  { id: 'documents', name: 'Documents', icon: 'lucide:file-text', iconColor: 'text-sky-500 dark:text-sky-400' },
-  { id: 'downloads', name: 'Downloads', icon: 'lucide:download', iconColor: 'text-emerald-500 dark:text-emerald-400' }
+  { id: 'desktop', name: desktopFolderText, icon: 'lucide:monitor', iconColor: 'text-indigo-500 dark:text-indigo-400' },
+  { id: 'projects', name: projectsFolderText, icon: 'lucide:folder-git-2', iconColor: 'text-amber-500 dark:text-amber-400' },
+  { id: 'documents', name: documentsFolderText, icon: 'lucide:file-text', iconColor: 'text-sky-500 dark:text-sky-400' },
+  { id: 'downloads', name: downloadsFolderText, icon: 'lucide:download', iconColor: 'text-emerald-500 dark:text-emerald-400' }
 ]
 
 // Global macOS Virtual File System
