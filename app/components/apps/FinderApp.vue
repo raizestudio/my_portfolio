@@ -487,7 +487,15 @@ const fileSystem = ref([
     description: 'Fiber optics deployment management for TDF.',
     updatedAt: 'Sep 24, 2026'
   },
-
+  {
+    id: 'wiible',
+    parentId: 'projects',
+    name: 'Wiible',
+    type: 'folder',
+    title: 'Wiible',
+    description: 'Développement freelance',
+    updatedAt: 'Sep 24, 2026'
+  },
   // Inside ~/Projects/WeDev
   {
     id: 'gaia',
@@ -630,7 +638,21 @@ const fileSystem = ref([
     techStack: ['Markdown'],
     size: '15 KB',
     updatedAt: 'Sep 24, 2026',
-  }
+  },
+  // Items inside Wiible Folder
+  {
+    id: 'loyalty_card_manager',
+    parentId: 'wiible',
+    name: 'kfe.vue',
+    type: 'file',
+    ext: 'vue',
+    title: 'KFE',
+    description: 'Gestionnaire de cartes de fidélité',
+    techStack: ['Vue', 'TypeScript', 'Supabase'],
+    size: '28 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://joelpinho.fr/fidelity'
+  },
 ])
 
 // Navigation Logic

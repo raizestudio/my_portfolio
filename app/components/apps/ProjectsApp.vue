@@ -415,6 +415,15 @@ const fileSystem = ref([
     description: 'Solutions logiciels facilitant le déploiement de la fibre optique pour le compte de TDF',
     updatedAt: 'Sep 24, 2026'
   },
+  {
+    id: 'wiible',
+    parentId: 'root',
+    name: 'Wiible',
+    type: 'folder',
+    title: 'Wiible',
+    description: 'Développement freelance',
+    updatedAt: 'Sep 24, 2026'
+  },
 
   // Items Inside WeDev Folder
   {
@@ -480,7 +489,21 @@ const fileSystem = ref([
     techStack: ['Markdown'],
     size: '11 KB',
     updatedAt: 'Sep 24, 2026',
-  }
+  },
+  // Items inside Wiible Folder
+  {
+    id: 'loyalty_card_manager',
+    parentId: 'wiible',
+    name: 'kfe.vue',
+    type: 'file',
+    ext: 'vue',
+    title: 'KFE',
+    description: 'Gestionnaire de cartes de fidélité',
+    techStack: ['Vue', 'TypeScript', 'Supabase'],
+    size: '28 KB',
+    updatedAt: 'Sep 24, 2026',
+    demoUrl: 'https://joelpinho.fr/fidelity'
+  },
 ])
 
 // Navigation Methods

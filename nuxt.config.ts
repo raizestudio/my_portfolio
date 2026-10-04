@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     "@vercel/analytics",
     "@vercel/speed-insights",
     "@nuxtjs/supabase",
+    "nuxt-security",
   ],
   css: ["~/assets/css/main.css"],
   features: {
@@ -42,7 +43,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     externals: {
-      inline: ["tslib", "@supabase/auth-js"],
+      inline: ["tslib", "@supabase/auth-js", "node:sqlite"],
     },
   },
   experimental: {
@@ -196,6 +197,9 @@ export default defineNuxtConfig({
         { rel: "preconnect", href: "https://cdn.jsdelivr.net" },
       ],
     },
+  },
+  security: {
+    nonce: true,
   },
   runtimeConfig: {
     resendApiKey: process.env.RESEND_API_KEY,
