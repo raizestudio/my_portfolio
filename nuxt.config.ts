@@ -199,7 +199,30 @@ export default defineNuxtConfig({
     },
   },
   security: {
-    nonce: true,
+    nonce: false,
+    headers: {
+      contentSecurityPolicy: {
+        "script-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "'wasm-unsafe-eval'", // Required for WebAssembly (Pyodide)
+          "https://cdn.jsdelivr.net",
+        ],
+        "worker-src": [
+          "'self'",
+          "blob:", // Required for URL.createObjectURL workers
+          "https://cdn.jsdelivr.net", // Required for Pyodide/Skulpt web worker scripts
+        ],
+        "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+        "connect-src": [
+          "'self'",
+          "https:",
+          "wss:", // Required for Supabase WebSockets
+        ],
+        "img-src": ["'self'", "data:", "blob:", "https:"],
+      },
+    },
   },
   runtimeConfig: {
     resendApiKey: process.env.RESEND_API_KEY,

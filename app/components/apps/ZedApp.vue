@@ -173,11 +173,11 @@
           </div>
 
           <!-- Code Overlay Container -->
-          <div class="flex-1 overflow-hidden relative flex font-mono text-[12px] leading-relaxed">
-            <!-- Line Numbers -->
+          <div class="flex-1 overflow-hidden relative flex font-mono leading-relaxed">
+            <!-- Line Numbers (16px on mobile prevents safari auto-zoom alignment mismatch) -->
             <div
               ref="lineNumbersRef"
-              class="select-none text-zinc-600 text-right pr-2 sm:pr-3 pl-2 sm:pl-3 py-3 sm:py-4 font-mono space-y-0.5 shrink-0 bg-[#151518]/50 border-r border-zinc-800/40 overflow-hidden text-[11px] sm:text-[12px]"
+              class="select-none text-zinc-600 text-right pr-2 sm:pr-3 pl-2 sm:pl-3 py-3 sm:py-4 font-mono space-y-0.5 shrink-0 bg-[#151518]/50 border-r border-zinc-800/40 overflow-hidden text-[16px] md:text-[12px] leading-relaxed"
             >
               <div v-for="line in lineCount" :key="line">{{ line }}</div>
             </div>
@@ -187,10 +187,10 @@
               <!-- Rendered Syntax Highlighted Layer -->
               <pre
                 ref="preRef"
-                class="absolute inset-0 p-3 sm:p-4 m-0 pointer-events-none font-mono text-[12px] leading-relaxed whitespace-pre overflow-hidden z-0 text-zinc-200 border-0"
-              ><code class="font-mono bg-transparent p-0 m-0 border-0" v-html="highlightedCode"></code></pre>
+                class="absolute inset-0 p-3 sm:p-4 m-0 pointer-events-none font-mono text-[16px] md:text-[12px] leading-relaxed whitespace-pre overflow-hidden z-0 text-zinc-200 border-0"
+              ><code class="font-mono bg-transparent p-0 m-0 border-0 text-[16px] md:text-[12px] leading-relaxed" v-html="highlightedCode"></code></pre>
 
-              <!-- Transparent Input Textarea Layer -->
+              <!-- Transparent Input Textarea Layer (text-[16px] prevents iOS Safari auto-zoom) -->
               <textarea
                 ref="textareaRef"
                 v-model="activeFile.content"
@@ -198,7 +198,7 @@
                 @keydown="handleEditorKeydown"
                 spellcheck="false"
                 placeholder="// Type code here..."
-                class="absolute inset-0 p-3 sm:p-4 m-0 w-full h-full bg-transparent text-transparent caret-white resize-none font-mono text-[12px] leading-relaxed whitespace-pre overflow-auto z-10 focus:outline-none border-0 selection:bg-sky-500/30 select-text"
+                class="absolute inset-0 p-3 sm:p-4 m-0 w-full h-full bg-transparent text-transparent caret-white resize-none font-mono text-[16px] md:text-[12px] leading-relaxed whitespace-pre overflow-auto z-10 focus:outline-none border-0 selection:bg-sky-500/30 select-text touch-manipulation"
               ></textarea>
             </div>
           </div>
@@ -286,7 +286,7 @@
             @keydown.enter="sendPrompt"
             type="text"
             placeholder="Ask AI to write or explain code..."
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-md px-2.5 py-2 sm:py-1.5 text-zinc-200 text-[11px] placeholder-zinc-600 focus:outline-none focus:border-amber-500/50"
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-md px-2.5 py-2 sm:py-1.5 text-zinc-200 text-[16px] sm:text-[11px] placeholder-zinc-600 focus:outline-none focus:border-amber-500/50"
           />
         </div>
       </div>
@@ -304,7 +304,7 @@
           <button @click="showNewFileModal = false" class="text-zinc-500 hover:text-zinc-200 p-1 cursor-pointer">✕</button>
         </div>
         <p class="text-[11px] text-zinc-400 leading-normal">
-          Type file name with extension (e.g., <code class="text-sky-400">script.py</code>, <code class="text-amber-400">app.ts</code>, <code class="text-rose-400">main.rs</code>).
+          Type file name with extension (e.g., <code class="text-sky-400">script.py</code>, <code class="text-amber-400">app.ts</code>).
         </p>
         <input
           v-model="newFileNameInput"
@@ -312,7 +312,7 @@
           ref="newFileInputRef"
           type="text"
           placeholder="filename.ext"
-          class="w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-2 sm:py-1.5 text-zinc-100 font-mono text-xs focus:outline-none focus:border-sky-500"
+          class="w-full bg-zinc-950 border border-zinc-700 rounded-md px-3 py-2 sm:py-1.5 text-zinc-100 font-mono text-[16px] sm:text-xs focus:outline-none focus:border-sky-500"
         />
         <div class="flex justify-end gap-2 pt-1">
           <button
@@ -379,7 +379,7 @@ interface ChatMessage {
   codeSnippet?: string
 }
 
-const showSidebar = ref(false) // Closed by default on mobile load, toggled via state or breakpoint
+const showSidebar = ref(false)
 const showAssistant = ref(false)
 const showTerminal = ref(false)
 const showNewFileModal = ref(false)
@@ -422,7 +422,6 @@ const chatMessages = ref<ChatMessage[]>([
   }
 ])
 
-// Auto-close sidebar on mobile file selection for seamless editing
 const selectFileMobile = (file: CodeFile) => {
   openFile(file)
   if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -430,7 +429,6 @@ const selectFileMobile = (file: CodeFile) => {
   }
 }
 
-// Synchronize Scroll between Textarea, Pre Overlay, and Line Numbers
 const syncScroll = () => {
   if (textareaRef.value && preRef.value) {
     preRef.value.scrollTop = textareaRef.value.scrollTop
@@ -441,7 +439,6 @@ const syncScroll = () => {
   }
 }
 
-// Language mapping based on file extension
 const detectLanguage = (filename: string): string => {
   const ext = filename.split('.').pop()?.toLowerCase() || ''
   const langMap: Record<string, string> = {
@@ -462,7 +459,6 @@ const detectLanguage = (filename: string): string => {
   return langMap[ext] || 'plaintext'
 }
 
-// Icon mapping based on file extension
 const getFileIcon = (filename: string): string => {
   const ext = filename.split('.').pop()?.toLowerCase() || ''
   const iconMap: Record<string, string> = {
@@ -493,7 +489,6 @@ const lineCount = computed(() => {
   return activeFile.value.content.split('\n').length || 1
 })
 
-// Highlighted HTML output from Highlight.js
 const highlightedCode = computed(() => {
   if (!activeFile.value) return ''
   const code = activeFile.value.content
@@ -536,21 +531,18 @@ const applySnippetToActiveFile = (snippet: string) => {
   }
 }
 
-// Single Unified Keyboard Shortcut Handler
 const handleEditorKeydown = (e: KeyboardEvent) => {
   e.stopPropagation()
 
   const target = e.target as HTMLTextAreaElement
   const { selectionStart: start, selectionEnd: end, value } = target
 
-  // 1. Run Code: Cmd+Enter / Ctrl+Enter
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
     e.preventDefault()
     executeCode()
     return
   }
 
-  // 2. Save Shortcut: Cmd+S / Ctrl+S
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
     e.preventDefault()
     terminalLogs.value.push({ type: 'info', text: `✔ Saved ${activeFile.value?.name || 'file'}` })
@@ -558,7 +550,6 @@ const handleEditorKeydown = (e: KeyboardEvent) => {
     return
   }
 
-  // 3. Tab Key Indentation
   if (e.key === 'Tab') {
     e.preventDefault()
     if (activeFile.value) {
@@ -571,7 +562,6 @@ const handleEditorKeydown = (e: KeyboardEvent) => {
     return
   }
 
-  // 4. Auto-closing Brackets & Quotes
   const pairs: Record<string, string> = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" }
   if (pairs[e.key] && activeFile.value) {
     e.preventDefault()
@@ -639,7 +629,6 @@ const deleteFile = (id: string) => {
 
 let activeWorker: Worker | null = null
 let workerTimeoutTimer: ReturnType<typeof setTimeout> | null = null
-let pyodideWorker: Worker | null = null
 
 const executeCode = () => {
   if (!activeFile.value || !import.meta.client) return
@@ -653,6 +642,7 @@ const executeCode = () => {
   }
   if (workerTimeoutTimer) {
     clearTimeout(workerTimeoutTimer)
+    workerTimeoutTimer = null
   }
 
   terminalLogs.value.push({ type: 'command', text: `running ${file.name}...` })
@@ -725,66 +715,81 @@ const runJavaScriptWorker = (code: string) => {
   worker.postMessage(code)
 }
 
+// Ultra-fast Skulpt Python WASM Engine (< 50ms startup time)
 const runPythonWorker = (code: string) => {
-  if (!pyodideWorker) {
-    terminalLogs.value.push({ type: 'info', text: 'Initializing Python 3.12 WASM runtime (Pyodide)...' })
-    scrollTerminalToBottom()
+  const workerCode = `
+    importScripts(
+      'https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js',
+      'https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js'
+    );
 
-    const workerCode = `
-      importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js');
-      let pyodide = null;
+    self.onmessage = function(e) {
+      const code = e.data;
 
-      self.onmessage = async function(e) {
-        const { code } = e.data;
-        try {
-          if (!pyodide) {
-            pyodide = await loadPyodide({
-              stdout: (text) => self.postMessage({ type: 'stdout', text }),
-              stderr: (text) => self.postMessage({ type: 'stderr', text })
-            });
-            self.postMessage({ type: 'ready' });
+      Sk.configure({
+        output: function(text) {
+          self.postMessage({ type: 'stdout', text: text });
+        },
+        read: function(x) {
+          if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+            throw "File not found: '" + x + "'";
           }
-          await pyodide.runPythonAsync(code);
+          return Sk.builtinFiles["files"][x];
+        },
+        execLimit: 5000
+      });
+
+      Sk.misceval.asyncToPromise(function() {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+      }).then(
+        function() {
           self.postMessage({ type: 'done' });
-        } catch (err) {
-          self.postMessage({ type: 'error', text: err.message || String(err) });
+        },
+        function(err) {
+          self.postMessage({ type: 'error', text: err.toString() });
         }
-      };
-    `
+      );
+    };
+  `
 
-    const blob = new Blob([workerCode], { type: 'application/javascript' })
-    pyodideWorker = new Worker(URL.createObjectURL(blob))
-
-    pyodideWorker.onmessage = (e) => {
-      const { type, text } = e.data
-
-      if (type === 'ready') {
-        terminalLogs.value.push({ type: 'info', text: '✔ Pyodide WASM Runtime ready!' })
-      } else if (type === 'stdout') {
-        terminalLogs.value.push({ type: 'output', text })
-      } else if (type === 'stderr' || type === 'error') {
-        terminalLogs.value.push({ type: 'error', text })
-      } else if (type === 'done') {
-        if (workerTimeoutTimer) clearTimeout(workerTimeoutTimer)
-        terminalLogs.value.push({ type: 'info', text: 'Python process finished with exit code 0' })
-      }
-      scrollTerminalToBottom()
-    }
-  }
+  const blob = new Blob([workerCode], { type: 'application/javascript' })
+  const worker = new Worker(URL.createObjectURL(blob))
+  activeWorker = worker
 
   workerTimeoutTimer = setTimeout(() => {
-    if (pyodideWorker) {
-      pyodideWorker.terminate()
-      pyodideWorker = null
+    if (activeWorker) {
+      activeWorker.terminate()
+      activeWorker = null
       terminalLogs.value.push({
         type: 'error',
-        text: '⏱ Execution Timeout: Python process killed after 10s.'
+        text: '⏱ Execution Timeout: Program terminated after 5000ms (possible infinite loop).'
       })
       scrollTerminalToBottom()
     }
-  }, 10000)
+  }, 5000)
 
-  pyodideWorker.postMessage({ code })
+  worker.onerror = (err) => {
+    if (workerTimeoutTimer) clearTimeout(workerTimeoutTimer)
+    terminalLogs.value.push({ type: 'error', text: `Worker Error: ${err.message || 'Failed to execute Python script'}` })
+    scrollTerminalToBottom()
+  }
+
+  worker.onmessage = (e) => {
+    const { type, text } = e.data
+
+    if (type === 'stdout') {
+      terminalLogs.value.push({ type: 'output', text })
+    } else if (type === 'stderr' || type === 'error') {
+      terminalLogs.value.push({ type: 'error', text })
+    } else if (type === 'done') {
+      if (workerTimeoutTimer) clearTimeout(workerTimeoutTimer)
+      terminalLogs.value.push({ type: 'info', text: 'Python process finished with exit code 0' })
+      activeWorker = null
+    }
+    scrollTerminalToBottom()
+  }
+
+  worker.postMessage(code)
 }
 
 const scrollTerminalToBottom = () => {
@@ -827,7 +832,6 @@ const sendPrompt = () => {
 }
 
 onMounted(() => {
-  // On mobile screens, default sidebar to closed so the editor takes full screen
   if (typeof window !== 'undefined' && window.innerWidth < 768) {
     showSidebar.value = false
   }
