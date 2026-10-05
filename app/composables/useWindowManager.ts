@@ -94,6 +94,19 @@ export const useWindowManager = () => {
       size: { width: 650, height: 480 },
       iconPosition: { x: 24, y: 720 },
     },
+    {
+      id: "runner",
+      titleKey: "apps.runner.title",
+      icon: "ri:run-fill",
+      component: "RunnerApp",
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: false,
+      zIndex: 10,
+      position: { x: 120, y: 120 },
+      size: { width: 750, height: 500 },
+      iconPosition: { x: 24, y: 832 },
+    },
   ]);
 
   const windows = computed(() =>

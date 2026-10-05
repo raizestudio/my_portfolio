@@ -62,6 +62,7 @@ const ContactApp = defineAsyncComponent(() => import("~/components/apps/ContactA
 const DiceApp = defineAsyncComponent(() => import("~/components/apps/DiceApp.vue"))
 const ZedApp = defineAsyncComponent(() => import("~/components/apps/ZedApp.vue"))
 const ChatApp = defineAsyncComponent(() => import("~/components/apps/ChatApp.vue"))
+const RunnerApp = defineAsyncComponent(() => import("~/components/apps/RunnerApp.vue"))
 
 const { windows, openWindow, toggleSpotlight } = useWindowManager()
 
@@ -79,6 +80,7 @@ const componentsMap: Record<string, any> = {
   DiceApp,
   ZedApp,
   ChatApp,
+  RunnerApp,
 }
 
 const getComponent = (name: string) => componentsMap[name]

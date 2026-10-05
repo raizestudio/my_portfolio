@@ -211,6 +211,9 @@
           "description": "Feedback & feature requests"
         }
       }
+    },
+    "runner": {
+      "title": "Pixel Runner 2D"
     }
   },
   "fidelity": {

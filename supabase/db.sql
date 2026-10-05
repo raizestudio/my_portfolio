@@ -20,10 +20,20 @@ create table if not exists public.fidelity_cards (
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
+-- 1. Création de la table
+create table if not exists public.runner_leaderboard (
+  id uuid primary key default gen_random_uuid(),
+  player_name text not null,
+  score integer not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
 -- 3. Enable Row Level Security (RLS)
 alter table public.messages enable row level security;
 alter table public.fidelity_cards enable row level security;
+alter table public.runner_leaderboard enable row level security;
 
 -- 4. Create Access Policies
 create policy "Allow Public Messages Access" on public.messages for all using (true);
 create policy "Allow Public Fidelity Access" on public.fidelity_cards for all using (true);
+create policy "Allow Public Leaderboard Access" on public.runner_leaderboard for all using (true);
