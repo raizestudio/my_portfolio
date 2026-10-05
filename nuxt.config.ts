@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     "@vercel/speed-insights",
     "@nuxtjs/supabase",
     "nuxt-security",
+    "@nuxt/scripts",
   ],
   css: ["~/assets/css/main.css"],
   features: {
@@ -137,6 +138,13 @@ export default defineNuxtConfig({
       ],
     },
   },
+  scripts: {
+    registry: {
+      googleTagManager: {
+        id: "GTM-MF5DJ4FR", // Your GTM ID
+      },
+    },
+  },
   supabase: {
     redirect: false,
   },
@@ -208,6 +216,7 @@ export default defineNuxtConfig({
           "'unsafe-eval'",
           "'wasm-unsafe-eval'", // Required for WebAssembly (Pyodide)
           "https://cdn.jsdelivr.net",
+          "https://www.googletagmanager.com",
         ],
         "worker-src": [
           "'self'",
@@ -219,8 +228,16 @@ export default defineNuxtConfig({
           "'self'",
           "https:",
           "wss:", // Required for Supabase WebSockets
+          "https://www.googletagmanager.com",
+          "https://www.google-analytics.com",
         ],
-        "img-src": ["'self'", "data:", "blob:", "https:"],
+        "img-src": [
+          "'self'",
+          "data:",
+          "blob:",
+          "https:",
+          "https://www.googletagmanager.com",
+        ],
       },
     },
   },
