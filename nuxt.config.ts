@@ -153,7 +153,7 @@ export default defineNuxtConfig({
       // htmlAttrs: {
       //   lang: "fr",
       // },
-      // title: "Joel PINHO | Portfolio",
+      title: "Joel PINHO | Portfolio",
       meta: [
         {
           name: "description",
@@ -195,6 +195,11 @@ export default defineNuxtConfig({
           type: "image/png",
           sizes: "192x192",
           href: "/favicon-192x192.png",
+        },
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: "/favicon.ico",
         },
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
         {
