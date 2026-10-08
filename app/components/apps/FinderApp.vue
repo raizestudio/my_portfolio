@@ -675,7 +675,7 @@ const fileSystem = ref([
     techStack: ['Vue', 'TypeScript', 'Supabase'],
     size: '28 KB',
     updatedAt: 'Sep 24, 2026',
-    demoUrl: 'https://joelpinho.fr/fidelity'
+    demoUrl: '/fidelity'
   },
 ])
 

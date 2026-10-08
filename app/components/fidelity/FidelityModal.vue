@@ -18,8 +18,9 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
+        <!-- Customer Name -->
         <div>
-          <label class="block text-xs font-bold mb-1">{{ customerIdentifyText }}</label>
+          <label class="block text-xs font-bold mb-1">{{ customerIdentifyText }} *</label>
           <input
             v-model="form.customer_name"
             type="text"
@@ -27,6 +28,28 @@
             placeholder="e.g. Marie Laurent"
             class="w-full bg-stone-100 dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-2xl px-3.5 py-2.5 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-600/30"
           />
+        </div>
+
+        <!-- Contact Details (Email & Phone) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold mb-1">{{ customerEmailText }}</label>
+            <input
+              v-model="form.customer_email"
+              type="email"
+              placeholder="marie@example.com"
+              class="w-full bg-stone-100 dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-2xl px-3.5 py-2.5 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-600/30"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold mb-1">{{ customerPhoneText }}</label>
+            <input
+              v-model="form.customer_phone"
+              type="tel"
+              placeholder="+33 6 12 34 56 78"
+              class="w-full bg-stone-100 dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-2xl px-3.5 py-2.5 text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-600/30"
+            />
+          </div>
         </div>
 
         <!-- Target Visit Goal -->
@@ -53,8 +76,9 @@
           </div>
         </div>
 
+        <!-- Reward Description -->
         <div>
-          <label class="block text-xs font-bold mb-1">{{ rewardDescriptionText }}</label>
+          <label class="block text-xs font-bold mb-1">{{ rewardDescriptionText }} *</label>
           <input
             v-model="form.reward_title"
             type="text"
@@ -95,9 +119,10 @@
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="px-5 py-2.5 bg-amber-700 hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 text-stone-50 rounded-2xl text-xs font-bold shadow-md transition-all cursor-pointer"
+            class="px-5 py-2.5 bg-amber-700 hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 text-stone-50 rounded-2xl text-xs font-bold shadow-md transition-all cursor-pointer flex items-center gap-2"
           >
-            {{ cardToEdit ? saveChangesText : issueLoyaltyCardText }}
+            <Icon v-if="isSubmitting" name="lucide:loader-2" class="w-4 h-4 animate-spin" />
+            <span>{{ cardToEdit ? saveChangesText : issueLoyaltyCardText }}</span>
           </button>
         </div>
       </form>
@@ -106,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { LoyaltyCardData } from './FidelityCard.vue'
 
 const props = defineProps<{
@@ -114,30 +139,34 @@ const props = defineProps<{
   cardToEdit?: LoyaltyCardData | null
 }>()
 
+const emit = defineEmits(['close', 'save'])
+
 const { t } = useI18n()
 
-const editLoyaltyCardText = t('fidelity.editLoyaltyCard')
-const issueLoyaltyCardText = t('fidelity.issueLoyaltyCard')
-const editLoyaltyCardDescriptionText = t('fidelity.editLoyaltyCardDescription')
-const issueLoyaltyCardDescriptionText = t('fidelity.issueLoyaltyCardDescription')
-const customerIdentifyText = t('fidelity.customerIdentify')
-const targetGoalText = t('fidelity.targetGoal')
-const stampText = t('fidelity.stamp')
-const rewardDescriptionText = t('fidelity.rewardDescription')
-const cardThemeText = t('fidelity.cardTheme')
-const cancelText = t('fidelity.cancel')
-const saveChangesText = t('fidelity.saveChanges')
-const defaultFreeRewardText = t('fidelity.defaultFreeReward')
-const defaultFiveStampsRewardText = t('fidelity.defaultFiveStampsReward')
-const defaultTenStampsRewardText = t('fidelity.defaultTenStampsReward')
-const defaultTwentyStampsRewardText = t('fidelity.defaultTwentyStampsReward')
-
-const emit = defineEmits(['close', 'save'])
+// Reactive i18n computed translations with safe string fallbacks
+const editLoyaltyCardText = computed(() => t('fidelity.editLoyaltyCard'))
+const issueLoyaltyCardText = computed(() => t('fidelity.issueLoyaltyCard'))
+const editLoyaltyCardDescriptionText = computed(() => t('fidelity.editLoyaltyCardDescription'))
+const issueLoyaltyCardDescriptionText = computed(() => t('fidelity.issueLoyaltyCardDescription'))
+const customerIdentifyText = computed(() => t('fidelity.customerIdentify'))
+const customerEmailText = computed(() => t('fidelity.customerEmail', 'Email Address'))
+const customerPhoneText = computed(() => t('fidelity.customerPhone', 'Phone Number'))
+const targetGoalText = computed(() => t('fidelity.targetGoal'))
+const stampText = computed(() => t('fidelity.stamp'))
+const rewardDescriptionText = computed(() => t('fidelity.rewardDescription'))
+const cardThemeText = computed(() => t('fidelity.cardTheme'))
+const cancelText = computed(() => t('fidelity.cancel'))
+const saveChangesText = computed(() => t('fidelity.saveChanges'))
+const defaultFiveStampsRewardText = computed(() => t('fidelity.defaultFiveStampsReward', 'Free Cookie / Pastry'))
+const defaultTenStampsRewardText = computed(() => t('fidelity.defaultTenStampsReward', 'Free Specialty Coffee'))
+const defaultTwentyStampsRewardText = computed(() => t('fidelity.defaultTwentyStampsReward', 'VIP Pass & Free Brunch'))
 
 const form = ref({
   customer_name: '',
+  customer_email: '',
+  customer_phone: '',
   target_visits: 10,
-  reward_title: defaultFreeRewardText,
+  reward_title: defaultTenStampsRewardText.value,
   color_gradient: 'latte'
 })
 
@@ -152,9 +181,9 @@ const colorPresets = [
 const setTarget = (target: number) => {
   form.value.target_visits = target
   if (!props.cardToEdit) {
-    if (target === 5) form.value.reward_title = defaultFiveStampsRewardText
-    else if (target === 10) form.value.reward_title = defaultTenStampsRewardText
-    else if (target === 20) form.value.reward_title = defaultTwentyStampsRewardText
+    if (target === 5) form.value.reward_title = defaultFiveStampsRewardText.value
+    else if (target === 10) form.value.reward_title = defaultTenStampsRewardText.value
+    else if (target === 20) form.value.reward_title = defaultTwentyStampsRewardText.value
   }
 }
 
@@ -162,8 +191,10 @@ onMounted(() => {
   if (props.cardToEdit) {
     form.value = {
       customer_name: props.cardToEdit.customer_name,
+      customer_email: props.cardToEdit.customer_email || '',
+      customer_phone: props.cardToEdit.customer_phone || '',
       target_visits: props.cardToEdit.target_visits,
-      reward_title: props.cardToEdit.reward_title,
+      reward_title: props.cardToEdit.reward_title || defaultTenStampsRewardText.value,
       color_gradient: props.cardToEdit.color_gradient || 'latte'
     }
   }

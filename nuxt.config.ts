@@ -147,6 +147,11 @@ export default defineNuxtConfig({
   },
   supabase: {
     redirect: false,
+    redirectOptions: {
+      login: "/fidelity/login",
+      callback: "/fidelity",
+      exclude: ["/fidelity/login"],
+    },
   },
   app: {
     head: {
