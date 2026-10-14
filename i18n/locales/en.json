@@ -255,6 +255,8 @@
     "createAccount": "Create account",
     "signIn": "Sign In",
     "signUp": "Sign Up",
+    "haveAccount": "Already have an account? Sign In",
+    "noAccount": "Don't have an account? Sign Up",
     "loginDescription": "Sign in to access your merchant dashboard and loyalty cards.",
     "email": "Email",
     "password": "Password"

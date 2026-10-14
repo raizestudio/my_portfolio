@@ -73,7 +73,7 @@
             @click="isSignUp = !isSignUp; authError = ''"
             class="text-amber-800 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
           >
-            {{ isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up" }}
+            {{ isSignUp ? haveAccountText : noAccountText }}
           </button>
           <p>Version démo demo@demo.io et demo123</p>
         </div>
@@ -104,6 +104,8 @@ const loginDescriptionText = t('fidelity.loginDescription')
 const emailText = t('fidelity.email')
 const passwordText = t('fidelity.password')
 const signUpText = t('fidelity.signUp')
+const haveAccountText = t('fidelity.haveAccount')
+const noAccountText = t('fidelity.noAccount')
 
 // Automatically redirect to /fidelity if already authenticated
 watchEffect(() => {
