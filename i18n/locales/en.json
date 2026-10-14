@@ -252,6 +252,7 @@
     "defaultFiveStampsReward": "Free pastry",
     "defaultTenStampsReward": "Free coffee",
     "defaultTwentyStampsReward": "Free Irish coffee",
+    "loginTitle": "Merchant Sign In",
     "createAccount": "Create account",
     "signIn": "Sign In",
     "signUp": "Sign Up",
@@ -259,6 +260,7 @@
     "noAccount": "Don't have an account? Sign Up",
     "loginDescription": "Sign in to access your merchant dashboard and loyalty cards.",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "signInError": "Authentication failed."
   }
 }

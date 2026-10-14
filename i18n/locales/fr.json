@@ -252,6 +252,7 @@
     "defaultFiveStampsReward": "Chocolat offert",
     "defaultTenStampsReward": "Café offert",
     "defaultTwentyStampsReward": "Irish coffee offert",
+    "loginTitle": "Connexion marchand",
     "createAccount": "Créer un compte",
     "signIn": "Connexion",
     "signUp": "Créer compte",
@@ -259,6 +260,7 @@
     "noAccount": "Vous n'avez pas de compte ? Creer un compte",
     "loginDescription": "Accédez à votre compte pour gérer vos cartes de fidélité.",
     "email": "Email",
-    "password": "Mot de passe"
+    "password": "Mot de passe",
+    "signInError": "L'authentification à échouée."
   }
 }

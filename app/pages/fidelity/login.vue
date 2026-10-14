@@ -98,6 +98,7 @@ const isSignUp = ref(false);
 const isAuthLoading = ref(false);
 const authError = ref("");
 
+const loginTitleText = t('fidelity.loginTitle')
 const createAccountText = t('fidelity.createAccount')
 const signInText = t('fidelity.signIn')
 const loginDescriptionText = t('fidelity.loginDescription')
@@ -106,6 +107,7 @@ const passwordText = t('fidelity.password')
 const signUpText = t('fidelity.signUp')
 const haveAccountText = t('fidelity.haveAccount')
 const noAccountText = t('fidelity.noAccount')
+const signInErrorText = t('fidelity.signInError')
 
 // Automatically redirect to /fidelity if already authenticated
 watchEffect(() => {
@@ -134,13 +136,13 @@ const handleAuth = async () => {
     }
     navigateTo("/fidelity");
   } catch (err: any) {
-    authError.value = err.message || "Authentication failed.";
+    authError.value = err.message || signInErrorText;
   } finally {
     isAuthLoading.value = false;
   }
 };
 
 useHead({
-  title: "Merchant Sign In | Loyalty Card Manager",
+  title: `${loginTitleText} | Loyalty Card Manager`,
 });
 </script>
