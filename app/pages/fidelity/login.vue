@@ -13,10 +13,10 @@
             <Icon name="lucide:store" class="w-6 h-6" />
           </div>
           <h1 class="text-xl font-black tracking-tight text-stone-900 dark:text-stone-100">
-            {{ isSignUp ? 'Create Merchant Account' : 'Merchant Sign In' }}
+            {{ isSignUp ? createAccountText : signInText }}
           </h1>
           <p class="text-xs text-stone-500 dark:text-stone-400">
-            Sign in to access your merchant dashboard and loyalty cards.
+            {{ loginDescriptionText }}
           </p>
         </div>
 
@@ -33,7 +33,7 @@
         <form @submit.prevent="handleAuth" class="space-y-4">
           <div>
             <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400 mb-1">
-              Email Address
+              {{ emailText }}
             </label>
             <input
               v-model="email"
@@ -46,7 +46,7 @@
 
           <div>
             <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-600 dark:text-stone-400 mb-1">
-              Password
+              {{ passwordText }}
             </label>
             <input
               v-model="password"
@@ -63,18 +63,19 @@
             class="w-full py-2.5 bg-amber-700 hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50 text-stone-50 rounded-2xl text-xs font-bold shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             <Icon v-if="isAuthLoading" name="lucide:loader-2" class="w-4 h-4 animate-spin" />
-            <span>{{ isSignUp ? 'Sign Up' : 'Sign In' }}</span>
+            <span>{{ isSignUp ? signUpText : signInText }}</span>
           </button>
         </form>
 
         <!-- Toggle Sign In / Sign Up -->
-        <div class="mt-6 pt-4 border-t border-stone-200 dark:border-stone-800 flex justify-center text-xs">
+        <div class="flex flex-col gap-2 mt-6 pt-4 border-t border-stone-200 dark:border-stone-800 justify-center items-center text-xs">
           <button
             @click="isSignUp = !isSignUp; authError = ''"
             class="text-amber-800 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
           >
             {{ isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up" }}
           </button>
+          <p>Version démo demo@demo.io et demo123</p>
         </div>
       </div>
     </div>
@@ -86,6 +87,7 @@ import { ref, watchEffect } from "vue";
 
 definePageMeta({ layout: false });
 
+const { t } = useI18n();
 const { isDark } = useTheme();
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -95,6 +97,13 @@ const password = ref("");
 const isSignUp = ref(false);
 const isAuthLoading = ref(false);
 const authError = ref("");
+
+const createAccountText = t('fidelity.createAccount')
+const signInText = t('fidelity.signIn')
+const loginDescriptionText = t('fidelity.loginDescription')
+const emailText = t('fidelity.email')
+const passwordText = t('fidelity.password')
+const signUpText = t('fidelity.signUp')
 
 // Automatically redirect to /fidelity if already authenticated
 watchEffect(() => {

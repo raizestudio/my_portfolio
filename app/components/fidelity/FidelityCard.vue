@@ -1,12 +1,12 @@
 <!-- components/fidelity/FidelityCard.vue -->
 <template>
     <div
-        class="group relative overflow-hidden rounded-xl p-5 border-2 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[220px] select-none"
+        class="group relative overflow-hidden rounded-xl p-5 border-2 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-55 select-none"
         :class="getCardTheme(card.color_gradient)"
     >
         <!-- Paper Texture Fiber Overlay -->
         <div
-            class="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.04] dark:opacity-[0.08] pointer-events-none"
+            class="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] bg-size-[16px_16px] opacity-[0.04] dark:opacity-[0.08] pointer-events-none"
         />
 
         <!-- Card Header -->
@@ -20,7 +20,7 @@
                     {{ cardTitleText }}
                 </span>
                 <h3
-                    class="text-base font-black tracking-tight truncate max-w-[180px] text-stone-900 dark:text-stone-100 mt-0.5"
+                    class="text-base font-black tracking-tight truncate max-w-45 text-stone-900 dark:text-stone-100 mt-0.5"
                 >
                     {{ card.customer_name }}
                 </h3>
@@ -32,7 +32,7 @@
                 >
                     <span
                         v-if="card.customer_email"
-                        class="truncate max-w-[160px]"
+                        class="truncate max-w-40"
                         >{{ card.customer_email }}</span
                     >
                     <span v-if="card.customer_phone">{{
@@ -77,7 +77,7 @@
 
         <!-- Middle: Toggle between Stamp Grid & Scannable QR Code -->
         <div
-            class="relative z-10 my-3 min-h-[140px] flex flex-col justify-center"
+            class="relative z-10 my-3 min-h-35 flex flex-col justify-center"
         >
             <!-- QR Code View -->
             <template v-if="showCode">
@@ -124,7 +124,7 @@
 
                 <!-- Printed Cardstock Stamp Grid -->
                 <div
-                    class="grid gap-2 p-3 rounded-lg border border-dashed border-stone-900/20 dark:border-stone-100/20 bg-stone-900/[0.03] dark:bg-stone-100/[0.03]"
+                    class="grid gap-2 p-3 rounded-lg border border-dashed border-stone-900/20 dark:border-stone-100/20 bg-stone-900/3 dark:bg-stone-100/3"
                     :class="getGridColsClass(card.target_visits)"
                 >
                     <div

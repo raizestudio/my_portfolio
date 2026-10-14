@@ -251,6 +251,12 @@
     "defaultFreeReward": "Free coffee",
     "defaultFiveStampsReward": "Free pastry",
     "defaultTenStampsReward": "Free coffee",
-    "defaultTwentyStampsReward": "Free Irish coffee"
+    "defaultTwentyStampsReward": "Free Irish coffee",
+    "createAccount": "Create account",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "loginDescription": "Sign in to access your merchant dashboard and loyalty cards.",
+    "email": "Email",
+    "password": "Password"
   }
 }

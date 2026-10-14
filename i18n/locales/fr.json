@@ -251,6 +251,12 @@
     "defaultFreeReward": "Café offert",
     "defaultFiveStampsReward": "Chocolat offert",
     "defaultTenStampsReward": "Café offert",
-    "defaultTwentyStampsReward": "Irish coffee offert"
+    "defaultTwentyStampsReward": "Irish coffee offert",
+    "createAccount": "Créer un compte",
+    "signIn": "Connexion",
+    "signUp": "Créer compte",
+    "loginDescription": "Accédez à votre compte pour gérer vos cartes de fidélité.",
+    "email": "Email",
+    "password": "Mot de passe"
   }
 }
