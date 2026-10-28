@@ -158,7 +158,7 @@ export default defineNuxtConfig({
       // htmlAttrs: {
       //   lang: "fr",
       // },
-      title: "Joel PINHO | Portfolio",
+      // title: "Joel PINHO | Portfolio",
       meta: [
         {
           name: "description",
