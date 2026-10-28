@@ -865,23 +865,3 @@ onUnmounted(() => {
   scrollbar-width: none;
 }
 </style>
-.custom-scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-.custom-scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>
-.custom-scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-.custom-scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>
