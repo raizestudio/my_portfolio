@@ -519,7 +519,16 @@ const fileSystem = ref([
     title: 'Wiible',
     description: 'Développement freelance',
     updatedAt: 'Sep 24, 2026'
-  },
+    },
+    {
+      id: 'open_source',
+      parentId: 'projects',
+      name: 'Open Source',
+      type: 'folder',
+      title: 'Open Source',
+      description: 'Développement open source',
+      updatedAt: 'Oct 28, 2026'
+    },
   // Inside ~/Projects/WeDev
   {
     id: 'gaia',
@@ -676,7 +685,34 @@ const fileSystem = ref([
     size: '28 KB',
     updatedAt: 'Sep 24, 2026',
     demoUrl: '/fidelity'
-  },
+    },
+  // Items inside Open Source Folder
+  {
+    id: 'zerow',
+    parentId: 'open_source',
+    name: 'zerow.ts',
+    type: 'file',
+    ext: 'react',
+    title: '0w',
+    description: 'Boite à outils avec la vie privée et sécurité en priorité',
+    techStack: ['Nextjs', 'TypeScript'],
+    size: '28 KB',
+    updatedAt: 'Nov 02, 2026',
+    demoUrl: 'https://0w.lat'
+    },
+    {
+      id: 'zerow_sv',
+      parentId: 'open_source',
+      name: 'zerow_sv.py',
+      type: 'file',
+      ext: 'python',
+      title: '0w backend',
+      description: 'Backend de 0w',
+      techStack: ['Python', 'Fastapi'],
+      size: '28 KB',
+      updatedAt: 'Nov 03, 2026',
+      demoUrl: 'https://dev.0w.lat'
+    },
 ])
 
 // Navigation Logic
@@ -821,6 +857,26 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.custom-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
+.custom-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
 .custom-scrollbar-none::-webkit-scrollbar {
   display: none;
 }
